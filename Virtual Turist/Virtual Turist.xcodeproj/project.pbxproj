@@ -13,6 +13,7 @@
 		C90014811B5F80D7005866E0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C90014801B5F80D7005866E0 /* Images.xcassets */; };
 		C90014841B5F80D7005866E0 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = C90014821B5F80D7005866E0 /* LaunchScreen.xib */; };
 		C90014901B5F80D7005866E0 /* Virtual_TuristTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C900148F1B5F80D7005866E0 /* Virtual_TuristTests.swift */; };
+		C900149A1B5F8614005866E0 /* VTAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90014991B5F8614005866E0 /* VTAnnotation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +37,7 @@
 		C90014891B5F80D7005866E0 /* Virtual TuristTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Virtual TuristTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C900148E1B5F80D7005866E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C900148F1B5F80D7005866E0 /* Virtual_TuristTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Virtual_TuristTests.swift; sourceTree = "<group>"; };
+		C90014991B5F8614005866E0 /* VTAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTAnnotation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 			children = (
 				C90014791B5F80D7005866E0 /* AppDelegate.swift */,
 				C900147B1B5F80D7005866E0 /* MapViewController.swift */,
+				C90014991B5F8614005866E0 /* VTAnnotation.swift */,
 				C900147D1B5F80D7005866E0 /* Main.storyboard */,
 				C90014801B5F80D7005866E0 /* Images.xcassets */,
 				C90014821B5F80D7005866E0 /* LaunchScreen.xib */,
@@ -212,6 +215,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C900149A1B5F8614005866E0 /* VTAnnotation.swift in Sources */,
 				C900147C1B5F80D7005866E0 /* MapViewController.swift in Sources */,
 				C900147A1B5F80D7005866E0 /* AppDelegate.swift in Sources */,
 			);
