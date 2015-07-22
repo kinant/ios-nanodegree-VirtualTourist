@@ -103,6 +103,8 @@ class Flickr: NSObject {
         }
         
         task.resume()
+        
+        return task
     }
     
     // MARK: - All purpose task method for images
