@@ -57,6 +57,18 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
+        
+        if annotation is VTAnnotation {
+            let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "myPin")
+            pinAnnotationView.pinColor = .Purple
+            pinAnnotationView.draggable = true
+            pinAnnotationView.canShowCallout = false
+            return pinAnnotationView
+        }
+        return nil
+    }
+    
     func mapView(mapView: MKMapView!, didSelectAnnotationView view: MKAnnotationView!) {
         println("annotation view selected!")
         performSegueWithIdentifier("showPinDetail", sender: self)

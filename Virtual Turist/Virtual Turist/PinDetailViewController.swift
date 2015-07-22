@@ -31,10 +31,10 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("CollectionViewCell", forIndexPath: indexPath) as! UICollectionViewCell
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("CollectionViewCell", forIndexPath: indexPath) as! CustomCollectionViewCell
         cell.backgroundColor = UIColor.blueColor()
         // cell.textLabel?.text = "\(indexPath.section):\(indexPath.row)"
+        cell.title?.text = "\(indexPath.section):\(indexPath.row)"
         return cell
     }
-    
 }

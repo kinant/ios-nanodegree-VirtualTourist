@@ -15,6 +15,7 @@
 		C90014901B5F80D7005866E0 /* Virtual_TuristTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C900148F1B5F80D7005866E0 /* Virtual_TuristTests.swift */; };
 		C900149A1B5F8614005866E0 /* VTAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90014991B5F8614005866E0 /* VTAnnotation.swift */; };
 		C900149C1B5F924A005866E0 /* PinDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C900149B1B5F924A005866E0 /* PinDetailViewController.swift */; };
+		C900149E1B5F9610005866E0 /* CustomCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C900149D1B5F9610005866E0 /* CustomCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,7 @@
 		C900148F1B5F80D7005866E0 /* Virtual_TuristTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Virtual_TuristTests.swift; sourceTree = "<group>"; };
 		C90014991B5F8614005866E0 /* VTAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTAnnotation.swift; sourceTree = "<group>"; };
 		C900149B1B5F924A005866E0 /* PinDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinDetailViewController.swift; sourceTree = "<group>"; };
+		C900149D1B5F9610005866E0 /* CustomCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +88,7 @@
 				C900149B1B5F924A005866E0 /* PinDetailViewController.swift */,
 				C90014991B5F8614005866E0 /* VTAnnotation.swift */,
 				C900147D1B5F80D7005866E0 /* Main.storyboard */,
+				C900149D1B5F9610005866E0 /* CustomCollectionViewCell.swift */,
 				C90014801B5F80D7005866E0 /* Images.xcassets */,
 				C90014821B5F80D7005866E0 /* LaunchScreen.xib */,
 				C90014771B5F80D7005866E0 /* Supporting Files */,
@@ -219,6 +222,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C900149A1B5F8614005866E0 /* VTAnnotation.swift in Sources */,
+				C900149E1B5F9610005866E0 /* CustomCollectionViewCell.swift in Sources */,
 				C900149C1B5F924A005866E0 /* PinDetailViewController.swift in Sources */,
 				C900147C1B5F80D7005866E0 /* MapViewController.swift in Sources */,
 				C900147A1B5F80D7005866E0 /* AppDelegate.swift in Sources */,
