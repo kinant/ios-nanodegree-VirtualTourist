@@ -32,7 +32,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             var point = recognizer.locationInView(self.mapView)
             var locationCoordinate = self.mapView.convertPoint(point, toCoordinateFromView: self.mapView)
         
-            let annotation = VTAnnotation(coordinate: locationCoordinate, title: "New Location", subtitle: "New Subtitle")
+            let annotation = VTAnnotation(coordinate: locationCoordinate)
             mapView.addAnnotation(annotation)
             setCenterOfMapToLocation(locationCoordinate)
         }
@@ -55,6 +55,16 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 annotationView.frame = endFrame
             })
         }
+    }
+    
+    func mapView(mapView: MKMapView!, didSelectAnnotationView view: MKAnnotationView!) {
+        println("annotation view selected!")
+        performSegueWithIdentifier("showPinDetail", sender: self)
+        mapView.deselectAnnotation((mapView.selectedAnnotations[0] as! VTAnnotation) , animated: true)
+    }
+    
+    func mapView(mapView: MKMapView!, didDeselectAnnotationView view: MKAnnotationView!) {
+        println("deselect!")
     }
     
     override func didReceiveMemoryWarning() {
