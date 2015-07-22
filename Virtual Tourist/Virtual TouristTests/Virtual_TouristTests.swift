@@ -1,15 +1,15 @@
 //
-//  Virtual_TuristTests.swift
-//  Virtual TuristTests
+//  Virtual_TouristTests.swift
+//  Virtual TouristTests
 //
-//  Created by Kinan Turjman on 7/22/15.
+//  Created by KT on 7/22/15.
 //  Copyright (c) 2015 Kinan Turman. All rights reserved.
 //
 
 import UIKit
 import XCTest
 
-class Virtual_TuristTests: XCTestCase {
+class Virtual_TouristTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
