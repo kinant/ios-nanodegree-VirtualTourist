@@ -21,8 +21,8 @@ class Flickr: NSObject {
     
     // MARK: - All purpose task method for data
     //func getImageFromFlickrBySearch(methodArguments: [String : AnyObject]) {
-    func getImageFromFlickrBySearch(parameters: [String : AnyObject], completionHandler: CompletionHander) -> NSURLSessionDataTask {
-        let urlString = BASE_URL + Flickr.escapedParameters(parameters)
+    func getImageFromFlickrBySearch(parameters: [String : AnyObject], completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask {
+        let urlString = Flickr.Constants.BASE_URL + Flickr.escapedParameters(parameters)
         let url = NSURL(string: urlString)!
         let request = NSURLRequest(URL: url)
         
@@ -56,14 +56,14 @@ class Flickr: NSObject {
         return task
     }
     
-    func getImageFromFlickrBySearchWithPage(methodArguments: [String : AnyObject], pageNumber: Int, completionHandler: CompletionHander) -> NSURLSessionDataTask {
+    func getImageFromFlickrBySearchWithPage(methodArguments: [String : AnyObject], pageNumber: Int, completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask {
         
         /* Add the page to the method's arguments */
         var withPageDictionary = methodArguments
         withPageDictionary["page"] = pageNumber
         
         let session = NSURLSession.sharedSession()
-        let urlString = BASE_URL + Flickr.escapedParameters(withPageDictionary)
+        let urlString = Flickr.Constants.BASE_URL + Flickr.escapedParameters(withPageDictionary)
         let url = NSURL(string: urlString)!
         let request = NSURLRequest(URL: url)
         
@@ -86,7 +86,7 @@ class Flickr: NSObject {
                     if totalPhotosVal > 0 {
                         if let photosArray = photosDictionary["photo"] as? [[String: AnyObject]] {
                             
-                            dataPhotosArray = photosArray
+                            completionHandler(result: photosArray, error: nil)
                             
                         } else {
                             println("Cant find key 'photo' in \(photosDictionary)")
@@ -108,25 +108,24 @@ class Flickr: NSObject {
     }
     
     // MARK: - All purpose task method for images
-    
-    func taskForImageWithSize(size: String, filePath: String, completionHandler: (imageData: NSData?, error: NSError?) ->  Void) -> NSURLSessionTask {
-        let urlComponents = [size, filePath]
-        let baseURL = NSURL(string: " ")!
-        let url = baseURL.URLByAppendingPathComponent(size).URLByAppendingPathComponent(filePath)
+    func taskForImageWithSize(size: String, imageUrlString: String, completionHandler: (imageData: NSData?, error: NSError?) ->  Void) {
+        let imageURL = NSURL(string: imageUrlString)
+        let urlRequest = NSURLRequest(URL: imageURL!)
+        var downloadError: NSError?
         
-        println(url)
+        let imageData = NSURLConnection.sendSynchronousRequest(urlRequest, returningResponse: nil, error: &downloadError)
         
-        let request = NSURLRequest(URL: url)
-        let task = session.dataTaskWithRequest(request) {data, response, downloadError in
-            if let error = downloadError {
-                let newError = Flickr.errorForData(data, response: response, error: downloadError)
-                completionHandler(imageData: nil, error: newError)
+        if let error = downloadError {
+            println("error downloading image")
+        } else {
+            if imageData!.length > 0 {
+                //image = UIImage(data: imageData!)
+                // return the image
+                completionHandler(imageData: imageData, error: nil)
             } else {
-                completionHandler(imageData: data, error: nil)
+                println("No data could get downloaded from the URL")
             }
         }
-        task.resume()
-        return task
     }
 
     

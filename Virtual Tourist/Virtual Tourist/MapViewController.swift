@@ -75,7 +75,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         if annotation is VTAnnotation {
             let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "myPin")
-            pinAnnotationView.pinColor = .Purple
             pinAnnotationView.draggable = true
             pinAnnotationView.canShowCallout = false
             return pinAnnotationView
@@ -110,7 +109,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             "nojsoncallback": NO_JSON_CALLBACK
         ]
         
-        getImageFromFlickrBySearch(methodArguments)
+        // getImageFromFlickrBySearch(methodArguments)
+        Flickr.sharedInstance().getImageFromFlickrBySearch(methodArguments, completionHandler: { (result, error) -> Void in
+            println(result)
+        })
     }
     
     func createBoundingBoxString(location: CLLocationCoordinate2D) -> String {
