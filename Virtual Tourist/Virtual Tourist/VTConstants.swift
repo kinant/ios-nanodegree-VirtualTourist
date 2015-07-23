@@ -27,5 +27,3 @@ extension String {
         return NSNumberFormatter().numberFromString(self)?.doubleValue
     }
 }
-
-var dataPhotosArray = [[String: AnyObject]]()

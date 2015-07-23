@@ -22,6 +22,10 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         layout.itemSize = CGSize(width: 90, height: 90)
         collectionView!.backgroundColor = UIColor.whiteColor()
         self.view.addSubview(collectionView!)
+        
+        Flickr.sharedInstance().searchPhotosByLatLon(pin, completionHandler: { (result, error) -> Void in
+            println("in here!")
+        })
     }
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
@@ -38,6 +42,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         // cell.textLabel?.text = "\(indexPath.section):\(indexPath.row)"
         cell.title?.text = "\(indexPath.section):\(indexPath.row)"
         
+        /*
         let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
         
         dispatch_async(queue, {[weak self] in
@@ -46,34 +51,16 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
             
             // download image
             dispatch_sync(queue, {
-                let randomPhotoIndex = Int(arc4random_uniform(UInt32(dataPhotosArray.count)))
-                let photoDictionary = dataPhotosArray[randomPhotoIndex] as [String: AnyObject]
-                
-                let photoTitle = photoDictionary["title"] as? String
-                let imageUrlString = photoDictionary["url_m"] as? String
-                let imageURL = NSURL(string: imageUrlString!)
-                let urlRequest = NSURLRequest(URL: imageURL!)
-                var downloadError: NSError?
-                
-                let imageData = NSURLConnection.sendSynchronousRequest(urlRequest, returningResponse: nil, error: &downloadError)
-                
-                if let error = downloadError {
-                    println("error downloading image")
-                } else {
-                    if imageData!.length > 0 {
-                        image = UIImage(data: imageData!)
-                    } else {
-                        println("No data could get downloaded from the URL")
-                    }
-                }
+
             })
             
             dispatch_sync(dispatch_get_main_queue(), {
                 if let theImage = image {
-                    cell.image.image = theImage
+                    // cell.image.image = theImage
                 }
             })
         })
+        */
         
         return cell
     }

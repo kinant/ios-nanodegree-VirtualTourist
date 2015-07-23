@@ -22,6 +22,7 @@
 		68A845A81B602317007C1735 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A845A71B602317007C1735 /* ImageCache.swift */; };
 		68A845AA1B60237D007C1735 /* Flickr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A845A91B60237D007C1735 /* Flickr.swift */; };
 		68A845AC1B6024AF007C1735 /* Flickr-Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A845AB1B6024AF007C1735 /* Flickr-Constants.swift */; };
+		68F94A291B614AA5003C8161 /* Flickr-Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F94A281B614AA5003C8161 /* Flickr-Convenience.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +55,7 @@
 		68A845A71B602317007C1735 /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		68A845A91B60237D007C1735 /* Flickr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Flickr.swift; sourceTree = "<group>"; };
 		68A845AB1B6024AF007C1735 /* Flickr-Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Flickr-Constants.swift"; sourceTree = "<group>"; };
+		68F94A281B614AA5003C8161 /* Flickr-Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Flickr-Convenience.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,6 +152,7 @@
 				68A845A51B6021FA007C1735 /* Photo.swift */,
 				68A845A71B602317007C1735 /* ImageCache.swift */,
 				68A845A91B60237D007C1735 /* Flickr.swift */,
+				68F94A281B614AA5003C8161 /* Flickr-Convenience.swift */,
 				68A845AB1B6024AF007C1735 /* Flickr-Constants.swift */,
 			);
 			name = Flicker;
@@ -263,6 +266,7 @@
 				68A845911B5FEEC2007C1735 /* AppDelegate.swift in Sources */,
 				68A845981B5FEED8007C1735 /* PinDetailViewController.swift in Sources */,
 				68A8459D1B5FF482007C1735 /* VTConstants.swift in Sources */,
+				68F94A291B614AA5003C8161 /* Flickr-Convenience.swift in Sources */,
 				68A845971B5FEED8007C1735 /* MapViewController.swift in Sources */,
 				68A845931B5FEECA007C1735 /* CustomCollectionViewCell.swift in Sources */,
 				68A845AC1B6024AF007C1735 /* Flickr-Constants.swift in Sources */,

@@ -14,8 +14,10 @@ class VTAnnotation: NSObject, MKAnnotation {
     var coordinate: CLLocationCoordinate2D = CLLocationCoordinate2DMake(0, 0)
     // var title: String = ""
     // var subtitle: String = ""
+    var index: Int
     
-    init(coordinate: CLLocationCoordinate2D){
+    init(coordinate: CLLocationCoordinate2D, index: Int){
         self.coordinate = coordinate
+        self.index = index
     }
 }

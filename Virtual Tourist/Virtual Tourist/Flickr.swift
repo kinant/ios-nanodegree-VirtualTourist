@@ -14,6 +14,8 @@ class Flickr: NSObject {
     
     var session: NSURLSession
     
+    var dataPhotosArray = [[String: AnyObject]]()
+    
     override init() {
         session = NSURLSession.sharedSession()
         super.init()
