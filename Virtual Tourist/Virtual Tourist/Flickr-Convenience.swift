@@ -44,10 +44,16 @@ extension Flickr {
         return "\(bottom_left_lon),\(bottom_left_lat),\(top_right_lon),\(top_right_lat)"
     }
     
-    func downloadRandomImageForPin(pin: Pin){
-        let randomPhotoIndex = Int(arc4random_uniform(UInt32(dataPhotosArray.count)))
-        let photoDictionary = dataPhotosArray[randomPhotoIndex] as [String: AnyObject]
-        let photoTitle = photoDictionary["title"] as? String
-        let imageUrlString = photoDictionary["url_m"] as? String
+    func downloadRandomImageForPin(pin: Pin, completionHandler: (imageData: NSData?) -> Void) {
+        let randomPhotoIndex = Int(arc4random_uniform(UInt32(pin.photos.count)))
+        let imageUrl = pin.photos[randomPhotoIndex].imagePath!
+        
+        println("downloading image at: \(imageUrl)")
+        
+        taskForImageWithSize(imageUrl, completionHandler: { (imageData, error) -> Void in
+            
+            completionHandler(imageData: imageData!)
+            
+        })
     }
 }

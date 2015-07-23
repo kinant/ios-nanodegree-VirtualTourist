@@ -20,8 +20,8 @@ class Photo {
         self.imagePath = imagePath
     }
     
-    var imagePhoto: UIImage? {
-        get { return UIImage(named: "") }
-        set { newValue }
+    var posterImage: UIImage? {
+        get { return Flickr.Caches.imageCache.imageWithIdentifier(imagePath) }
+        set { Flickr.Caches.imageCache.storeImage(newValue, withIdentifier: imagePath!) }
     }
 }

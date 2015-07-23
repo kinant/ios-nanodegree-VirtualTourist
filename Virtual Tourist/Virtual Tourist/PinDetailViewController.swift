@@ -31,10 +31,17 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
             
             Flickr.sharedInstance().searchPhotosByLatLon(pin, completionHandler: { (result, error) -> Void in
                 if let photos = result {
-                    
                     for photo in photos {
-                        println(photo["url_m"])
+                        if let imageURL = photo["url_m"] as? String {
+                            let newPhoto = Photo(imagePath: imageURL)
+                            println(newPhoto.imagePath!)
+                            self.pin.photos.append(newPhoto)
+                        }
                     }
+                }
+                
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.collectionView?.reloadData()
                 }
             })
         }
@@ -45,34 +52,53 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
+        if pin.photos.count > 22 {
+            return 21
+        } else {
+            return pin.photos.count
+        }
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        
+        let photo = pin.photos[indexPath.row]
+        
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("CollectionViewCell", forIndexPath: indexPath) as! CustomCollectionViewCell
         cell.backgroundColor = UIColor.blueColor()
         // cell.textLabel?.text = "\(indexPath.section):\(indexPath.row)"
         cell.title?.text = "\(indexPath.section):\(indexPath.row)"
+        cell.image!.image = nil
         
-        /*
-        let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+        var posterImage = UIImage(named: "posterPlaceHoldr")
         
-        dispatch_async(queue, {[weak self] in
+        if photo.posterImage != nil {
+            println("photo has image!")
+            posterImage = photo.posterImage
+            cell.image!.image = posterImage
+        }
             
-            var image: UIImage?
+        else {
+            let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+        
+            dispatch_async(queue, {[weak self] in
             
-            // download image
-            dispatch_sync(queue, {
-
+                var image: UIImage?
+            
+                // download image
+                dispatch_sync(queue, {
+                    Flickr.sharedInstance().downloadRandomImageForPin(self!.pin, completionHandler: { (imageData) -> Void in
+                        image = UIImage(data: imageData!)
+                    })
+                })
+            
+                dispatch_sync(dispatch_get_main_queue(), {
+                    if let theImage = image {
+                        photo.posterImage = theImage
+                        cell.image.image = theImage
+                    }
+                })
             })
-            
-            dispatch_sync(dispatch_get_main_queue(), {
-                if let theImage = image {
-                    // cell.image.image = theImage
-                }
-            })
-        })
-        */
+        }
         
         return cell
     }

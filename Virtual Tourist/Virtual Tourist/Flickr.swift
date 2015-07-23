@@ -108,7 +108,7 @@ class Flickr: NSObject {
     }
     
     // MARK: - All purpose task method for images
-    func taskForImageWithSize(size: String, imageUrlString: String, completionHandler: (imageData: NSData?, error: NSError?) ->  Void) {
+    func taskForImageWithSize(imageUrlString: String, completionHandler: (imageData: NSData?, error: NSError?) ->  Void) {
         let imageURL = NSURL(string: imageUrlString)
         let urlRequest = NSURLRequest(URL: imageURL!)
         var downloadError: NSError?
