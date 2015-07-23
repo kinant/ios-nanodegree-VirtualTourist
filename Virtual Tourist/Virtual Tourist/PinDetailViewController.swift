@@ -22,10 +22,17 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         layout.itemSize = CGSize(width: 90, height: 90)
         collectionView!.backgroundColor = UIColor.whiteColor()
         self.view.addSubview(collectionView!)
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
         
-        Flickr.sharedInstance().searchPhotosByLatLon(pin, completionHandler: { (result, error) -> Void in
-            println("in here!")
-        })
+        if pin.photos.isEmpty {
+            
+            Flickr.sharedInstance().searchPhotosByLatLon(pin, completionHandler: { (result, error) -> Void in
+                // println(result)
+            })
+        }
     }
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {

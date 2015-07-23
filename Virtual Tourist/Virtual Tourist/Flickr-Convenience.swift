@@ -11,7 +11,7 @@ import MapKit
 
 extension Flickr {
     
-    func searchPhotosByLatLon(pin: Pin, completionHandler: (result: [AnyObject]?, error: NSError?) -> Void) {
+    func searchPhotosByLatLon(pin: Pin, completionHandler: (data: AnyObject?, error: NSError?) -> Void) {
         let methodArguments = [
             "method": METHOD_NAME,
             "api_key": API_KEY,
@@ -24,8 +24,9 @@ extension Flickr {
         
         // getImageFromFlickrBySearch(methodArguments)
         Flickr.sharedInstance().getImageFromFlickrBySearch(methodArguments, completionHandler: { (result, error) -> Void in
-            self.dataPhotosArray = (result as! [[String:AnyObject]])
-            println(self.dataPhotosArray)
+            
+            completionHandler(data: result, error: error)
+        
         })
     }
     

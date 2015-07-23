@@ -23,7 +23,7 @@ class Flickr: NSObject {
     
     // MARK: - All purpose task method for data
     //func getImageFromFlickrBySearch(methodArguments: [String : AnyObject]) {
-    func getImageFromFlickrBySearch(parameters: [String : AnyObject], completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask {
+    func getImageFromFlickrBySearch(parameters: [String : AnyObject], completionHandler: (result: AnyObject?, error: NSError?) -> Void) -> NSURLSessionDataTask {
         let urlString = Flickr.Constants.BASE_URL + Flickr.escapedParameters(parameters)
         let url = NSURL(string: urlString)!
         let request = NSURLRequest(URL: url)
@@ -58,7 +58,7 @@ class Flickr: NSObject {
         return task
     }
     
-    func getImageFromFlickrBySearchWithPage(methodArguments: [String : AnyObject], pageNumber: Int, completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask {
+    func getImageFromFlickrBySearchWithPage(methodArguments: [String : AnyObject], pageNumber: Int, completionHandler: (result: AnyObject?, error: NSError?) -> Void) -> NSURLSessionDataTask {
         
         /* Add the page to the method's arguments */
         var withPageDictionary = methodArguments
@@ -75,8 +75,6 @@ class Flickr: NSObject {
             } else {
                 var parsingError: NSError? = nil
                 let parsedResult = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
-                
-                println(parsedResult)
                 
                 if let photosDictionary = parsedResult.valueForKey("photos") as? [String:AnyObject] {
                     
