@@ -88,14 +88,14 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
                 dispatch_sync(queue, {
                     Flickr.sharedInstance().downloadRandomImageForPin(self!.pin, completionHandler: { (imageData) -> Void in
                         image = UIImage(data: imageData!)
+                        
+                        dispatch_async(dispatch_get_main_queue()) {
+                            cell.image!.image = image
+                        }
+                        
+                        photo.posterImage = image
+                        
                     })
-                })
-            
-                dispatch_sync(dispatch_get_main_queue(), {
-                    if let theImage = image {
-                        photo.posterImage = theImage
-                        cell.image.image = theImage
-                    }
                 })
             })
         }
