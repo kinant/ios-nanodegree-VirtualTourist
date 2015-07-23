@@ -30,7 +30,12 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         if pin.photos.isEmpty {
             
             Flickr.sharedInstance().searchPhotosByLatLon(pin, completionHandler: { (result, error) -> Void in
-                // println(result)
+                if let photos = result {
+                    
+                    for photo in photos {
+                        println(photo["url_m"])
+                    }
+                }
             })
         }
     }
