@@ -15,6 +15,7 @@ extension Flickr {
         let methodArguments = [
             "method": METHOD_NAME,
             "api_key": API_KEY,
+            "per_page": Flickr.Resources.PER_PAGE,
             "bbox": createBoundingBoxString(pin.annotation.coordinate),
             "safe_search": SAFE_SEARCH,
             "extras": EXTRAS,
