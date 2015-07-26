@@ -7,21 +7,39 @@
 //
 
 import UIKit
+import CoreData
 
-class Photo {
+@objc(Photo)
+
+class Photo: NSManagedObject {
     
     struct Keys {
         static let ImagePath = "image_path"
     }
     
-    var imagePath: String?
+    @NSManaged var imagePath: String?
+    @NSManaged var pin: Pin?
     
-    init(imagePath: String) {
+    
+    override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
+        super.init(entity: entity, insertIntoManagedObjectContext: context)
+    }
+    
+    init(imagePath: String, context: NSManagedObjectContext) {
+        
+        let entity = NSEntityDescription.entityForName("Photo", inManagedObjectContext: context)!
+        
+        super.init(entity: entity, insertIntoManagedObjectContext: context)
+        
         self.imagePath = imagePath
     }
     
     var posterImage: UIImage? {
-        get { return Flickr.Caches.imageCache.imageWithIdentifier(imagePath) }
-        set { Flickr.Caches.imageCache.storeImage(newValue, withIdentifier: imagePath!) }
+        get {
+            return Flickr.Caches.imageCache.imageWithIdentifier(imagePath)
+        }
+        set {
+            Flickr.Caches.imageCache.storeImage(newValue, withIdentifier: imagePath!)
+        }
     }
 }

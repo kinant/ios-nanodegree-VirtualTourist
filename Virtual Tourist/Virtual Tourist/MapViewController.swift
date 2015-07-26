@@ -5,15 +5,19 @@
 //  Created by Kinan Turjman on 7/22/15.
 //  Copyright (c) 2015 Kinan Turman. All rights reserved.
 //
-
 import UIKit
 import MapKit
+import CoreData
 
 class MapViewController: UIViewController, MKMapViewDelegate {
 
     var pins = [Pin]()
     var pinCount = 0
     var selectedPinIndex = 0
+    
+    var sharedContext: NSManagedObjectContext {
+        return CoreDataStackManager.sharedInstance().managedObjectContext!
+    }
     
     @IBOutlet weak var mapView: MKMapView!
     
@@ -26,6 +30,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self , action: "handleLongPress:")
         longPressGestureRecognizer.minimumPressDuration = 1.0
         self.mapView.addGestureRecognizer(longPressGestureRecognizer)
+        
     }
     
     func handleLongPress(recognizer: UILongPressGestureRecognizer){

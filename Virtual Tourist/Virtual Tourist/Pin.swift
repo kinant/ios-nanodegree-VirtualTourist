@@ -7,18 +7,33 @@
 //
 
 import MapKit
+import CoreData
 
-class Pin {
+@objc(Pin)
+
+class Pin: NSManagedObject {
     
     struct Keys {
-        static let Coordinate = "coordinate"
+        static let Latitude = "latitude"
+        static let Longitude = "longitude"
         static let Photos = "photos"
     }
+
+    @NSManaged var latitude: Double
+    @NSManaged var longitude: Double
+    @NSManaged var photos: [Photo]
     
-    var annotation: VTAnnotation!
-    var photos: [Photo] = [Photo]()
+    override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
+        super.init(entity: entity, insertIntoManagedObjectContext: context)
+    }
     
-    init(annotation: VTAnnotation){
-        self.annotation = annotation
+    init(annotation: VTAnnotation, context: NSManagedObjectContext){
+        
+        let entity = NSEntityDescription.entityForName("Pin", inManagedObjectContext: context)!
+        
+        super.init(entity: entity, insertIntoManagedObjectContext: context)
+        
+        self.latitude = annotation.coordinate.latitude
+        self.longitude = annotation.coordinate.longitude
     }
 }

@@ -16,7 +16,7 @@ extension Flickr {
             "method": METHOD_NAME,
             "api_key": API_KEY,
             "per_page": Flickr.Resources.PER_PAGE,
-            "bbox": createBoundingBoxString(pin.annotation.coordinate),
+            "bbox": createBoundingBoxString(CLLocationCoordinate2DMake(pin.latitude, pin.longitude)),
             "safe_search": SAFE_SEARCH,
             "extras": EXTRAS,
             "format": DATA_FORMAT,
