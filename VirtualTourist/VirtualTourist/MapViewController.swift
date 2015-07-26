@@ -32,7 +32,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         self.mapView.addGestureRecognizer(longPressGestureRecognizer)
         
         pins = fetchAllPins()
-        addPins()
+        
     }
     
     func handleLongPress(recognizer: UILongPressGestureRecognizer){
