@@ -107,9 +107,7 @@ extension Flickr {
                     let image = UIImage(data: data)
                 
                     photo.posterImage = image
-                    // self.saveContext()
-                    println("image downloaded!!!")
-                    println("current view controller: \(self.getTopController())")
+
                     let topController = self.getTopController()
                     
                     if let topNavController = topController as? UINavigationController {
@@ -124,7 +122,6 @@ extension Flickr {
                                 (topNavController.visibleViewController as! PinDetailViewController).collectionView?.reloadData()
                             }
                         }
-                        // return UIWindow.getVisibleViewControllerFrom(topController)
                     }
                 }
                 else {

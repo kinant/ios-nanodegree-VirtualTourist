@@ -96,7 +96,6 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
             println("photo has image!")
             posterImage = photo.posterImage
         }
-        // else download the image
         else {
             println("image not available yet!")
         }
