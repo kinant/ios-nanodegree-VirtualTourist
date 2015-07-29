@@ -77,8 +77,6 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         } else {
             return pin.photos.count
         }
-        
-        // return 1
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -110,8 +108,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
                 if error == nil {
                     // Convert the downloaded data in to a UIImage object
                     let image = UIImage(data: data)
-                    // Store the image in to our cache
-                    // self.imageCache[urlString] = image
+                    
                     // Update the cell
                     dispatch_async(dispatch_get_main_queue(), {
                         if let cellToUpdate = collectionView.cellForItemAtIndexPath(indexPath) {
@@ -119,40 +116,12 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
                         }
                     })
                     
-                    // cache the image
                     photo.posterImage = image
                 }
                 else {
                     println("Error: \(error.localizedDescription)")
                 }
             })
-        
-            /*
-            let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-        
-            dispatch_async(queue, {[weak self] in
-            
-                var image: UIImage?
-            
-                // download image
-                dispatch_sync(queue, {
-                    Flickr.sharedInstance().downloadRandomImageForPin(self!.pin, completionHandler: { (imageData) -> Void in
-                        image = UIImage(data: imageData!)
-                        
-                        dispatch_async(dispatch_get_main_queue()) {
-                            cell.image!.image = image
-                        }
-                        
-                        photo.posterImage = image
-                        
-                    })
-                })
-            })
-        }
-        
-        return cell
-    }
-*/
         }
         
         cell.image!.image = posterImage

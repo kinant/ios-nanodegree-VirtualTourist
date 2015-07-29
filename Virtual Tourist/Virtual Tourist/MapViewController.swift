@@ -33,6 +33,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         pins = fetchAllPins()
         
+        pinCount = pins.count
+        
         for pin in pins {
             println("\(pin.annotation.coordinate.latitude)")
         }
@@ -122,14 +124,18 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         var selectedAnnotation = mapView.selectedAnnotations[0] as! VTAnnotation
         selectedPinIndex = returnSelectedPinIndex(selectedAnnotation)
         println("selected pin: \(selectedPinIndex)")
-        performSegueWithIdentifier("showPinDetail", sender: self)
+        // performSegueWithIdentifier("showPinDetail", sender: self)
         mapView.deselectAnnotation(selectedAnnotation , animated: true)
     }
     
     func returnSelectedPinIndex(annotation: VTAnnotation) -> Int {
+        
+        println("pin count: \(pins.count)")
         for pin in pins {
+            println("pin index: \(pin.index)")
+            
             if pin.annotation == annotation {
-                return pin.index
+                // return pin.index
             }
         }
         return -1

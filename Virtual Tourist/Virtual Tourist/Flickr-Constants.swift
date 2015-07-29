@@ -22,7 +22,7 @@ extension Flickr {
         static let SAFE_SEARCH = "1"
         static let DATA_FORMAT = "json"
         static let NO_JSON_CALLBACK = "1"
-        static let PER_PAGE = "4"
+        static let PER_PAGE = "10"
     }
     
     struct Values {
