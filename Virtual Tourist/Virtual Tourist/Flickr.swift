@@ -16,10 +16,16 @@ class Flickr: NSObject {
     
     var dataPhotosArray = [[String: AnyObject]]()
     
+    //
+    
     override init() {
         session = NSURLSession.sharedSession()
         super.init()
     }
+    
+    lazy var sharedContext = {
+        CoreDataStackManager.sharedInstance().managedObjectContext!
+        }()
     
     // MARK: - All purpose task method for data
     //func getImageFromFlickrBySearch(methodArguments: [String : AnyObject]) {

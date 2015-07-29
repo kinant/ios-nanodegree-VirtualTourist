@@ -9,9 +9,13 @@
 import MapKit
 import CoreData
 
+func ==(lhs:Pin, rhs:Pin) -> Bool {
+    return lhs.index == rhs.index
+}
+
 @objc(Pin)
 
-class Pin: NSManagedObject {
+class Pin: NSManagedObject, Equatable {
     
     struct Keys {
         static let Latitude = "latitude"

@@ -71,6 +71,18 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         CoreDataStackManager.sharedInstance().saveContext()
         
+        let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+        
+        dispatch_async(dispatch_get_main_queue()){
+        // prefetch the images
+            // let mainQueue = NSOperationQueue.
+            dispatch_sync(queue){
+                Flickr.sharedInstance().downloadImagePathsForPin(newPin)
+            }
+            dispatch_sync(queue){
+                // Flickr.sharedInstance().fetchImagesForPin(newPin)
+            }
+        }
         pinCount++
     }
     
@@ -124,7 +136,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         var selectedAnnotation = mapView.selectedAnnotations[0] as! VTAnnotation
         selectedPinIndex = returnSelectedPinIndex(selectedAnnotation)
         println("selected pin: \(selectedPinIndex)")
-        // performSegueWithIdentifier("showPinDetail", sender: self)
+        performSegueWithIdentifier("showPinDetail", sender: self)
         mapView.deselectAnnotation(selectedAnnotation , animated: true)
     }
     
@@ -135,7 +147,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             println("pin index: \(pin.index)")
             
             if pin.annotation == annotation {
-                // return pin.index
+                return pin.index
             }
         }
         return -1
@@ -150,4 +162,3 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         // Dispose of any resources that can be recreated.
     }
 }
-

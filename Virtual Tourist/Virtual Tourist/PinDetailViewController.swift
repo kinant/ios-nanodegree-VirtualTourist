@@ -32,7 +32,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         super.viewDidAppear(animated)
         
         printAllPinPhotos()
-        
+        /*
         if pin.photos.isEmpty {
             
             Flickr.sharedInstance().searchPhotosByLatLon(pin, completionHandler: { (result, error) -> Void in
@@ -55,6 +55,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
                 
             })
         }
+        */
     }
     
     func printAllPinPhotos(){
@@ -97,31 +98,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         }
         // else download the image
         else {
-            let imageUrl = pin.photos[indexPath.row].imagePath!
-            let url = NSURL(string: imageUrl)!
-            let request = NSURLRequest(URL: url)
-            
-            println("downloading image at: \(imageUrl)")
-            // let request = NSUrL
-            let mainQueue = NSOperationQueue.mainQueue()
-            NSURLConnection.sendAsynchronousRequest(request, queue: mainQueue, completionHandler: { (response, data, error) -> Void in
-                if error == nil {
-                    // Convert the downloaded data in to a UIImage object
-                    let image = UIImage(data: data)
-                    
-                    // Update the cell
-                    dispatch_async(dispatch_get_main_queue(), {
-                        if let cellToUpdate = collectionView.cellForItemAtIndexPath(indexPath) {
-                            cell.image?.image = image
-                        }
-                    })
-                    
-                    photo.posterImage = image
-                }
-                else {
-                    println("Error: \(error.localizedDescription)")
-                }
-            })
+            println("image not available yet!")
         }
         
         cell.image!.image = posterImage
