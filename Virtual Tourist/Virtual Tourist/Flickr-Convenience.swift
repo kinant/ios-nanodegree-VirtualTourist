@@ -77,8 +77,11 @@ extension Flickr {
                 if let photos = result {
                     for photo in photos {
                         if let imageURL = photo["url_m"] as? String {
-                            let newPhoto = Photo(imagePath: imageURL, context: self.sharedContext)
-                            newPhoto.pin = pin
+                            
+                            if let imageID = photo["id"] as? String {
+                                let newPhoto = Photo(imagePath: imageURL, id: imageID, context: self.sharedContext)
+                                newPhoto.pin = pin
+                            }
                         }
                     }
                     self.fetchImagesForPin(pin)

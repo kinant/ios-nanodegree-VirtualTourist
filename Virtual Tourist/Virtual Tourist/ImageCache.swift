@@ -36,7 +36,6 @@ class ImageCache {
     }
     
     // MARK: - Saving images
-    
     func storeImage(image: UIImage?, withIdentifier identifier: String) {
         let path = pathForIdentifier(identifier)
         
@@ -49,14 +48,12 @@ class ImageCache {
         
         // Otherwise, keep the image in memory
         inMemoryCache.setObject(image!, forKey: path)
-        
-        // And in documents directory
-        let data = UIImagePNGRepresentation(image!)
-        data.writeToFile(path, atomically: true)
+        let data = UIImageJPEGRepresentation(image!, 1.0)
+        var writeError: NSError?
+        var result = data.writeToFile(path, options: NSDataWritingOptions.AtomicWrite, error: &writeError)
     }
     
     // MARK: - Helper
-    
     func pathForIdentifier(identifier: String) -> String {
         let documentsDirectoryURL: NSURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first as! NSURL
         let fullURL = documentsDirectoryURL.URLByAppendingPathComponent(identifier)
