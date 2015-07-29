@@ -25,9 +25,7 @@ extension Flickr {
         
         // getImageFromFlickrBySearch(methodArguments)
         Flickr.sharedInstance().getImageFromFlickrBySearch(methodArguments, completionHandler: { (result, error) -> Void in
-            
             completionHandler(data: result, error: error)
-        
         })
     }
     
@@ -45,10 +43,7 @@ extension Flickr {
         return "\(bottom_left_lon),\(bottom_left_lat),\(top_right_lon),\(top_right_lat)"
     }
     
-    func downloadRandomImageForPin(pin: Pin, completionHandler: (imageData: NSData?) -> Void) {
-        let randomPhotoIndex = Int(arc4random_uniform(UInt32(pin.photos.count)))
-        let imageUrl = pin.photos[randomPhotoIndex].imagePath!
-        
+    func downloadRandomImageForPin(imageUrl: String, completionHandler: (imageData: NSData?) -> Void) {
         println("downloading image at: \(imageUrl)")
         
         taskForImageWithSize(imageUrl, completionHandler: { (imageData, error) -> Void in

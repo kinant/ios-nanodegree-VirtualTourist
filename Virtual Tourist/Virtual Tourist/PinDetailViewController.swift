@@ -31,6 +31,8 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
+        printAllPinPhotos()
+        
         if pin.photos.isEmpty {
             
             Flickr.sharedInstance().searchPhotosByLatLon(pin, completionHandler: { (result, error) -> Void in
@@ -38,10 +40,8 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
                     for photo in photos {
                         if let imageURL = photo["url_m"] as? String {
                             let newPhoto = Photo(imagePath: imageURL, context: self.sharedContext)
-                            println(newPhoto.imagePath!)
-                            
+                            println("new photo: " + newPhoto.imagePath!)
                             newPhoto.pin = self.pin
-                            
                         }
                     }
                 }
@@ -49,8 +49,22 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
                 dispatch_async(dispatch_get_main_queue()) {
                     self.collectionView?.reloadData()
                 }
+                
+                self.printAllPinPhotos()
+                self.saveContext()
+                
             })
         }
+    }
+    
+    func printAllPinPhotos(){
+        for var i = 0; i < pin.photos.count; i++ {
+            println("printing pin at \(i): \(pin.photos[i].imagePath)")
+        }
+    }
+    
+    func saveContext() {
+        CoreDataStackManager.sharedInstance().saveContext()
     }
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
@@ -63,6 +77,8 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         } else {
             return pin.photos.count
         }
+        
+        // return 1
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -80,10 +96,38 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         if photo.posterImage != nil {
             println("photo has image!")
             posterImage = photo.posterImage
-            cell.image!.image = posterImage
         }
-            
+        // else download the image
         else {
+            let imageUrl = pin.photos[indexPath.row].imagePath!
+            let url = NSURL(string: imageUrl)!
+            let request = NSURLRequest(URL: url)
+            
+            println("downloading image at: \(imageUrl)")
+            // let request = NSUrL
+            let mainQueue = NSOperationQueue.mainQueue()
+            NSURLConnection.sendAsynchronousRequest(request, queue: mainQueue, completionHandler: { (response, data, error) -> Void in
+                if error == nil {
+                    // Convert the downloaded data in to a UIImage object
+                    let image = UIImage(data: data)
+                    // Store the image in to our cache
+                    // self.imageCache[urlString] = image
+                    // Update the cell
+                    dispatch_async(dispatch_get_main_queue(), {
+                        if let cellToUpdate = collectionView.cellForItemAtIndexPath(indexPath) {
+                            cell.image?.image = image
+                        }
+                    })
+                    
+                    // cache the image
+                    photo.posterImage = image
+                }
+                else {
+                    println("Error: \(error.localizedDescription)")
+                }
+            })
+        
+            /*
             let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
         
             dispatch_async(queue, {[weak self] in
@@ -105,6 +149,13 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
                 })
             })
         }
+        
+        return cell
+    }
+*/
+        }
+        
+        cell.image!.image = posterImage
         
         return cell
     }

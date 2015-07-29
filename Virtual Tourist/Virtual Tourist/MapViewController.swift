@@ -32,6 +32,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         self.mapView.addGestureRecognizer(longPressGestureRecognizer)
         
         pins = fetchAllPins()
+        
+        for pin in pins {
+            println("\(pin.annotation.coordinate.latitude)")
+        }
+        
         addPins()
     }
     
@@ -49,6 +54,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     func addPins(){
         for pin in pins {
             mapView.addAnnotation(pin.annotation)
+            pin.annotation.index = pin.index
         }
     }
     
@@ -57,7 +63,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         mapView.addAnnotation(annotation)
         setCenterOfMapToLocation(location)
         
-        let newPin = Pin(annotation: annotation, context: sharedContext)
+        let newPin = Pin(annotation: annotation, index: annotation.index, context: sharedContext)
         
         pins.append(newPin)
         
@@ -114,9 +120,19 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     func mapView(mapView: MKMapView!, didSelectAnnotationView view: MKAnnotationView!) {
         println("annotation view selected!")
         var selectedAnnotation = mapView.selectedAnnotations[0] as! VTAnnotation
-        selectedPinIndex = selectedAnnotation.index
+        selectedPinIndex = returnSelectedPinIndex(selectedAnnotation)
+        println("selected pin: \(selectedPinIndex)")
         performSegueWithIdentifier("showPinDetail", sender: self)
         mapView.deselectAnnotation(selectedAnnotation , animated: true)
+    }
+    
+    func returnSelectedPinIndex(annotation: VTAnnotation) -> Int {
+        for pin in pins {
+            if pin.annotation == annotation {
+                return pin.index
+            }
+        }
+        return -1
     }
     
     func mapView(mapView: MKMapView!, didDeselectAnnotationView view: MKAnnotationView!) {

@@ -9,7 +9,13 @@
 import UIKit
 import MapKit
 
-class VTAnnotation: NSObject, MKAnnotation {
+func ==(lhs: VTAnnotation, rhs: VTAnnotation) -> Bool {
+    return (lhs.coordinate.latitude == rhs.coordinate.latitude
+        && lhs.coordinate.longitude == rhs.coordinate.longitude)
+    
+}
+
+class VTAnnotation: NSObject, MKAnnotation, Equatable {
     
     var coordinate: CLLocationCoordinate2D = CLLocationCoordinate2DMake(0, 0)
     // var title: String = ""

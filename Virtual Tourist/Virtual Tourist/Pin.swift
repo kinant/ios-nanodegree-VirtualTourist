@@ -22,17 +22,19 @@ class Pin: NSManagedObject {
     @NSManaged var latitude: Double
     @NSManaged var longitude: Double
     @NSManaged var photos: [Photo]
+    @NSManaged var index: Int
     
     override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
         super.init(entity: entity, insertIntoManagedObjectContext: context)
     }
     
-    init(annotation: VTAnnotation, context: NSManagedObjectContext){
+    init(annotation: VTAnnotation, index: Int, context: NSManagedObjectContext){
         
         let entity = NSEntityDescription.entityForName("Pin", inManagedObjectContext: context)!
         
         super.init(entity: entity, insertIntoManagedObjectContext: context)
         
+        self.index = index
         self.latitude = annotation.coordinate.latitude
         self.longitude = annotation.coordinate.longitude
     }

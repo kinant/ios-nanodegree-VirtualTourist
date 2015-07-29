@@ -22,7 +22,7 @@ extension Flickr {
         static let SAFE_SEARCH = "1"
         static let DATA_FORMAT = "json"
         static let NO_JSON_CALLBACK = "1"
-        static let PER_PAGE = "21"
+        static let PER_PAGE = "4"
     }
     
     struct Values {
@@ -32,6 +32,7 @@ extension Flickr {
         static let LAT_MAX = 90.0
         static let LON_MIN = -180.0
         static let LON_MAX = 180.0
+        static let MAX_RESULTS = 4000
     }
     
     struct Keys {
