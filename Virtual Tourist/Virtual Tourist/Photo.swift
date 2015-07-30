@@ -20,6 +20,7 @@ class Photo: NSManagedObject {
     @NSManaged var imagePath: String?
     @NSManaged var pin: Pin?
     @NSManaged var id: String?
+    @NSManaged var isDownloaded: NSNumber?
     
     override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
         super.init(entity: entity, insertIntoManagedObjectContext: context)
@@ -33,6 +34,8 @@ class Photo: NSManagedObject {
         
         self.imagePath = imagePath
         self.id = id
+        
+        self.isDownloaded = NSNumber(bool: false)
     }
     
     var posterImage: UIImage? {

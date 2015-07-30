@@ -83,6 +83,8 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
             sectionNameKeyPath: nil,
             cacheName: nil)
         
+        fetchedResultsController.delegate = self
+        
         return fetchedResultsController
         
     }()
@@ -199,7 +201,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
             }
             
             for indexPath in self.updatedIndexPaths {
-                // self.collectionView!.reloadItemsAtIndexPaths([indexPath])
+                self.collectionView!.reloadItemsAtIndexPaths([indexPath])
             }
             
             }, completion: nil)

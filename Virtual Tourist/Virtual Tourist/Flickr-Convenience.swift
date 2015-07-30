@@ -110,22 +110,9 @@ extension Flickr {
                     let image = UIImage(data: data)
                 
                     photo.posterImage = image
-
-                    let topController = self.getTopController()
+                    photo.isDownloaded = NSNumber(bool: true)
                     
-                    if let topNavController = topController as? UINavigationController {
-                        println(topNavController.visibleViewController)
-                        
-                        if topNavController.visibleViewController is PinDetailViewController {
-                            
-                            let currentVisiblePin = (topNavController.visibleViewController as! PinDetailViewController).pin
-                            
-                            if currentVisiblePin == pin {
-                                println("PINS MATCH!!")
-                                (topNavController.visibleViewController as! PinDetailViewController).collectionView?.reloadData()
-                            }
-                        }
-                    }
+                    self.saveContext()
                 }
                 else {
                     println("Error: \(error.localizedDescription)")
