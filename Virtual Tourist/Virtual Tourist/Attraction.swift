@@ -1,52 +1,47 @@
 //
-//  Pin.swift
+//  Attraction.swift
 //  Virtual Tourist
 //
-//  Created by KT on 7/22/15.
+//  Created by Kinan Turjman on 7/30/15.
 //  Copyright (c) 2015 Kinan Turman. All rights reserved.
 //
 
 import MapKit
 import CoreData
 
-func ==(lhs:Pin, rhs:Pin) -> Bool {
-    return lhs.index == rhs.index
-}
+@objc(Attraction)
 
-@objc(Pin)
-
-class Pin: NSManagedObject, Equatable {
+class Attraction: NSManagedObject {
     
     struct Keys {
         static let Latitude = "latitude"
         static let Longitude = "longitude"
-        static let Photos = "photos"
+        static let Name = "name"
     }
-
+    
     @NSManaged var latitude: Double
     @NSManaged var longitude: Double
-    @NSManaged var photos: [Photo]
-    @NSManaged var attractions: [Attraction]
-    @NSManaged var index: Int
+    @NSManaged var name: String
+    @NSManaged var pin: Pin?
     
     override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
         super.init(entity: entity, insertIntoManagedObjectContext: context)
     }
     
-    init(annotation: VTAnnotation, index: Int, context: NSManagedObjectContext){
+    init(annotation: ATAnnotation, context: NSManagedObjectContext){
         
-        let entity = NSEntityDescription.entityForName("Pin", inManagedObjectContext: context)!
+        let entity = NSEntityDescription.entityForName("Attraction", inManagedObjectContext: context)!
         
         super.init(entity: entity, insertIntoManagedObjectContext: context)
         
-        self.index = index
+        self.name = annotation.title
         self.latitude = annotation.coordinate.latitude
         self.longitude = annotation.coordinate.longitude
     }
     
-    var annotation: VTAnnotation {
+    var annotation: ATAnnotation {
         get {
-            return VTAnnotation(coordinate: CLLocationCoordinate2DMake(self.latitude, self.longitude), index: 0)
+            return ATAnnotation(coordinate: CLLocationCoordinate2DMake(self.latitude, self.longitude), title: name)
         }
     }
 }

@@ -24,6 +24,7 @@
 		68A845AA1B60237D007C1735 /* Flickr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A845A91B60237D007C1735 /* Flickr.swift */; };
 		68A845AC1B6024AF007C1735 /* Flickr-Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A845AB1B6024AF007C1735 /* Flickr-Constants.swift */; };
 		68F94A291B614AA5003C8161 /* Flickr-Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F94A281B614AA5003C8161 /* Flickr-Convenience.swift */; };
+		C94C644D1B6A850000E45D5C /* Attraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94C644C1B6A850000E45D5C /* Attraction.swift */; };
 		C9EB7C9D1B69F3460093C383 /* Tixik.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EB7C9C1B69F3460093C383 /* Tixik.swift */; };
 		C9EB7C9F1B6A11730093C383 /* ATAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EB7C9E1B6A11730093C383 /* ATAnnotation.swift */; };
 		C9FB8EB21B648E3C00DD945E /* CoreDataStackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FB8EB11B648E3C00DD945E /* CoreDataStackManager.swift */; };
@@ -62,6 +63,7 @@
 		68A845A91B60237D007C1735 /* Flickr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Flickr.swift; sourceTree = "<group>"; };
 		68A845AB1B6024AF007C1735 /* Flickr-Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Flickr-Constants.swift"; sourceTree = "<group>"; };
 		68F94A281B614AA5003C8161 /* Flickr-Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Flickr-Convenience.swift"; sourceTree = "<group>"; };
+		C94C644C1B6A850000E45D5C /* Attraction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Attraction.swift; sourceTree = "<group>"; };
 		C9EB7C9C1B69F3460093C383 /* Tixik.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tixik.swift; sourceTree = "<group>"; };
 		C9EB7C9E1B6A11730093C383 /* ATAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ATAnnotation.swift; sourceTree = "<group>"; };
 		C9FB8EB11B648E3C00DD945E /* CoreDataStackManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStackManager.swift; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 			isa = PBXGroup;
 			children = (
 				C9EB7C9C1B69F3460093C383 /* Tixik.swift */,
+				C94C644C1B6A850000E45D5C /* Attraction.swift */,
 			);
 			name = TIXIK;
 			sourceTree = "<group>";
@@ -285,6 +288,7 @@
 				68A845A41B602141007C1735 /* Pin.swift in Sources */,
 				C9FB8EB51B648F9800DD945E /* Model.xcdatamodeld in Sources */,
 				68A845AA1B60237D007C1735 /* Flickr.swift in Sources */,
+				C94C644D1B6A850000E45D5C /* Attraction.swift in Sources */,
 				C9FB8EB21B648E3C00DD945E /* CoreDataStackManager.swift in Sources */,
 				68A845991B5FEED8007C1735 /* VTAnnotation.swift in Sources */,
 				684043341B6199D200E32133 /* TaskCancelingCollectionViewCell.swift in Sources */,

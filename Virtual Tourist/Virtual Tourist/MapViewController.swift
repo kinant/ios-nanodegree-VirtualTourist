@@ -58,24 +58,29 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         for pin in pins {
             mapView.addAnnotation(pin.annotation)
             pin.annotation.index = pin.index
+            
+            // add attractions
+            for attraction in pin.attractions {
+                mapView.addAnnotation(attraction.annotation)
+            }
         }
     }
     
-    func addAttractionsAtLocation(location: CLLocationCoordinate2D){
+    func addAttractionsForPin(pin: Pin){
+        var location = pin.annotation.coordinate
         var attractions = Tixik.sharedInstance().taskForData(location)
-        
-        println("COUNT: \(attractions.count)")
         
         for attraction in attractions {
             
-            var name = attraction["name"] as! String
-            var x = attraction["x"] as! Double
-            var y = attraction["y"] as! Double
+            let name = attraction["name"] as! String
+            let x = attraction["x"] as! Double
+            let y = attraction["y"] as! Double
             
-            var newAnnot = VTAnnotation(coordinate: CLLocationCoordinate2DMake(x, y), index: -2)
+            let newAnnot = ATAnnotation(coordinate: CLLocationCoordinate2DMake(x, y), title: name)
+            let newAttraction = Attraction(annotation: newAnnot, context: sharedContext)
+            newAttraction.pin = pin
             mapView.addAnnotation(newAnnot)
         }
-        
     }
     
     func addPin(location: CLLocationCoordinate2D){
@@ -87,9 +92,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         pins.append(newPin)
         
-        addAttractionsAtLocation(location)
+        addAttractionsForPin(newPin)
         
+        println("in here!")
         CoreDataStackManager.sharedInstance().saveContext()
+        println("in here!")
         
         let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
         
@@ -98,9 +105,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             // let mainQueue = NSOperationQueue.
             dispatch_sync(queue){
                 Flickr.sharedInstance().downloadImagePathsForPin(newPin)
-            }
-            dispatch_sync(queue){
-                // Flickr.sharedInstance().fetchImagesForPin(newPin)
             }
         }
         pinCount++
@@ -123,6 +127,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     func mapView(mapView: MKMapView!, didAddAnnotationViews views: [AnyObject]!) {
+        /*
         for view in views {
             var annotationView = view as! MKAnnotationView
             var endFrame = annotationView.frame
@@ -133,14 +138,24 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 annotationView.frame = endFrame
             })
         }
+        */
     }
     
     func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
         
         if annotation is VTAnnotation {
+            println("is VT annotation")
             let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "myPin")
-            pinAnnotationView.draggable = true
+            // pinAnnotationView.draggable = true
             pinAnnotationView.canShowCallout = false
+            pinAnnotationView.animatesDrop = true
+            return pinAnnotationView
+        } else if annotation is ATAnnotation {
+            println("is AT annotation")
+            let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "atPin")
+            pinAnnotationView.pinColor = MKPinAnnotationColor.Purple
+            pinAnnotationView.canShowCallout = true
+            pinAnnotationView.animatesDrop = true
             return pinAnnotationView
         }
         return nil
@@ -148,16 +163,21 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         var pinDetailVC = (segue.destinationViewController as! PinDetailViewController)
-        pinDetailVC.pin = pins[selectedPinIndex]
+        
+        if selectedPinIndex >= 0  {
+            pinDetailVC.pin = pins[selectedPinIndex]
+        }
     }
     
     func mapView(mapView: MKMapView!, didSelectAnnotationView view: MKAnnotationView!) {
         println("annotation view selected!")
-        var selectedAnnotation = mapView.selectedAnnotations[0] as! VTAnnotation
-        selectedPinIndex = returnSelectedPinIndex(selectedAnnotation)
-        println("selected pin: \(selectedPinIndex)")
-        performSegueWithIdentifier("showPinDetail", sender: self)
-        mapView.deselectAnnotation(selectedAnnotation , animated: true)
+        
+        if let selectedAnnotation = mapView.selectedAnnotations[0] as? VTAnnotation {
+            selectedPinIndex = returnSelectedPinIndex(selectedAnnotation)
+            println("selected pin: \(selectedPinIndex)")
+            performSegueWithIdentifier("showPinDetail", sender: self)
+            mapView.deselectAnnotation(selectedAnnotation , animated: true)
+        }
     }
     
     func returnSelectedPinIndex(annotation: VTAnnotation) -> Int {
