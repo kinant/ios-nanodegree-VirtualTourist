@@ -61,6 +61,23 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    func addAttractionsAtLocation(location: CLLocationCoordinate2D){
+        var attractions = Tixik.sharedInstance().taskForData(location)
+        
+        println("COUNT: \(attractions.count)")
+        
+        for attraction in attractions {
+            
+            var name = attraction["name"] as! String
+            var x = attraction["x"] as! Double
+            var y = attraction["y"] as! Double
+            
+            var newAnnot = VTAnnotation(coordinate: CLLocationCoordinate2DMake(x, y), index: -2)
+            mapView.addAnnotation(newAnnot)
+        }
+        
+    }
+    
     func addPin(location: CLLocationCoordinate2D){
         let annotation = VTAnnotation(coordinate: location, index: pinCount)
         mapView.addAnnotation(annotation)
@@ -69,6 +86,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let newPin = Pin(annotation: annotation, index: annotation.index, context: sharedContext)
         
         pins.append(newPin)
+        
+        addAttractionsAtLocation(location)
         
         CoreDataStackManager.sharedInstance().saveContext()
         

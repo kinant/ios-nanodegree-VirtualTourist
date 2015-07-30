@@ -24,6 +24,8 @@
 		68A845AA1B60237D007C1735 /* Flickr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A845A91B60237D007C1735 /* Flickr.swift */; };
 		68A845AC1B6024AF007C1735 /* Flickr-Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A845AB1B6024AF007C1735 /* Flickr-Constants.swift */; };
 		68F94A291B614AA5003C8161 /* Flickr-Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F94A281B614AA5003C8161 /* Flickr-Convenience.swift */; };
+		C9EB7C9D1B69F3460093C383 /* Tixik.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EB7C9C1B69F3460093C383 /* Tixik.swift */; };
+		C9EB7C9F1B6A11730093C383 /* ATAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EB7C9E1B6A11730093C383 /* ATAnnotation.swift */; };
 		C9FB8EB21B648E3C00DD945E /* CoreDataStackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FB8EB11B648E3C00DD945E /* CoreDataStackManager.swift */; };
 		C9FB8EB51B648F9800DD945E /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C9FB8EB31B648F9800DD945E /* Model.xcdatamodeld */; };
 /* End PBXBuildFile section */
@@ -60,6 +62,8 @@
 		68A845A91B60237D007C1735 /* Flickr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Flickr.swift; sourceTree = "<group>"; };
 		68A845AB1B6024AF007C1735 /* Flickr-Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Flickr-Constants.swift"; sourceTree = "<group>"; };
 		68F94A281B614AA5003C8161 /* Flickr-Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Flickr-Convenience.swift"; sourceTree = "<group>"; };
+		C9EB7C9C1B69F3460093C383 /* Tixik.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tixik.swift; sourceTree = "<group>"; };
+		C9EB7C9E1B6A11730093C383 /* ATAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ATAnnotation.swift; sourceTree = "<group>"; };
 		C9FB8EB11B648E3C00DD945E /* CoreDataStackManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStackManager.swift; sourceTree = "<group>"; };
 		C9FB8EB41B648F9800DD945E /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -108,6 +112,7 @@
 				68A845951B5FEED8007C1735 /* PinDetailViewController.swift */,
 				684043331B6199D200E32133 /* TaskCancelingCollectionViewCell.swift */,
 				68A845961B5FEED8007C1735 /* VTAnnotation.swift */,
+				C9EB7C9E1B6A11730093C383 /* ATAnnotation.swift */,
 				68A845901B5FEEC2007C1735 /* AppDelegate.swift */,
 				68A845921B5FEECA007C1735 /* CustomCollectionViewCell.swift */,
 				68A845771B5FEE85007C1735 /* Images.xcassets */,
@@ -147,6 +152,7 @@
 		68A8459F1B602062007C1735 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				C9EB7C9B1B69F3270093C383 /* TIXIK */,
 				C9FB8EB31B648F9800DD945E /* Model.xcdatamodeld */,
 				68A845A21B602116007C1735 /* Flicker */,
 			);
@@ -165,6 +171,14 @@
 				68A845AB1B6024AF007C1735 /* Flickr-Constants.swift */,
 			);
 			name = Flicker;
+			sourceTree = "<group>";
+		};
+		C9EB7C9B1B69F3270093C383 /* TIXIK */ = {
+			isa = PBXGroup;
+			children = (
+				C9EB7C9C1B69F3460093C383 /* Tixik.swift */,
+			);
+			name = TIXIK;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -280,8 +294,10 @@
 				68A8459D1B5FF482007C1735 /* VTConstants.swift in Sources */,
 				68F94A291B614AA5003C8161 /* Flickr-Convenience.swift in Sources */,
 				68A845971B5FEED8007C1735 /* MapViewController.swift in Sources */,
+				C9EB7C9F1B6A11730093C383 /* ATAnnotation.swift in Sources */,
 				68A845931B5FEECA007C1735 /* CustomCollectionViewCell.swift in Sources */,
 				68A845AC1B6024AF007C1735 /* Flickr-Constants.swift in Sources */,
+				C9EB7C9D1B69F3460093C383 /* Tixik.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
