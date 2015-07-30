@@ -37,6 +37,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         for pin in pins {
             println("\(pin.annotation.coordinate.latitude)")
+            println("\(pin.annotation.coordinate.longitude)")
         }
         
         addPins()
