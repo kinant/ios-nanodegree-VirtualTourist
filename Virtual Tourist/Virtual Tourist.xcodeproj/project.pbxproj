@@ -25,6 +25,7 @@
 		68A845AC1B6024AF007C1735 /* Flickr-Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A845AB1B6024AF007C1735 /* Flickr-Constants.swift */; };
 		68F94A291B614AA5003C8161 /* Flickr-Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F94A281B614AA5003C8161 /* Flickr-Convenience.swift */; };
 		C94C644D1B6A850000E45D5C /* Attraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94C644C1B6A850000E45D5C /* Attraction.swift */; };
+		C94C644F1B6AA4AC00E45D5C /* TODO.txt in Resources */ = {isa = PBXBuildFile; fileRef = C94C644E1B6AA4AC00E45D5C /* TODO.txt */; };
 		C9EB7C9D1B69F3460093C383 /* Tixik.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EB7C9C1B69F3460093C383 /* Tixik.swift */; };
 		C9EB7C9F1B6A11730093C383 /* ATAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EB7C9E1B6A11730093C383 /* ATAnnotation.swift */; };
 		C9FB8EB21B648E3C00DD945E /* CoreDataStackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FB8EB11B648E3C00DD945E /* CoreDataStackManager.swift */; };
@@ -64,6 +65,7 @@
 		68A845AB1B6024AF007C1735 /* Flickr-Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Flickr-Constants.swift"; sourceTree = "<group>"; };
 		68F94A281B614AA5003C8161 /* Flickr-Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Flickr-Convenience.swift"; sourceTree = "<group>"; };
 		C94C644C1B6A850000E45D5C /* Attraction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Attraction.swift; sourceTree = "<group>"; };
+		C94C644E1B6AA4AC00E45D5C /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = "<group>"; };
 		C9EB7C9C1B69F3460093C383 /* Tixik.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tixik.swift; sourceTree = "<group>"; };
 		C9EB7C9E1B6A11730093C383 /* ATAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ATAnnotation.swift; sourceTree = "<group>"; };
 		C9FB8EB11B648E3C00DD945E /* CoreDataStackManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStackManager.swift; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 				68A845791B5FEE85007C1735 /* LaunchScreen.xib */,
 				68A8456E1B5FEE85007C1735 /* Supporting Files */,
 				68A8459C1B5FF482007C1735 /* VTConstants.swift */,
+				C94C644E1B6AA4AC00E45D5C /* TODO.txt */,
 			);
 			path = "Virtual Tourist";
 			sourceTree = "<group>";
@@ -264,6 +267,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C94C644F1B6AA4AC00E45D5C /* TODO.txt in Resources */,
 				68A8459B1B5FEEE4007C1735 /* Main.storyboard in Resources */,
 				68A8457B1B5FEE85007C1735 /* LaunchScreen.xib in Resources */,
 				68A845781B5FEE85007C1735 /* Images.xcassets in Resources */,

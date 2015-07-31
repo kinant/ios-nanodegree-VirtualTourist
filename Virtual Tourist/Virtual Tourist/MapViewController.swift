@@ -148,14 +148,16 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "myPin")
             // pinAnnotationView.draggable = true
             pinAnnotationView.canShowCallout = false
-            pinAnnotationView.animatesDrop = true
+            // pinAnnotationView.animatesDrop = true
+            pinAnnotationView.image = UIImage(named:"pin2")
             return pinAnnotationView
         } else if annotation is ATAnnotation {
             println("is AT annotation")
             let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "atPin")
             pinAnnotationView.pinColor = MKPinAnnotationColor.Purple
             pinAnnotationView.canShowCallout = true
-            pinAnnotationView.animatesDrop = true
+            // pinAnnotationView.animatesDrop = true
+            pinAnnotationView.image = UIImage(named:"pin")
             return pinAnnotationView
         }
         return nil

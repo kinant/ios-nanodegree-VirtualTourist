@@ -72,6 +72,10 @@ extension Flickr {
     }
     
     func downloadImagePathsForPin(pin: Pin){
+        
+        println("in download image paths for pin")
+        println("count: \(pin.photos.count)")
+        
         if pin.photos.isEmpty {
             Flickr.sharedInstance().searchPhotosByLatLon(pin, completionHandler: { (result, error) -> Void in
                 if let photos = result {
@@ -96,28 +100,32 @@ extension Flickr {
         println("attempting to download \(pin.photos.count) images!")
         
         for photo in pin.photos {
-            let imageUrl = photo.imagePath!
-            let url = NSURL(string: imageUrl)!
-            let request = NSURLRequest(URL: url)
-        
-            println("downloading image at: \(imageUrl)")
-            // let request = NSUrL
-            let mainQueue = NSOperationQueue.mainQueue()
             
-            NSURLConnection.sendAsynchronousRequest(request, queue: mainQueue, completionHandler: { (response, data, error) -> Void in
-                if error == nil {
-                    // Convert the downloaded data in to a UIImage object
-                    let image = UIImage(data: data)
+            if photo.posterImage == nil {
+            
+                let imageUrl = photo.imagePath!
+                let url = NSURL(string: imageUrl)!
+                let request = NSURLRequest(URL: url)
+        
+                println("downloading image at: \(imageUrl)")
+                // let request = NSUrL
+                let mainQueue = NSOperationQueue.mainQueue()
+            
+                NSURLConnection.sendAsynchronousRequest(request, queue: mainQueue, completionHandler: { (response, data, error) -> Void in
+                    if error == nil {
+                        // Convert the downloaded data in to a UIImage object
+                        let image = UIImage(data: data)
                 
-                    photo.posterImage = image
-                    photo.isDownloaded = NSNumber(bool: true)
+                        photo.posterImage = image
+                        photo.isDownloaded = NSNumber(bool: true)
                     
-                    self.saveContext()
-                }
-                else {
-                    println("Error: \(error.localizedDescription)")
-                }
-            })
+                        self.saveContext()
+                    }
+                    else {
+                        println("Error: \(error.localizedDescription)")
+                    }
+                })
+            }
         }
     }
 }

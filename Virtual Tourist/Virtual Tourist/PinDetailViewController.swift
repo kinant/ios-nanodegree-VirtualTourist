@@ -19,6 +19,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     var updatedIndexPaths: [NSIndexPath]!
     
     @IBOutlet weak var collectionView: UICollectionView?
+    @IBOutlet weak var bottomButton: UIButton!
     
     var pin: Pin!
     
@@ -29,12 +30,18 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 20, left: 10, bottom: 10, right: 10)
-        layout.itemSize = CGSize(width: 90, height: 90)
+        
+        // let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        // layout.sectionInset = UIEdgeInsets(top: 20, left: 10, bottom: 10, right: 10)
+        // layout.itemSize = CGSize(width: 90, height: 90)
+        
         collectionView!.backgroundColor = UIColor.whiteColor()
+        collectionView!.allowsMultipleSelection = true
+        
         self.view.addSubview(collectionView!)
         
+        
+         updateBottomButton()
         // Step 2: Perform the fetch
         fetchedResultsController.performFetch(nil)
     }
@@ -43,6 +50,13 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         super.viewDidAppear(animated)
         
         printAllPinPhotos()
+        
+        Flickr.sharedInstance().fetchImagesForPin(pin)
+        
+        if pin.photos.count == 0 {
+            fetchCollection()
+        }
+        
         /*
         if pin.photos.isEmpty {
             
@@ -77,7 +91,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         layout.minimumLineSpacing = 5
         layout.minimumInteritemSpacing = 5
         
-        let width = floor(self.collectionView!.frame.size.width/4)
+        let width = floor(self.collectionView!.frame.size.width/3.5)
         layout.itemSize = CGSize(width: width, height: width)
         collectionView!.collectionViewLayout = layout
     }
@@ -102,6 +116,9 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         
     }()
 
+    func fetchCollection(){
+        Flickr.sharedInstance().downloadImagePathsForPin(pin)
+    }
     
     func printAllPinPhotos(){
         for var i = 0; i < pin.photos.count; i++ {
@@ -145,7 +162,8 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         }
         
         // Then reconfigure the cell
-        configureCell(cell, atIndexPath: indexPath)
+         configureCell(cell, atIndexPath: indexPath)
+         updateBottomButton()
     }
     
     func controllerWillChangeContent(controller: NSFetchedResultsController) {
@@ -203,21 +221,23 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         
         println("in controllerDidChangeContent. changes.count: \(insertedIndexPaths.count + deletedIndexPaths.count)")
         
-        collectionView!.performBatchUpdates({() -> Void in
+        dispatch_async(dispatch_get_main_queue()){
+            self.collectionView!.performBatchUpdates({() -> Void in
             
-            for indexPath in self.insertedIndexPaths {
-                self.collectionView!.insertItemsAtIndexPaths([indexPath])
-            }
+                for indexPath in self.insertedIndexPaths {
+                    self.collectionView!.insertItemsAtIndexPaths([indexPath])
+                }
             
-            for indexPath in self.deletedIndexPaths {
-                // self.collectionView!.deleteItemsAtIndexPaths([indexPath])
-            }
+                for indexPath in self.deletedIndexPaths {
+                    self.collectionView!.deleteItemsAtIndexPaths([indexPath])
+                }
             
-            for indexPath in self.updatedIndexPaths {
-                self.collectionView!.reloadItemsAtIndexPaths([indexPath])
-            }
+                for indexPath in self.updatedIndexPaths {
+                    self.collectionView!.reloadItemsAtIndexPaths([indexPath])
+                }
             
             }, completion: nil)
+        }
     }
     
     func configureCell(cell: CustomCollectionViewCell, atIndexPath indexPath: NSIndexPath){
@@ -226,6 +246,12 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         
         cell.title?.text = " "
         cell.image!.image = nil
+        
+        if let index = find(selectedIndexes, indexPath) {
+            cell.image!.alpha = 0.05
+        } else {
+            cell.image!.alpha = 1.0
+        }
         
         var posterImage = UIImage(named: "posterPlaceHoldr")
         
@@ -238,6 +264,63 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         }
         
         cell.image!.image = posterImage
+    }
+    
+    @IBAction func buttonButtonClicked() {
+        
+        if selectedIndexes.isEmpty {
+            deleteAllColors()
+        } else {
+            deleteSelectedColors()
+        }
+        
+        saveContext()
+    }
+    
+    func deleteAllColors() {
+        
+        for photo in fetchedResultsController.fetchedObjects as! [Photo] {
+            photo.posterImage = nil
+            sharedContext.deleteObject(photo)
+        }
+        
+        println("deleted everything!")
+        println("count: \(pin.photos.count)")
+        pin.photos.removeAll()
+        self.collectionView?.reloadData()
+        // pin.photos = nil
+        
+        fetchCollection()
+    }
+    
+    func deleteSelectedColors() {
+        var colorsToDelete = [Photo]()
+        
+        for indexPath in selectedIndexes {
+            colorsToDelete.append(fetchedResultsController.objectAtIndexPath(indexPath) as! Photo)
+        }
+        
+        for photo in colorsToDelete {
+            photo.posterImage = nil
+            sharedContext.deleteObject(photo)
+        }
+        
+        println("deleted items")
+        println("count: \(pin.photos.count)")
+        
+        if pin.photos.count == 0 {
+            fetchCollection()
+        }
+        
+        selectedIndexes = [NSIndexPath]()
+    }
+    
+    func updateBottomButton() {
+        if selectedIndexes.count > 0 {
+            bottomButton.setTitle("Delete Selected", forState: UIControlState.Normal)
+        } else {
+            bottomButton.setTitle("New Collection", forState: UIControlState.Normal)
+        }
     }
     
     /*
