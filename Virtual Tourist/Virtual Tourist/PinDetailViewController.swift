@@ -23,6 +23,8 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     
     var pin: Pin!
     
+    var deleteAllPressed = false
+    
     lazy var sharedContext = {
         CoreDataStackManager.sharedInstance().managedObjectContext!
         }()
@@ -56,6 +58,8 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         if pin.photos.count == 0 {
             fetchCollection()
         }
+        
+        bottomButton.enabled = false
         
         /*
         if pin.photos.isEmpty {
@@ -117,6 +121,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     }()
 
     func fetchCollection(){
+        println("fetching new collection...")
         Flickr.sharedInstance().downloadImagePathsForPin(pin)
     }
     
@@ -229,6 +234,8 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
                 }
             
                 for indexPath in self.deletedIndexPaths {
+                    println("deleted")
+                    println("count: \(self.pin.photos.count)")
                     self.collectionView!.deleteItemsAtIndexPaths([indexPath])
                 }
             
@@ -236,6 +243,13 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
                     self.collectionView!.reloadItemsAtIndexPaths([indexPath])
                 }
             
+                if self.pin.photos.count == 0 && self.deleteAllPressed {
+                    self.fetchCollection()
+                    self.deleteAllPressed = false
+                }
+                self.updateBottomButton()
+                self.bottomButton.enabled = self.allImagesLoaded()
+                
             }, completion: nil)
         }
     }
@@ -284,13 +298,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
             sharedContext.deleteObject(photo)
         }
         
-        println("deleted everything!")
-        println("count: \(pin.photos.count)")
-        pin.photos.removeAll()
-        self.collectionView?.reloadData()
-        // pin.photos = nil
-        
-        fetchCollection()
+        deleteAllPressed = true
     }
     
     func deleteSelectedColors() {
@@ -305,13 +313,6 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
             sharedContext.deleteObject(photo)
         }
         
-        println("deleted items")
-        println("count: \(pin.photos.count)")
-        
-        if pin.photos.count == 0 {
-            fetchCollection()
-        }
-        
         selectedIndexes = [NSIndexPath]()
     }
     
@@ -321,6 +322,16 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         } else {
             bottomButton.setTitle("New Collection", forState: UIControlState.Normal)
         }
+    }
+    
+    func allImagesLoaded() -> Bool {
+        for photo in pin.photos {
+            
+            if photo.isDownloaded == false {
+                return false
+            }
+        }
+        return true
     }
     
     /*
