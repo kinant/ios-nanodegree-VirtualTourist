@@ -57,8 +57,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     func addPins(){
         for pin in pins {
             mapView.addAnnotation(pin.annotation)
-            pin.annotation.index = pin.index
-            
             // add attractions
             for attraction in pin.attractions {
                 mapView.addAnnotation(attraction.annotation)
@@ -88,7 +86,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         mapView.addAnnotation(annotation)
         setCenterOfMapToLocation(location)
         
-        let newPin = Pin(annotation: annotation, index: annotation.index, context: sharedContext)
+        let newPin = Pin(annotation: annotation, context: sharedContext)
         
         pins.append(newPin)
         
@@ -185,11 +183,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     func returnSelectedPinIndex(annotation: VTAnnotation) -> Int {
         
         println("pin count: \(pins.count)")
-        for pin in pins {
-            println("pin index: \(pin.index)")
-            
-            if pin.annotation == annotation {
-                return pin.index
+        for var i = 0; i < pins.count; i++ {
+            // println("pin index: \(pin.index)")
+            if pins[i].annotation == annotation {
+                return i
             }
         }
         return -1
