@@ -46,4 +46,10 @@ class Photo: NSManagedObject {
             Flickr.Caches.imageCache.storeImage(newValue, withIdentifier: id! + ".jpg")
         }
     }
+    
+    override func prepareForDeletion() {
+        println("photo will prepare to delete!!")
+        println("id: \(self.id)")
+        self.posterImage = nil
+    }
 }

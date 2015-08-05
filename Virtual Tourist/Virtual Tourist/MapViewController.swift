@@ -17,6 +17,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
     
+    var inDeleteMode = false
+    
     lazy var sharedContext = {
         CoreDataStackManager.sharedInstance().managedObjectContext!
         }()
@@ -173,11 +175,23 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         println("annotation view selected!")
         
         if let selectedAnnotation = mapView.selectedAnnotations[0] as? VTAnnotation {
+            
             selectedPinIndex = returnSelectedPinIndex(selectedAnnotation)
-            println("selected pin: \(selectedPinIndex)")
-            performSegueWithIdentifier("showPinDetail", sender: self)
+            
+            if inDeleteMode {
+                println("will attempt to delete pin!")
+                deletePin(pins[selectedPinIndex])
+            } else {
+                performSegueWithIdentifier("showPinDetail", sender: self)
+            }
             mapView.deselectAnnotation(selectedAnnotation , animated: true)
         }
+    }
+    
+    func deletePin(pin: Pin) {
+        mapView.removeAnnotation(pin.annotation)
+        sharedContext.deleteObject(pin)
+        sharedContext.save(nil)
     }
     
     func returnSelectedPinIndex(annotation: VTAnnotation) -> Int {
@@ -194,6 +208,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     func mapView(mapView: MKMapView!, didDeselectAnnotationView view: MKAnnotationView!) {
         println("deselect!")
+    }
+    
+    
+    @IBAction func editButtonPressed(sender: AnyObject) {
+        inDeleteMode = true
     }
     
     override func didReceiveMemoryWarning() {

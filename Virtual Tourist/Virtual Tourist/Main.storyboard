@@ -28,7 +28,13 @@
                             <constraint firstItem="Uhv-N8-y6R" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="nyC-1S-cn1"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Virtual Tourist" id="lEw-Rt-sEK"/>
+                    <navigationItem key="navigationItem" title="Virtual Tourist" id="lEw-Rt-sEK">
+                        <barButtonItem key="rightBarButtonItem" title="Edit" id="n8L-Ah-zjD">
+                            <connections>
+                                <action selector="editButtonPressed:" destination="vXZ-lx-hvc" id="I8q-jM-QjA"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="mapView" destination="Uhv-N8-y6R" id="Nun-Gi-2w7"/>
                         <segue destination="sJR-0Y-2gd" kind="show" identifier="showPinDetail" id="Q71-A4-nnn"/>
@@ -78,7 +84,7 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hD9-v3-zwt">
                                                     <rect key="frame" x="39" y="49" width="42" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <activityIndicatorView opaque="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="vyj-Lo-kjj">
