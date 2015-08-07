@@ -88,7 +88,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     func addPin(location: CLLocationCoordinate2D){
         let annotation = VTAnnotation(coordinate: location, index: pinCount)
         mapView.addAnnotation(annotation)
-        setCenterOfMapToLocation(location)
+        // setCenterOfMapToLocation(location)
         
         let newPin = Pin(annotation: annotation, context: sharedContext)
         

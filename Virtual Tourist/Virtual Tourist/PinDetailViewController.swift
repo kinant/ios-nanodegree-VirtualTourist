@@ -10,10 +10,9 @@ import UIKit
 import CoreData
 
 class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, NSFetchedResultsControllerDelegate {
-
     
-    var selectedIndexes = [NSIndexPath]()
     // Keep the changes. We will keep track of insertions, deletions, and updates.
+    var selectedIndexes = [NSIndexPath]()
     var insertedIndexPaths: [NSIndexPath]!
     var deletedIndexPaths: [NSIndexPath]!
     var updatedIndexPaths: [NSIndexPath]!
@@ -51,7 +50,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        printAllPinPhotos()
+        // printAllPinPhotos()
         
         Flickr.sharedInstance().fetchImagesForPin(pin)
         
@@ -60,31 +59,6 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         }
         
         bottomButton.enabled = false
-        
-        /*
-        if pin.photos.isEmpty {
-            
-            Flickr.sharedInstance().searchPhotosByLatLon(pin, completionHandler: { (result, error) -> Void in
-                if let photos = result {
-                    for photo in photos {
-                        if let imageURL = photo["url_m"] as? String {
-                            let newPhoto = Photo(imagePath: imageURL, context: self.sharedContext)
-                            println("new photo: " + newPhoto.imagePath!)
-                            newPhoto.pin = self.pin
-                        }
-                    }
-                }
-                
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.collectionView?.reloadData()
-                }
-                
-                self.printAllPinPhotos()
-                self.saveContext()
-                
-            })
-        }
-        */
     }
     
     override func viewDidLayoutSubviews() {
@@ -123,12 +97,6 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     func fetchCollection(){
         println("fetching new collection...")
         Flickr.sharedInstance().downloadImagePathsForPin(pin)
-    }
-    
-    func printAllPinPhotos(){
-        for var i = 0; i < pin.photos.count; i++ {
-            println("printing pin at \(i): \(pin.photos[i].imagePath)")
-        }
     }
     
     func saveContext() {
@@ -282,9 +250,17 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     
     @IBAction func buttonButtonClicked() {
         
+        println("selected indexes: \(selectedIndexes.isEmpty)")
+        
         if selectedIndexes.isEmpty {
-            deleteAllColors()
+            println("deleting some...")
+            if pin.photos.count == 0 {
+                fetchCollection()
+            } else {
+                deleteAllColors()
+            }
         } else {
+            println("deleting selected...")
             deleteSelectedColors()
         }
         
