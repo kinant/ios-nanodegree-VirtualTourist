@@ -38,12 +38,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         pins = fetchAllPins()
         
         pinCount = pins.count
-        
+        /*
         for pin in pins {
             println("\(pin.annotation.coordinate.latitude)")
             println("\(pin.annotation.coordinate.longitude)")
         }
-        
+        */
         addPins()
     }
     
@@ -96,19 +96,15 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         addAttractionsForPin(newPin)
         
-        println("in here!")
         CoreDataStackManager.sharedInstance().saveContext()
-        println("in here!")
         
         let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
         
-        dispatch_async(dispatch_get_main_queue()){
-        // prefetch the images
-            // let mainQueue = NSOperationQueue.
-            dispatch_sync(queue){
+        //dispatch_async(dispatch_get_main_queue()){
+            //dispatch_sync(queue){
                 Flickr.sharedInstance().downloadImagePathsForPin(newPin)
-            }
-        }
+            //}
+        //}
         pinCount++
     }
     

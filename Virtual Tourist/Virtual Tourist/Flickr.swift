@@ -13,10 +13,7 @@ class Flickr: NSObject {
     typealias CompletionHander = (result: AnyObject!, error: NSError?) -> Void
     
     var session: NSURLSession
-    
     var dataPhotosArray = [[String: AnyObject]]()
-    
-    //
     
     override init() {
         session = NSURLSession.sharedSession()
@@ -25,7 +22,7 @@ class Flickr: NSObject {
     
     lazy var sharedContext = {
         CoreDataStackManager.sharedInstance().managedObjectContext!
-        }()
+    }()
     
     // MARK: - All purpose task method for data
     //func getImageFromFlickrBySearch(methodArguments: [String : AnyObject]) {
@@ -41,8 +38,6 @@ class Flickr: NSObject {
                 
                 var parsingError: NSError? = nil
                 let parsedResult = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
-                
-                // println(parsedResult)
                 
                 if let photosDictionary = parsedResult.valueForKey("photos") as? [String:AnyObject] {
                     
@@ -83,13 +78,9 @@ class Flickr: NSObject {
             if let error = downloadError {
                 println("Could not complete the request \(error)")
             } else {
+                
                 var parsingError: NSError? = nil
                 let parsedResult = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
-                
-                println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-                println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-                println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-                println("parsed result: \(parsedResult)")
                 
                 if let photosDictionary = parsedResult.valueForKey("photos") as? [String:AnyObject] {
                     
@@ -107,9 +98,6 @@ class Flickr: NSObject {
                             println("Cant find key 'photo' in \(photosDictionary)")
                         }
                     } else {
-                        dispatch_async(dispatch_get_main_queue(), {
-                            
-                        })
                     }
                 } else {
                     println("Cant find key 'photos' in \(parsedResult)")
@@ -122,6 +110,7 @@ class Flickr: NSObject {
         return task
     }
     
+    /*
     // MARK: - All purpose task method for images
     func taskForImageWithSize(imageUrlString: String, completionHandler: (imageData: NSData?, error: NSError?) ->  Void) {
         let imageURL = NSURL(string: imageUrlString)
@@ -142,7 +131,7 @@ class Flickr: NSObject {
             }
         }
     }
-    
+    */
     // MARK: - Helpers
     
     // Try to make a better error, based on the status_message from TheMovieDB. If we cant then return the previous error
@@ -193,7 +182,6 @@ class Flickr: NSObject {
     }
     
     // MARK: - Shared Image Cache
-    
     struct Caches {
         static let imageCache = ImageCache()
     }
