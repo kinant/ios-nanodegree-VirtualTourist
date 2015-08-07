@@ -31,7 +31,7 @@
                     <navigationItem key="navigationItem" title="Virtual Tourist" id="lEw-Rt-sEK">
                         <barButtonItem key="rightBarButtonItem" title="Edit" id="n8L-Ah-zjD">
                             <connections>
-                                <action selector="editButtonPressed:" destination="vXZ-lx-hvc" id="I8q-jM-QjA"/>
+                                <action selector="editButtonPressed:" destination="vXZ-lx-hvc" id="QqH-pJ-VqU"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

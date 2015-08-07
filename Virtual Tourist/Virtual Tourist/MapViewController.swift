@@ -223,9 +223,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         println("deselect!")
     }
     
-    
-    @IBAction func editButtonPressed(sender: AnyObject) {
-        inDeleteMode = true
+    @IBAction func editButtonPressed(sender: UIBarButtonItem) {
+        if sender.title == "Edit" {
+            inDeleteMode = true
+            sender.title = "Cancel"
+        } else {
+            inDeleteMode = false
+            sender.title = "Edit"
+        }
     }
     
     override func didReceiveMemoryWarning() {
