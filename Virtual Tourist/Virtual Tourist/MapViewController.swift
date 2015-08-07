@@ -15,6 +15,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     var pinCount = 0
     var selectedPinIndex = 0
     
+    @IBOutlet weak var bottomView: UIView!
+    @IBOutlet weak var mapViewSuperView: UIView!
     @IBOutlet weak var mapView: MKMapView!
     
     var inDeleteMode = false
@@ -227,9 +229,13 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         if sender.title == "Edit" {
             inDeleteMode = true
             sender.title = "Cancel"
+            bottomView.hidden = false
+            // mapViewSuperView.frame.origin.y -= bottomView.frame.height
         } else {
             inDeleteMode = false
             sender.title = "Edit"
+            bottomView.hidden = true
+            // mapViewSuperView.frame.origin.y += bottomView.frame.height
         }
     }
     
