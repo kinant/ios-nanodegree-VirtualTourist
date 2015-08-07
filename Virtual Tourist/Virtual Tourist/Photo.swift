@@ -43,6 +43,8 @@ class Photo: NSManagedObject {
             return Flickr.Caches.imageCache.imageWithIdentifier(id! + ".jpg")
         }
         set {
+            println("before: \(self.id)")
+            println("newvalue: \(newValue)")
             Flickr.Caches.imageCache.storeImage(newValue, withIdentifier: id! + ".jpg")
         }
     }
@@ -50,6 +52,9 @@ class Photo: NSManagedObject {
     override func prepareForDeletion() {
         println("photo will prepare to delete!!")
         println("id: \(self.id)")
-        self.posterImage = nil
+        
+        if self.isDownloaded == true {
+            self.posterImage = nil
+        }
     }
 }

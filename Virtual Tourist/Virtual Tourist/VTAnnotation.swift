@@ -12,7 +12,6 @@ import MapKit
 func ==(lhs: VTAnnotation, rhs: VTAnnotation) -> Bool {
     return (lhs.coordinate.latitude == rhs.coordinate.latitude
         && lhs.coordinate.longitude == rhs.coordinate.longitude)
-    
 }
 
 class VTAnnotation: NSObject, MKAnnotation, Equatable {

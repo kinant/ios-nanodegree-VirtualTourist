@@ -142,7 +142,6 @@ class Flickr: NSObject {
             }
         }
     }
-
     
     // MARK: - Helpers
     

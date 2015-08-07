@@ -189,9 +189,22 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     func deletePin(pin: Pin) {
-        mapView.removeAnnotation(pin.annotation)
+        mapView.removeAnnotation(mapView.selectedAnnotations[0] as? VTAnnotation)
+        deleteAttractionsForPin(pin)
         sharedContext.deleteObject(pin)
         sharedContext.save(nil)
+    }
+    
+    func deleteAttractionsForPin(pin: Pin){
+        
+        for var i = 0; i < pin.attractions.count; i++ {
+            for var j = 0; j < mapView.annotations.count; j++ {
+                
+                if pin.attractions[i].annotation == (mapView.annotations[j] as? ATAnnotation) {
+                    mapView.removeAnnotation(mapView.annotations[j] as? ATAnnotation)
+                }
+            }
+        }
     }
     
     func returnSelectedPinIndex(annotation: VTAnnotation) -> Int {
