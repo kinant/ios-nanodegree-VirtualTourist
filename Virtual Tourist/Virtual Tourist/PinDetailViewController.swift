@@ -250,17 +250,17 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     
     @IBAction func buttonButtonClicked() {
         
-        println("selected indexes: \(selectedIndexes.isEmpty)")
+        //println("selected indexes: \(selectedIndexes.isEmpty)")
         
         if selectedIndexes.isEmpty {
-            println("deleting some...")
+            //println("deleting some...")
             if pin.photos.count == 0 {
                 fetchCollection()
             } else {
                 deleteAllColors()
             }
         } else {
-            println("deleting selected...")
+            //println("deleting selected...")
             deleteSelectedColors()
         }
         

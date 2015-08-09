@@ -22,6 +22,11 @@ class Tixik: NSObject, NSXMLParserDelegate {
     var gps_y = [Double]()
     
     func taskForData(coordinate: CLLocationCoordinate2D) -> [[String: AnyObject]] {
+        
+        names = []
+        gps_x = []
+        gps_y = []
+        
         let url = "http://www.tixik.com/api/nearby?lat=\(coordinate.latitude)&lng=\(coordinate.longitude)&limit=5&key=demo"
         var urlToSend: NSURL = NSURL(string: url)!
         // Parse the XML

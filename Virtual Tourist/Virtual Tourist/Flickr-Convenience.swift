@@ -55,6 +55,7 @@ extension Flickr {
                             
                             if let imageID = photo["id"] as? String {
                                 let newPhoto = Photo(imagePath: imageURL, id: imageID, context: self.sharedContext)
+                                println("created new photo with id \(imageID)")
                                 newPhoto.pin = pin
                             }
                         }
@@ -82,10 +83,12 @@ extension Flickr {
                     if error == nil {
                         // Convert the downloaded data in to a UIImage object
                         let image = UIImage(data: data)
-                
-                        photo.posterImage = image
-                        photo.isDownloaded = NSNumber(bool: true)
-                    
+                        
+                        // make sure the user hasn't deleted the pin while the image was downloading
+                        if !photo.isPreparingToDelete {
+                            photo.posterImage = image
+                            photo.isDownloaded = NSNumber(bool: true)
+                        }
                         self.saveContext()
                     }
                     else {

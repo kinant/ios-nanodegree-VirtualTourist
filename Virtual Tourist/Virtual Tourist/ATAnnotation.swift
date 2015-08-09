@@ -10,6 +10,9 @@ import UIKit
 import MapKit
 
 func ==(lhs: ATAnnotation, rhs: ATAnnotation) -> Bool {
+    println(lhs.coordinate.latitude == rhs.coordinate.latitude
+        && lhs.coordinate.longitude == rhs.coordinate.longitude)
+    
     return (lhs.coordinate.latitude == rhs.coordinate.latitude
         && lhs.coordinate.longitude == rhs.coordinate.longitude)
 }

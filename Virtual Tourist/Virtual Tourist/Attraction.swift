@@ -44,4 +44,8 @@ class Attraction: NSManagedObject {
             return ATAnnotation(coordinate: CLLocationCoordinate2DMake(self.latitude, self.longitude), title: name)
         }
     }
+    
+    override func prepareForDeletion() {
+        println("annotation deleted!!!")
+    }
 }

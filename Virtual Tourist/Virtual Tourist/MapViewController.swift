@@ -197,9 +197,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         for var i = 0; i < pin.attractions.count; i++ {
             for var j = 0; j < mapView.annotations.count; j++ {
-                
-                if pin.attractions[i].annotation == (mapView.annotations[j] as? ATAnnotation) {
-                    mapView.removeAnnotation(mapView.annotations[j] as? ATAnnotation)
+
+                if let attraction = mapView.annotations[j] as? ATAnnotation {
+                    if pin.attractions[i].annotation == attraction {
+                        mapView.removeAnnotation(attraction)
+                    }
                 }
             }
         }

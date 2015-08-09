@@ -22,6 +22,10 @@ class Photo: NSManagedObject {
     @NSManaged var id: String?
     @NSManaged var isDownloaded: NSNumber?
     
+    // this variable is used as a flag to mark if the photo is in the process of being deleted
+    // that way, we do not try to use it (used in async photo data download)
+    var isPreparingToDelete = false
+    
     override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
         super.init(entity: entity, insertIntoManagedObjectContext: context)
     }
@@ -53,8 +57,13 @@ class Photo: NSManagedObject {
         println("photo will prepare to delete!!")
         println("id: \(self.id)")
         
+        // set the flag
+        self.isPreparingToDelete = true
+        
+        // check that the image has been downloaded
         if self.isDownloaded == true {
-            self.posterImage = nil
+            // set the image data to nil (this deletes it)
+            posterImage = nil
         }
     }
 }
