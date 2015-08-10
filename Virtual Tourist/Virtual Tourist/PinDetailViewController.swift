@@ -41,6 +41,9 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         
         self.view.addSubview(collectionView!)
         
+        if pin.photos.count == 0 {
+            showNoPhotoLabel()
+        }
         
          updateBottomButton()
         // Step 2: Perform the fetch
@@ -72,6 +75,14 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         let width = floor(self.collectionView!.frame.size.width/3.5)
         layout.itemSize = CGSize(width: width, height: width)
         collectionView!.collectionViewLayout = layout
+    }
+    
+    func showNoPhotoLabel(){
+        var label = UILabel(frame: CGRectMake(0, 0, 200, 21))
+        label.center = CGPointMake(160, 284)
+        label.textAlignment = NSTextAlignment.Center
+        label.text = "This pin has no images."
+        self.collectionView?.addSubview(label)
     }
     
     // Mark: - Fetched Results Controller

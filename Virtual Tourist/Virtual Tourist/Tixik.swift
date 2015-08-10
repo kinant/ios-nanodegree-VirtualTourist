@@ -29,6 +29,7 @@ class Tixik: NSObject, NSXMLParserDelegate {
         
         let url = "http://www.tixik.com/api/nearby?lat=\(coordinate.latitude)&lng=\(coordinate.longitude)&limit=5&key=demo"
         var urlToSend: NSURL = NSURL(string: url)!
+        
         // Parse the XML
         parser = NSXMLParser(contentsOfURL: urlToSend)!
         parser.delegate = self
@@ -88,11 +89,9 @@ class Tixik: NSObject, NSXMLParserDelegate {
         if passName {
             names.append(string!)
         }
-        
         if passX {
             gps_x.append(string!.toDouble()!)
         }
-        
         if passY {
             gps_y.append(string!.toDouble()!)
         }

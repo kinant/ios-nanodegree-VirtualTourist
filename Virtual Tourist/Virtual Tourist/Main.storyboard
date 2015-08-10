@@ -91,16 +91,33 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Ccs-yV-8Y1">
-                                <rect key="frame" x="0.0" y="64" width="600" height="124"/>
+                                <rect key="frame" x="0.0" y="64" width="600" height="125"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="124" id="GYq-6i-fJK"/>
+                                    <constraint firstAttribute="height" constant="125" id="IkD-XT-xWi"/>
                                 </constraints>
                             </mapView>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="XdE-kd-bEF">
-                                <rect key="frame" x="0.0" y="188" width="600" height="370"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VJo-cF-9uE">
+                                <rect key="frame" x="0.0" y="558" width="600" height="42"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rsB-d2-2md">
+                                        <rect key="frame" x="277" y="6" width="46" height="30"/>
+                                        <state key="normal" title="Button">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="buttonButtonClicked" destination="sJR-0Y-2gd" eventType="touchUpInside" id="y5l-y6-dMt"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="370" id="7fo-hw-VJV"/>
+                                    <constraint firstItem="rsB-d2-2md" firstAttribute="centerX" secondItem="VJo-cF-9uE" secondAttribute="centerX" id="2Do-zo-cIT"/>
+                                    <constraint firstAttribute="height" constant="42" id="f17-iZ-a3E"/>
+                                    <constraint firstItem="rsB-d2-2md" firstAttribute="centerY" secondItem="VJo-cF-9uE" secondAttribute="centerY" id="ibm-xS-Bc0"/>
                                 </constraints>
+                            </view>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="XdE-kd-bEF">
+                                <rect key="frame" x="0.0" y="189" width="600" height="369"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="nfV-Hp-HqJ">
                                     <size key="itemSize" width="100" height="100"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -152,39 +169,19 @@
                                     <outlet property="delegate" destination="sJR-0Y-2gd" id="hXe-a3-mEM"/>
                                 </connections>
                             </collectionView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VJo-cF-9uE">
-                                <rect key="frame" x="0.0" y="558" width="600" height="42"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rsB-d2-2md">
-                                        <rect key="frame" x="277" y="6" width="46" height="30"/>
-                                        <state key="normal" title="Button">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="buttonButtonClicked" destination="sJR-0Y-2gd" eventType="touchUpInside" id="y5l-y6-dMt"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstItem="rsB-d2-2md" firstAttribute="centerX" secondItem="VJo-cF-9uE" secondAttribute="centerX" id="2Do-zo-cIT"/>
-                                    <constraint firstAttribute="height" constant="42" id="f17-iZ-a3E"/>
-                                    <constraint firstItem="rsB-d2-2md" firstAttribute="centerY" secondItem="VJo-cF-9uE" secondAttribute="centerY" id="ibm-xS-Bc0"/>
-                                </constraints>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="Ccs-yV-8Y1" firstAttribute="leading" secondItem="XdE-kd-bEF" secondAttribute="leading" id="077-le-vB7"/>
-                            <constraint firstItem="VJo-cF-9uE" firstAttribute="top" secondItem="XdE-kd-bEF" secondAttribute="bottom" id="5yE-rJ-coE"/>
-                            <constraint firstItem="Ccs-yV-8Y1" firstAttribute="leading" secondItem="2tK-g0-Vo2" secondAttribute="leading" id="9Vz-kx-THY"/>
-                            <constraint firstItem="VJo-cF-9uE" firstAttribute="bottom" secondItem="g5x-ca-3iM" secondAttribute="top" id="IsI-8V-fMc"/>
-                            <constraint firstItem="XdE-kd-bEF" firstAttribute="top" secondItem="Ccs-yV-8Y1" secondAttribute="bottom" id="Jjb-9g-Uhu"/>
-                            <constraint firstItem="Ccs-yV-8Y1" firstAttribute="leading" secondItem="VJo-cF-9uE" secondAttribute="leading" id="WVq-JF-suD"/>
-                            <constraint firstAttribute="trailing" secondItem="Ccs-yV-8Y1" secondAttribute="trailing" id="d9E-lD-FAp"/>
-                            <constraint firstItem="Ccs-yV-8Y1" firstAttribute="top" secondItem="f8O-l8-v0i" secondAttribute="bottom" id="y9b-Qn-ewb"/>
-                            <constraint firstItem="Ccs-yV-8Y1" firstAttribute="trailing" secondItem="VJo-cF-9uE" secondAttribute="trailing" id="yQN-3d-nWh"/>
-                            <constraint firstItem="Ccs-yV-8Y1" firstAttribute="trailing" secondItem="XdE-kd-bEF" secondAttribute="trailing" id="zt0-FC-tKK"/>
+                            <constraint firstAttribute="trailing" secondItem="XdE-kd-bEF" secondAttribute="trailing" id="COR-d9-psi"/>
+                            <constraint firstItem="XdE-kd-bEF" firstAttribute="leading" secondItem="2tK-g0-Vo2" secondAttribute="leading" id="Q0n-YO-xEx"/>
+                            <constraint firstItem="Ccs-yV-8Y1" firstAttribute="top" secondItem="f8O-l8-v0i" secondAttribute="bottom" id="bsQ-DJ-wgX"/>
+                            <constraint firstItem="XdE-kd-bEF" firstAttribute="top" secondItem="Ccs-yV-8Y1" secondAttribute="bottom" id="cCv-uI-E8r"/>
+                            <constraint firstItem="VJo-cF-9uE" firstAttribute="leading" secondItem="2tK-g0-Vo2" secondAttribute="leading" id="kmr-lO-bTi"/>
+                            <constraint firstItem="Ccs-yV-8Y1" firstAttribute="leading" secondItem="2tK-g0-Vo2" secondAttribute="leading" id="l6x-1Z-BMa"/>
+                            <constraint firstItem="g5x-ca-3iM" firstAttribute="top" secondItem="VJo-cF-9uE" secondAttribute="bottom" id="nsx-qn-yqB"/>
+                            <constraint firstAttribute="trailing" secondItem="VJo-cF-9uE" secondAttribute="trailing" id="uJT-Dl-iF0"/>
+                            <constraint firstItem="VJo-cF-9uE" firstAttribute="top" secondItem="XdE-kd-bEF" secondAttribute="bottom" id="xB5-hQ-1UU"/>
+                            <constraint firstAttribute="trailing" secondItem="Ccs-yV-8Y1" secondAttribute="trailing" id="zih-8q-3n6"/>
                         </constraints>
                     </view>
                     <connections>

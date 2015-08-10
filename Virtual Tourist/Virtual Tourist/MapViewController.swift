@@ -47,6 +47,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         addPins()
     }
     
+
+    
     func handleLongPress(recognizer: UILongPressGestureRecognizer){
         println("long press!")
         if(recognizer.state == UIGestureRecognizerState.Began){
