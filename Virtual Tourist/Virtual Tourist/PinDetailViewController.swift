@@ -43,7 +43,14 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         
         self.view.addSubview(collectionView!)
         
-        showNoPhotoLabel()
+        noImagesLabel = UILabel(frame: CGRectMake(0, 0, 200, 20))
+        var rect = self.collectionView!.frame
+        // label.center = CGPointMake(CGRectGetMidX(rect!), CGRectGetMidY(rect!))
+        noImagesLabel.center = CGPointMake(rect.width/4, rect.height/2)
+        noImagesLabel.textAlignment = NSTextAlignment.Center
+        noImagesLabel.text = "This pin has no images."
+        noImagesLabel.hidden = true
+        self.collectionView?.addSubview(noImagesLabel)
         
         updateBottomButton()
         // Step 2: Perform the fetch
@@ -78,14 +85,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     }
     
     func showNoPhotoLabel(){
-        noImagesLabel = UILabel(frame: CGRectMake(0, 0, 200, 20))
-        var rect = self.collectionView!.frame
-        // label.center = CGPointMake(CGRectGetMidX(rect!), CGRectGetMidY(rect!))
-        noImagesLabel.center = CGPointMake(rect.width/4, rect.height/2)
-        noImagesLabel.textAlignment = NSTextAlignment.Center
-        noImagesLabel.text = "This pin has no images."
-        // noImagesLabel.hidden = true
-        self.collectionView?.addSubview(noImagesLabel)
+        self.noImagesLabel.hidden = false
     }
     
     // Mark: - Fetched Results Controller
@@ -110,7 +110,17 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
 
     func fetchCollection(){
         println("fetching new collection...")
-        Flickr.sharedInstance().downloadImagePathsForPin(pin)
+        
+        self.bottomButton.enabled = false
+        
+        Flickr.sharedInstance().downloadImagePathsForPin(pin, completionHandler: { (hasNoImages) -> Void in
+            if hasNoImages {
+                dispatch_async(dispatch_get_main_queue()){
+                    self.showNoPhotoLabel()
+                    self.bottomButton.enabled = true
+                }
+            }
+        })
     }
     
     func saveContext() {
@@ -238,9 +248,9 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
                 if self.pin.photos.count == 0 && self.deleteAllPressed {
                     self.fetchCollection()
                     self.deleteAllPressed = false
-                    self.noImagesLabel.hidden = false
+                    // self.noImagesLabel.hidden = false
                 } else if self.pin.photos.count > 0 {
-                    self.noImagesLabel.hidden = true
+                    // self.noImagesLabel.hidden = true
                 }
                 self.updateBottomButton()
                 

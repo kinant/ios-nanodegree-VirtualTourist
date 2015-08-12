@@ -42,7 +42,8 @@ class Flickr: NSObject {
                 if let photosDictionary = parsedResult.valueForKey("photos") as? [String:AnyObject] {
                     
                     if let totalPages = photosDictionary["pages"] as? Int {
-                        println(totalPages)
+                        println("total pages: \(totalPages)")
+                        
                         /* Flickr API - will only return up the 4000 images (100 per page * 40 page max) */
                         let totalPossiblePages = Int(Flickr.Values.MAX_RESULTS/Flickr.Resources.PER_PAGE.toInt()!)
                         let pageLimit = min(totalPages, totalPossiblePages)
@@ -98,6 +99,8 @@ class Flickr: NSObject {
                             println("Cant find key 'photo' in \(photosDictionary)")
                         }
                     } else {
+                        println("pin has no images!")
+                        completionHandler(result: nil, error: nil)
                     }
                 } else {
                     println("Cant find key 'photos' in \(parsedResult)")

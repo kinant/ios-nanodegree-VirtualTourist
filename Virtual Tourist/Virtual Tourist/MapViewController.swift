@@ -104,7 +104,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         //dispatch_async(dispatch_get_main_queue()){
             //dispatch_sync(queue){
-                Flickr.sharedInstance().downloadImagePathsForPin(newPin)
+                Flickr.sharedInstance().downloadImagePathsForPin(newPin, completionHandler: { (hasNoImages) -> Void in
+                    println()
+                })
             //}
         //}
         pinCount++

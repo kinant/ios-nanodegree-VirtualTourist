@@ -46,16 +46,17 @@ extension Flickr {
         CoreDataStackManager.sharedInstance().saveContext()
     }
     
-    func downloadImagePathsForPin(pin: Pin){
+    func downloadImagePathsForPin(pin: Pin, completionHandler: (hasNoImages: Bool) -> Void){
         if pin.photos.isEmpty {
             Flickr.sharedInstance().searchPhotosByLatLon(pin, completionHandler: { (result, error) -> Void in
                 
                 println("result: \(result)")
+                println("error \(error?.localizedDescription)")
                 
                 if let photos = result {
                     
                     if photos.count == 0 {
-                        println("pin has no images!")
+                        // println("pin has no images!")
                     }
                     
                     for photo in photos {
@@ -69,9 +70,10 @@ extension Flickr {
                         }
                     }
                     
-                    println("photo count: \(photos.count)")
-                    
+                    // println("photo count: \(photos.count)")
                     self.fetchImagesForPin(pin)
+                } else if error == nil {
+                    completionHandler(hasNoImages: true)
                 }
                 self.saveContext()
             })

@@ -46,6 +46,6 @@ class Attraction: NSManagedObject {
     }
     
     override func prepareForDeletion() {
-        println("annotation deleted!!!")
+        // println("annotation deleted!!!")
     }
 }
