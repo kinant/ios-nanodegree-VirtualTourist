@@ -68,7 +68,8 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
             fetchCollection()
         }
         
-        bottomButton.enabled = false
+        // bottomButton.enabled = false
+        updateBottomButton()
     }
     
     override func viewDidLayoutSubviews() {

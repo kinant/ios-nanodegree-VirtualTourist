@@ -47,8 +47,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         addPins()
     }
     
-
-    
     func handleLongPress(recognizer: UILongPressGestureRecognizer){
         println("long press!")
         if(recognizer.state == UIGestureRecognizerState.Began){
@@ -232,12 +230,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             inDeleteMode = true
             sender.title = "Cancel"
             bottomView.hidden = false
-            // mapViewSuperView.frame.origin.y -= bottomView.frame.height
+            mapViewSuperView.frame.origin.y -= bottomView.frame.height
         } else {
             inDeleteMode = false
             sender.title = "Edit"
             bottomView.hidden = true
-            // mapViewSuperView.frame.origin.y += bottomView.frame.height
+            mapViewSuperView.frame.origin.y += bottomView.frame.height
         }
     }
     
