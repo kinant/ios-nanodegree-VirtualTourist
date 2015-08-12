@@ -20,6 +20,8 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     @IBOutlet weak var collectionView: UICollectionView?
     @IBOutlet weak var bottomButton: UIButton!
     
+    var noImagesLabel: UILabel!
+    
     var pin: Pin!
     
     var deleteAllPressed = false
@@ -41,11 +43,9 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         
         self.view.addSubview(collectionView!)
         
-        if pin.photos.count == 0 {
-            showNoPhotoLabel()
-        }
+        showNoPhotoLabel()
         
-         updateBottomButton()
+        updateBottomButton()
         // Step 2: Perform the fetch
         fetchedResultsController.performFetch(nil)
     }
@@ -78,11 +78,14 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     }
     
     func showNoPhotoLabel(){
-        var label = UILabel(frame: CGRectMake(0, 0, 200, 21))
-        label.center = CGPointMake(160, 284)
-        label.textAlignment = NSTextAlignment.Center
-        label.text = "This pin has no images."
-        self.collectionView?.addSubview(label)
+        noImagesLabel = UILabel(frame: CGRectMake(0, 0, 200, 20))
+        var rect = self.collectionView!.frame
+        // label.center = CGPointMake(CGRectGetMidX(rect!), CGRectGetMidY(rect!))
+        noImagesLabel.center = CGPointMake(rect.width/4, rect.height/2)
+        noImagesLabel.textAlignment = NSTextAlignment.Center
+        noImagesLabel.text = "This pin has no images."
+        // noImagesLabel.hidden = true
+        self.collectionView?.addSubview(noImagesLabel)
     }
     
     // Mark: - Fetched Results Controller
@@ -125,9 +128,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        
-        let CellIdentifier = "CollectionViewCell"
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(CellIdentifier, forIndexPath: indexPath) as! CustomCollectionViewCell
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("CollectionViewCell", forIndexPath: indexPath) as! CustomCollectionViewCell
         
         configureCell(cell, atIndexPath: indexPath)
         
@@ -136,18 +137,30 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
+        println("did select!")
+        
         let cell = collectionView.cellForItemAtIndexPath(indexPath) as! CustomCollectionViewCell
         
-        // Whenever a cell is tapped we will toggle its presence in the selectedIndexes array
-        if let index = find(selectedIndexes, indexPath) {
-            selectedIndexes.removeAtIndex(index)
-        } else {
-            selectedIndexes.append(indexPath)
-        }
+        println("select!")
+        selectedIndexes.append(indexPath)
         
         // Then reconfigure the cell
-         configureCell(cell, atIndexPath: indexPath)
-         updateBottomButton()
+        configureCell(cell, atIndexPath: indexPath)
+        updateBottomButton()
+    }
+    
+    func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
+        println("did deselect!")
+        
+        let cell = collectionView.cellForItemAtIndexPath(indexPath) as! CustomCollectionViewCell
+        
+        if let index = find(selectedIndexes, indexPath) {
+            selectedIndexes.removeAtIndex(index)
+            println("deselect!")
+        }
+        
+        configureCell(cell, atIndexPath: indexPath)
+        updateBottomButton()
     }
     
     func controllerWillChangeContent(controller: NSFetchedResultsController) {
@@ -225,9 +238,11 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
                 if self.pin.photos.count == 0 && self.deleteAllPressed {
                     self.fetchCollection()
                     self.deleteAllPressed = false
+                    self.noImagesLabel.hidden = false
+                } else if self.pin.photos.count > 0 {
+                    self.noImagesLabel.hidden = true
                 }
                 self.updateBottomButton()
-                self.bottomButton.enabled = self.allImagesLoaded()
                 
             }, completion: nil)
         }
@@ -246,13 +261,16 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
             cell.image!.alpha = 1.0
         }
         
-        var posterImage = UIImage(named: "posterPlaceHoldr")
+        var posterImage = UIImage(named: "imgPlaceholder")
         
         if photo.posterImage != nil {
             println("photo has image!")
             posterImage = photo.posterImage
+            cell.activityIndicator.hidden = true
         }
         else {
+            cell.activityIndicator.startAnimating()
+            cell.activityIndicator.hidden = false
             println("image not available yet!")
         }
         
@@ -304,6 +322,9 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     }
     
     func updateBottomButton() {
+        
+        self.bottomButton.enabled = self.allImagesLoaded()
+        
         if selectedIndexes.count > 0 {
             bottomButton.setTitle("Delete Selected", forState: UIControlState.Normal)
         } else {

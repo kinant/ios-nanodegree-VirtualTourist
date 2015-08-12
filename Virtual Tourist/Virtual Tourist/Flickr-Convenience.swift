@@ -23,7 +23,7 @@ extension Flickr {
             "nojsoncallback": NO_JSON_CALLBACK
         ]
         
-        Flickr.sharedInstance().getImageFromFlickrBySearch(methodArguments, completionHandler: { (result, error) -> Void in
+        Flickr.sharedInstance().getImagesFromFlickrBySearch(methodArguments, completionHandler: { (result, error) -> Void in
             completionHandler(data: result, error: error)
         })
     }
@@ -49,7 +49,15 @@ extension Flickr {
     func downloadImagePathsForPin(pin: Pin){
         if pin.photos.isEmpty {
             Flickr.sharedInstance().searchPhotosByLatLon(pin, completionHandler: { (result, error) -> Void in
+                
+                println("result: \(result)")
+                
                 if let photos = result {
+                    
+                    if photos.count == 0 {
+                        println("pin has no images!")
+                    }
+                    
                     for photo in photos {
                         if let imageURL = photo["url_m"] as? String {
                             
@@ -60,6 +68,9 @@ extension Flickr {
                             }
                         }
                     }
+                    
+                    println("photo count: \(photos.count)")
+                    
                     self.fetchImagesForPin(pin)
                 }
                 self.saveContext()

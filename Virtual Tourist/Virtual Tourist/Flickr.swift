@@ -26,7 +26,7 @@ class Flickr: NSObject {
     
     // MARK: - All purpose task method for data
     //func getImageFromFlickrBySearch(methodArguments: [String : AnyObject]) {
-    func getImageFromFlickrBySearch(parameters: [String : AnyObject], completionHandler: (result: [[String: AnyObject]]?, error: NSError?) -> Void) -> NSURLSessionDataTask {
+    func getImagesFromFlickrBySearch(parameters: [String : AnyObject], completionHandler: (result: [[String: AnyObject]]?, error: NSError?) -> Void) -> NSURLSessionDataTask {
         let urlString = Flickr.Constants.BASE_URL + Flickr.escapedParameters(parameters)
         let url = NSURL(string: urlString)!
         let request = NSURLRequest(URL: url)
@@ -48,7 +48,7 @@ class Flickr: NSObject {
                         let pageLimit = min(totalPages, totalPossiblePages)
                         // let pageLimit = min(totalPages, 190)
                         let randomPage = Int(arc4random_uniform(UInt32(pageLimit))) + 1
-                        self.getImageFromFlickrBySearchWithPage(parameters, pageNumber: randomPage, completionHandler: completionHandler)
+                        self.getImagesFromFlickrBySearchWithPage(parameters, pageNumber: randomPage, completionHandler: completionHandler)
                     } else {
                         println("Cant find key 'pages' in \(photosDictionary)")
                     }
@@ -63,7 +63,7 @@ class Flickr: NSObject {
         return task
     }
     
-    func getImageFromFlickrBySearchWithPage(methodArguments: [String : AnyObject], pageNumber: Int, completionHandler: (result: [[String: AnyObject]]?, error: NSError?) -> Void) -> NSURLSessionDataTask {
+    func getImagesFromFlickrBySearchWithPage(methodArguments: [String : AnyObject], pageNumber: Int, completionHandler: (result: [[String: AnyObject]]?, error: NSError?) -> Void) -> NSURLSessionDataTask {
         
         /* Add the page to the method's arguments */
         var withPageDictionary = methodArguments
