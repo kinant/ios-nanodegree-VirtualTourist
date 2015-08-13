@@ -20,6 +20,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
     
     var inDeleteMode = false
+    // var pinDownloadTaskInProgress = false
     
     lazy var sharedContext = {
         CoreDataStackManager.sharedInstance().managedObjectContext!
@@ -100,13 +101,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
         
-        //dispatch_async(dispatch_get_main_queue()){
-            //dispatch_sync(queue){
-                Flickr.sharedInstance().downloadImagePathsForPin(newPin, completionHandler: { (hasNoImages) -> Void in
-                    println()
-                })
-            //}
-        //}
+        newPin.downloadTaskInProgress = true
+        
+        Flickr.sharedInstance().downloadImagePathsForPin(newPin, completionHandler: { (hasNoImages) -> Void in
+            newPin.downloadTaskInProgress = false
+        })
+
         pinCount++
     }
     
@@ -167,7 +167,16 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         var pinDetailVC = (segue.destinationViewController as! PinDetailViewController)
         
         if selectedPinIndex >= 0  {
-            pinDetailVC.pin = pins[selectedPinIndex]
+            let selectedPin = pins[selectedPinIndex]
+            pinDetailVC.pin = selectedPin
+            
+            println("count: \(selectedPin.photos.count)")
+            println("downloading: \(selectedPin.downloadTaskInProgress)")
+            
+            if selectedPin.photos.count == 0 && !selectedPin.downloadTaskInProgress {
+                println("empty and no download in progress...fetching new collection!")
+                pinDetailVC.fetchCollection()
+            }
         }
     }
     

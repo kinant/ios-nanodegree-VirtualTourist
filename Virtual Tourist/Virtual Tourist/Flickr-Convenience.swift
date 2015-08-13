@@ -72,6 +72,7 @@ extension Flickr {
                     
                     // println("photo count: \(photos.count)")
                     self.fetchImagesForPin(pin)
+                    completionHandler(hasNoImages: false)
                 } else if error == nil {
                     completionHandler(hasNoImages: true)
                 }

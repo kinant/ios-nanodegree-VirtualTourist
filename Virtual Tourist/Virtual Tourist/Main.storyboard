@@ -100,8 +100,8 @@
                                 <rect key="frame" x="0.0" y="558" width="600" height="42"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rsB-d2-2md">
-                                        <rect key="frame" x="277" y="6" width="46" height="30"/>
-                                        <state key="normal" title="Button">
+                                        <rect key="frame" x="248" y="6" width="104" height="30"/>
+                                        <state key="normal" title="New Collection">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>

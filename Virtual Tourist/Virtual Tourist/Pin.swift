@@ -28,6 +28,8 @@ class Pin: NSManagedObject, Equatable {
     @NSManaged var photos: [Photo]
     @NSManaged var attractions: [Attraction]
     
+    var downloadTaskInProgress =  false
+    
     override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
         super.init(entity: entity, insertIntoManagedObjectContext: context)
     }

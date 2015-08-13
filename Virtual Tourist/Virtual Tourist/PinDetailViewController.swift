@@ -24,6 +24,8 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     
     var pin: Pin!
     
+    var downloadTaskInProgress = false
+    
     var deleteAllPressed = false
     
     lazy var sharedContext = {
@@ -32,11 +34,6 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-        
-        // let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        // layout.sectionInset = UIEdgeInsets(top: 20, left: 10, bottom: 10, right: 10)
-        // layout.itemSize = CGSize(width: 90, height: 90)
         
         collectionView!.backgroundColor = UIColor.whiteColor()
         collectionView!.allowsMultipleSelection = true
@@ -45,14 +42,14 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         
         noImagesLabel = UILabel(frame: CGRectMake(0, 0, 200, 20))
         var rect = self.collectionView!.frame
-        // label.center = CGPointMake(CGRectGetMidX(rect!), CGRectGetMidY(rect!))
         noImagesLabel.center = CGPointMake(rect.width/4, rect.height/2)
         noImagesLabel.textAlignment = NSTextAlignment.Center
         noImagesLabel.text = "This pin has no images."
         noImagesLabel.hidden = true
         self.collectionView?.addSubview(noImagesLabel)
         
-        updateBottomButton()
+        bottomButton.enabled = false
+        
         // Step 2: Perform the fetch
         fetchedResultsController.performFetch(nil)
     }
@@ -60,21 +57,18 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        // printAllPinPhotos()
-        
         Flickr.sharedInstance().fetchImagesForPin(pin)
         
-        if pin.photos.count == 0 {
-            fetchCollection()
+        if pin.photos.count == 0 && !downloadTaskInProgress {
+            println("no photos...fetching!")
+            // fetchCollection()
+        } else {
+            updateBottomButton()
         }
-        
-        // bottomButton.enabled = false
-        updateBottomButton()
     }
     
     override func viewDidLayoutSubviews() {
-        // Lay out the collection view so that cells take up 1/3 of the width,
-        // with no space in between.
+
         let layout : UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         layout.minimumLineSpacing = 5
@@ -84,11 +78,6 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         layout.itemSize = CGSize(width: width, height: width)
         collectionView!.collectionViewLayout = layout
     }
-    
-    func showNoPhotoLabel(){
-        self.noImagesLabel.hidden = false
-    }
-    
     // Mark: - Fetched Results Controller
     
     lazy var fetchedResultsController: NSFetchedResultsController = {
@@ -112,13 +101,11 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     func fetchCollection(){
         println("fetching new collection...")
         
-        self.bottomButton.enabled = false
-        
         Flickr.sharedInstance().downloadImagePathsForPin(pin, completionHandler: { (hasNoImages) -> Void in
             if hasNoImages {
                 dispatch_async(dispatch_get_main_queue()){
-                    self.showNoPhotoLabel()
-                    self.bottomButton.enabled = true
+                    self.noImagesLabel.hidden = false
+                    self.updateBottomButton()
                 }
             }
         })
@@ -157,6 +144,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         
         // Then reconfigure the cell
         configureCell(cell, atIndexPath: indexPath)
+        
         updateBottomButton()
     }
     
@@ -171,6 +159,8 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         }
         
         configureCell(cell, atIndexPath: indexPath)
+        
+        // update button when a cell is selected
         updateBottomButton()
     }
     
@@ -289,7 +279,6 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     }
     
     @IBAction func buttonButtonClicked() {
-        
         //println("selected indexes: \(selectedIndexes.isEmpty)")
         
         if selectedIndexes.isEmpty {
@@ -333,8 +322,13 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     }
     
     func updateBottomButton() {
-        
-        self.bottomButton.enabled = self.allImagesLoaded()
+        // case 1: there are no photos
+        if pin.photos.count == 0 {
+            self.bottomButton.enabled = true
+        } else {
+        // case 2: all images have been loaded
+            self.bottomButton.enabled = self.allImagesLoaded()
+        }
         
         if selectedIndexes.count > 0 {
             bottomButton.setTitle("Delete Selected", forState: UIControlState.Normal)
