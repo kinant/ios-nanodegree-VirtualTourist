@@ -23,6 +23,9 @@ extension Flickr {
         static let DATA_FORMAT = "json"
         static let NO_JSON_CALLBACK = "1"
         static let PER_PAGE = "21"
+        static let LAT = "lat"
+        static let LONG = "long"
+        static let RADIUS = "radius"
     }
     
     struct Values {
@@ -33,6 +36,7 @@ extension Flickr {
         static let LON_MIN = -180.0
         static let LON_MAX = 180.0
         static let MAX_RESULTS = 4000
+        static let RADIUS = 5
     }
     
     struct Keys {
