@@ -28,6 +28,9 @@ class Flickr: NSObject {
     //func getImageFromFlickrBySearch(methodArguments: [String : AnyObject]) {
     func getImagesFromFlickrBySearch(parameters: [String : AnyObject], completionHandler: (result: [[String: AnyObject]]?, error: NSError?) -> Void) -> NSURLSessionDataTask {
         let urlString = Flickr.Constants.BASE_URL + Flickr.escapedParameters(parameters)
+        
+        println(urlString)
+        
         let url = NSURL(string: urlString)!
         let request = NSURLRequest(URL: url)
         

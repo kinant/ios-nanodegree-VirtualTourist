@@ -16,14 +16,15 @@ extension Flickr {
             "method": METHOD_NAME,
             "api_key": API_KEY,
             "per_page": Flickr.Resources.PER_PAGE,
-            "bbox": createBoundingBoxString(CLLocationCoordinate2DMake(pin.latitude, pin.longitude)),
+            "lat": pin.latitude,
+            "lon": pin.longitude,
             "safe_search": SAFE_SEARCH,
             "extras": EXTRAS,
             "format": DATA_FORMAT,
             "nojsoncallback": NO_JSON_CALLBACK
         ]
         
-        Flickr.sharedInstance().getImagesFromFlickrBySearch(methodArguments, completionHandler: { (result, error) -> Void in
+        Flickr.sharedInstance().getImagesFromFlickrBySearch(methodArguments as! [String : AnyObject], completionHandler: { (result, error) -> Void in
             completionHandler(data: result, error: error)
         })
     }

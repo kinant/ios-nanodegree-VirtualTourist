@@ -24,7 +24,7 @@ extension Flickr {
         static let NO_JSON_CALLBACK = "1"
         static let PER_PAGE = "21"
         static let LAT = "lat"
-        static let LONG = "long"
+        static let LONG = "lon"
         static let RADIUS = "radius"
     }
     
