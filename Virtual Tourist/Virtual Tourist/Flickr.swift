@@ -29,14 +29,14 @@ class Flickr: NSObject {
     func getImagesFromFlickrBySearch(parameters: [String : AnyObject], completionHandler: (result: [[String: AnyObject]]?, error: NSError?) -> Void) -> NSURLSessionDataTask {
         let urlString = Flickr.Constants.BASE_URL + Flickr.escapedParameters(parameters)
         
-        println(urlString)
+        // println(urlString)
         
         let url = NSURL(string: urlString)!
         let request = NSURLRequest(URL: url)
         
         let task = session.dataTaskWithRequest(request) {data, response, downloadError in
             if let error = downloadError {
-                println("Could not complete the request \(error)")
+                // println("Could not complete the request \(error)")
             } else {
                 
                 var parsingError: NSError? = nil
@@ -45,7 +45,7 @@ class Flickr: NSObject {
                 if let photosDictionary = parsedResult.valueForKey("photos") as? [String:AnyObject] {
                     
                     if let totalPages = photosDictionary["pages"] as? Int {
-                        println("total pages: \(totalPages)")
+                        // println("total pages: \(totalPages)")
                         
                         /* Flickr API - will only return up the 4000 images (100 per page * 40 page max) */
                         let totalPossiblePages = Int(Flickr.Values.MAX_RESULTS/Flickr.Resources.PER_PAGE.toInt()!)
@@ -102,7 +102,7 @@ class Flickr: NSObject {
                             println("Cant find key 'photo' in \(photosDictionary)")
                         }
                     } else {
-                        println("pin has no images!")
+                        // println("pin has no images!")
                         completionHandler(result: nil, error: nil)
                     }
                 } else {
@@ -158,7 +158,7 @@ class Flickr: NSObject {
         if let error = parsingError {
             completionHandler(result: nil, error: error)
         } else {
-            println("Step 4 - parseJSONWithCompletionHandler is invoked.")
+            // println("Step 4 - parseJSONWithCompletionHandler is invoked.")
             completionHandler(result: parsedResult, error: nil)
         }
     }

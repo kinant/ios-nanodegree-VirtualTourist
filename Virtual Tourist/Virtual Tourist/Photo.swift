@@ -47,8 +47,8 @@ class Photo: NSManagedObject {
             return Flickr.Caches.imageCache.imageWithIdentifier(id! + ".jpg")
         }
         set {
-            println("before: \(self.id)")
-            println("newvalue: \(newValue)")
+            // println("before: \(self.id)")
+            // println("newvalue: \(newValue)")
             Flickr.Caches.imageCache.storeImage(newValue, withIdentifier: id! + ".jpg")
         }
     }

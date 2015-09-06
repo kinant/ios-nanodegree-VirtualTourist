@@ -49,7 +49,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     func handleLongPress(recognizer: UILongPressGestureRecognizer){
-        println("long press!")
+        // println("long press!")
         if(recognizer.state == UIGestureRecognizerState.Began){
         
             var point = recognizer.locationInView(self.mapView)
@@ -144,7 +144,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
         
         if annotation is VTAnnotation {
-            println("is VT annotation")
+            // println("is VT annotation")
             let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "myPin")
             // pinAnnotationView.draggable = true
             pinAnnotationView.canShowCallout = false
@@ -152,7 +152,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             pinAnnotationView.image = UIImage(named:"pin2")
             return pinAnnotationView
         } else if annotation is ATAnnotation {
-            println("is AT annotation")
+           // println("is AT annotation")
             let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "atPin")
             pinAnnotationView.pinColor = MKPinAnnotationColor.Purple
             pinAnnotationView.canShowCallout = true
@@ -170,18 +170,18 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             let selectedPin = pins[selectedPinIndex]
             pinDetailVC.pin = selectedPin
             
-            println("count: \(selectedPin.photos.count)")
-            println("downloading: \(selectedPin.downloadTaskInProgress)")
+            // println("count: \(selectedPin.photos.count)")
+            // println("downloading: \(selectedPin.downloadTaskInProgress)")
             
             if selectedPin.photos.count == 0 && !selectedPin.downloadTaskInProgress {
-                println("empty and no download in progress...fetching new collection!")
+                // println("empty and no download in progress...fetching new collection!")
                 pinDetailVC.fetchCollection()
             }
         }
     }
     
     func mapView(mapView: MKMapView!, didSelectAnnotationView view: MKAnnotationView!) {
-        println("annotation view selected!")
+        // println("annotation view selected!")
         
         if let selectedAnnotation = mapView.selectedAnnotations[0] as? VTAnnotation {
             
@@ -220,7 +220,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     func returnSelectedPinIndex(annotation: VTAnnotation) -> Int {
         
-        println("pin count: \(pins.count)")
+        // println("pin count: \(pins.count)")
         for var i = 0; i < pins.count; i++ {
             // println("pin index: \(pin.index)")
             if pins[i].annotation == annotation {
@@ -231,7 +231,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     func mapView(mapView: MKMapView!, didDeselectAnnotationView view: MKAnnotationView!) {
-        println("deselect!")
+        // println("deselect!")
     }
     
     @IBAction func editButtonPressed(sender: UIBarButtonItem) {

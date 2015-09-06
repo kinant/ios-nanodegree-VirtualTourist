@@ -51,8 +51,8 @@ extension Flickr {
         if pin.photos.isEmpty {
             Flickr.sharedInstance().searchPhotosByLatLon(pin, completionHandler: { (result, error) -> Void in
                 
-                println("result: \(result)")
-                println("error \(error?.localizedDescription)")
+                // println("result: \(result)")
+                // println("error \(error?.localizedDescription)")
                 
                 if let photos = result {
                     
@@ -65,7 +65,7 @@ extension Flickr {
                             
                             if let imageID = photo["id"] as? String {
                                 let newPhoto = Photo(imagePath: imageURL, id: imageID, context: self.sharedContext)
-                                println("created new photo with id \(imageID)")
+                                // println("created new photo with id \(imageID)")
                                 newPhoto.pin = pin
                             }
                         }
