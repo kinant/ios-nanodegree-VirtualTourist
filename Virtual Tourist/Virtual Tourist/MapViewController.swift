@@ -74,21 +74,46 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     func handleLongPress(recognizer: UILongPressGestureRecognizer){
         // println("long press!")
-        if(recognizer.state == UIGestureRecognizerState.Began && !inDeleteMode){
+        var point = recognizer.locationInView(self.mapView)
+        var locationCoordinate = self.mapView.convertPoint(point, toCoordinateFromView: self.mapView)
         
-            var point = recognizer.locationInView(self.mapView)
-            var locationCoordinate = self.mapView.convertPoint(point, toCoordinateFromView: self.mapView)
-        
-            addPin(locationCoordinate)
+        if !inDeleteMode {
+            if(recognizer.state == UIGestureRecognizerState.Began){
+                println("adding pin")
+                addPin(locationCoordinate)
+            } else if (recognizer.state == UIGestureRecognizerState.Changed){
+                println("moving pin!")
+                //dispatch_async(dispatch_get_main_queue()){
+                    self.annotationToAdd.setNewCoordinate(locationCoordinate)
+                    self.pins[pinCount].latitude = locationCoordinate.latitude
+                    self.pins[pinCount].longitude = locationCoordinate.longitude
+                    println("index: \(self.annotationToAdd.index)")
+            //}
+            // mapView.viewForAnnotation(annotationToAdd)
+            } else if recognizer.state == .Ended {
+                if annotationToAdd != nil {
+                    var test = mapView.viewForAnnotation(annotationToAdd)
+                
+                    dispatch_async(dispatch_get_main_queue()){
+                    // test.setDragState(.Ending, animated: true)
+                    // println(test.dragState.rawValue)
+                        self.addAttractionsForPin(self.pins[self.pinCount])
+                        self.addPinComplete(self.pins[self.pinCount])
+                        test.image = UIImage(named: "pin2")
+                    }
+                    annotationToAdd = nil
+                }
+            }
         }
     }
-    
+    /*
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
         
         println("touches began!")
         
     }
-    
+    */
+    /*
     override func touchesMoved(touches: Set<NSObject>, withEvent event: UIEvent) {
         
         println("touches moved!")
@@ -112,11 +137,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             println("pin location lat/long: \(annotationToAdd.coordinate.latitude), \(annotationToAdd.coordinate.longitude)")
         }
     }
-    
+    */
     override func touchesCancelled(touches: Set<NSObject>!, withEvent event: UIEvent!) {
         println("touches cancelled")
     }
-    
+    /*
     override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
         println("touches ended")
         
@@ -133,7 +158,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             annotationToAdd = nil
         }
     }
+    */
     
+    /*
     func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!, didChangeDragState newState: MKAnnotationViewDragState, fromOldState oldState: MKAnnotationViewDragState) {
         
         println("did change drag state...")
@@ -147,6 +174,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         default: break
         }
     }
+*/
     
     func addPins(){
         for pin in pins {
@@ -189,9 +217,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         self.annotationToAdd = annotation
         
-        pinToBeAdded = newPin
-        // addAttractionsForPin(newPin)
         
+        // addAttractionsForPin(newPin)
+    }
+    
+    func addPinComplete(newPin: Pin){
         CoreDataStackManager.sharedInstance().saveContext()
         
         let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
@@ -199,9 +229,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         newPin.downloadTaskInProgress = true
         
         Flickr.sharedInstance().downloadImagePathsForPin(newPin, completionHandler: { (hasNoImages) -> Void in
-           newPin.downloadTaskInProgress = false
+            newPin.downloadTaskInProgress = false
         })
-
+        
+        // pinToBeAdded = newPin
         pinCount++
     }
     
@@ -268,14 +299,15 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         if annotation is VTAnnotation {
             // println("is VT annotation")
             let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "myPin")
-            pinAnnotationView.draggable = false
+            pinAnnotationView.draggable = true
             pinAnnotationView.canShowCallout = false
             // pinAnnotationView.animatesDrop = true
-            // pinAnnotationView.image = UIImage(named:"pin2")
+            pinAnnotationView.image = UIImage(named: "pin2")
             
             if annotationToAdd != nil {
-                pinAnnotationView.setDragState(.Starting, animated: true)
-                println("initial drag state: \(pinAnnotationView.dragState.rawValue)")
+                pinAnnotationView.image = UIImage(named:"floating_pin")
+                //pinAnnotationView.setDragState(.Starting, animated: true)
+                //println("initial drag state: \(pinAnnotationView.dragState.rawValue)")
             }
             
             return pinAnnotationView

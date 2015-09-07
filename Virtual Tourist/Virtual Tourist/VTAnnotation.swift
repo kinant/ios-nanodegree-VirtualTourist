@@ -25,6 +25,7 @@ class VTAnnotation: NSObject, MKAnnotation, Equatable {
     }
     
     func setNewCoordinate(newCoordinate: CLLocationCoordinate2D) {
+        println("setting new coordinate!")
         willChangeValueForKey("coordinate")
         self.coordinate = newCoordinate
         didChangeValueForKey("coordinate")
