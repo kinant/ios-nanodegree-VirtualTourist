@@ -44,7 +44,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         mapView.userInteractionEnabled = false
         
         let location = CLLocationCoordinate2DMake(pin.latitude, pin.longitude)
-        let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+        let span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
         let region = MKCoordinateRegion(center: location, span: span)
         mapView.setRegion(region, animated: true)
         

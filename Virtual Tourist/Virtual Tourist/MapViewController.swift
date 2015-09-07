@@ -97,7 +97,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                     dispatch_async(dispatch_get_main_queue()){
                     // test.setDragState(.Ending, animated: true)
                     // println(test.dragState.rawValue)
-                        self.addAttractionsForPin(self.pins[self.pinCount])
+                        // self.addAttractionsForPin(self.pins[self.pinCount])
                         self.addPinComplete(self.pins[self.pinCount])
                         test.image = UIImage(named: "pin2")
                     }
@@ -230,6 +230,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         Flickr.sharedInstance().downloadImagePathsForPin(newPin, completionHandler: { (hasNoImages) -> Void in
             newPin.downloadTaskInProgress = false
+            self.addAttractionsForPin(newPin)
         })
         
         // pinToBeAdded = newPin
