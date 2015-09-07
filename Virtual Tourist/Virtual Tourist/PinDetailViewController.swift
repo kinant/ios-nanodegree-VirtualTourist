@@ -30,6 +30,8 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     
     var deleteAllPressed = false
     
+    var allowsSelection = false
+    
     lazy var sharedContext = {
         CoreDataStackManager.sharedInstance().managedObjectContext!
         }()
@@ -163,7 +165,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         let cell = collectionView.cellForItemAtIndexPath(indexPath) as! CustomCollectionViewCell
         let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         
-        if photo.posterImage != nil {
+        if allowsSelection {
             
             selectedIndexes.append(indexPath)
         
@@ -179,7 +181,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         let cell = collectionView.cellForItemAtIndexPath(indexPath) as! CustomCollectionViewCell
         let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         
-        if photo.posterImage != nil {
+        if allowsSelection {
             if let index = find(selectedIndexes, indexPath) {
                 selectedIndexes.removeAtIndex(index)
             }
@@ -388,11 +390,13 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         for photo in pin.photos {
             
             if photo.isDownloaded == false {
+                allowsSelection = false
                 return false
                 // return true
             }
         }
-        self.saveContext()
+        // self.saveContext()
+        allowsSelection = true
         return true
     }
     
