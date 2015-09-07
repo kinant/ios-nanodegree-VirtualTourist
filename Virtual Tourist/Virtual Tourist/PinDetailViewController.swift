@@ -8,8 +8,9 @@
 
 import UIKit
 import CoreData
+import MapKit
 
-class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, NSFetchedResultsControllerDelegate {
+class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, NSFetchedResultsControllerDelegate, MKMapViewDelegate {
     
     // Keep the changes. We will keep track of insertions, deletions, and updates.
     var selectedIndexes = [NSIndexPath]()
@@ -19,6 +20,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     
     @IBOutlet weak var collectionView: UICollectionView?
     @IBOutlet weak var bottomButton: UIButton!
+    @IBOutlet weak var mapView: MKMapView!
     
     var noImagesLabel: UILabel!
     
@@ -34,6 +36,19 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // set map view
+        mapView.delegate = self
+        mapView.userInteractionEnabled = false
+        
+        let location = CLLocationCoordinate2DMake(pin.latitude, pin.longitude)
+        let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+        let region = MKCoordinateRegion(center: location, span: span)
+        mapView.setRegion(region, animated: true)
+        
+        // add pin
+        let annotation = VTAnnotation(coordinate: location, index: 0)
+        mapView.addAnnotation(annotation)
         
         collectionView!.backgroundColor = UIColor.whiteColor()
         collectionView!.allowsMultipleSelection = true
@@ -78,6 +93,18 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         layout.itemSize = CGSize(width: width, height: width)
         collectionView!.collectionViewLayout = layout
     }
+    
+    
+    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
+        
+        println("in here!")
+        
+        let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "myPin")
+        pinAnnotationView.canShowCallout = false
+        pinAnnotationView.image = UIImage(named:"pin2")
+        return pinAnnotationView
+    }
+    
     // Mark: - Fetched Results Controller
     
     lazy var fetchedResultsController: NSFetchedResultsController = {
