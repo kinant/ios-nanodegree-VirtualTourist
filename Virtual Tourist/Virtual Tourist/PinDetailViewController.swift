@@ -144,30 +144,36 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         // println("did select!")
         
         let cell = collectionView.cellForItemAtIndexPath(indexPath) as! CustomCollectionViewCell
+        let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         
-        // println("select!")
-        selectedIndexes.append(indexPath)
+        if photo.posterImage != nil {
+            println("select!")
+            selectedIndexes.append(indexPath)
         
-        // Then reconfigure the cell
-        configureCell(cell, atIndexPath: indexPath)
+            // Then reconfigure the cell
+            configureCell(cell, atIndexPath: indexPath)
         
-        updateBottomButton()
+            updateBottomButton()
+        }
     }
     
     func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
         println("did deselect!")
         
         let cell = collectionView.cellForItemAtIndexPath(indexPath) as! CustomCollectionViewCell
+        let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         
-        if let index = find(selectedIndexes, indexPath) {
-            selectedIndexes.removeAtIndex(index)
-            println("deselect!")
+        if photo.posterImage != nil {
+            if let index = find(selectedIndexes, indexPath) {
+                selectedIndexes.removeAtIndex(index)
+                println("deselect!")
+            }
+        
+            configureCell(cell, atIndexPath: indexPath)
+        
+            // update button when a cell is selected
+            updateBottomButton()
         }
-        
-        configureCell(cell, atIndexPath: indexPath)
-        
-        // update button when a cell is selected
-        updateBottomButton()
     }
     
     func controllerWillChangeContent(controller: NSFetchedResultsController) {
@@ -275,7 +281,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         cell.image!.image = nil
         
         if let index = find(selectedIndexes, indexPath) {
-            cell.image!.alpha = 0.05
+            cell.image!.alpha = 0.35
         } else {
             cell.image!.alpha = 1.0
         }
