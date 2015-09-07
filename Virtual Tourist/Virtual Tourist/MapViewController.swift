@@ -261,6 +261,21 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    func hideAttractions() {
+        for pin in pins {
+            deleteAttractionsForPin(pin)
+        }
+    }
+    
+    func showAttractions() {
+        for pin in pins {
+            // add attractions
+            for attraction in pin.attractions {
+                mapView.addAnnotation(attraction.annotation)
+            }
+        }
+    }
+    
     func returnSelectedPinIndex(annotation: VTAnnotation) -> Int {
         
         // println("pin count: \(pins.count)")
@@ -282,12 +297,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             inDeleteMode = true
             sender.title = "Cancel"
             bottomView.hidden = false
-            mapViewSuperView.frame.origin.y -= bottomView.frame.height
+            hideAttractions()
+            // mapViewSuperView.frame.origin.y -= bottomView.frame.height
         } else {
             inDeleteMode = false
             sender.title = "Edit"
             bottomView.hidden = true
-            mapViewSuperView.frame.origin.y += bottomView.frame.height
+            // mapViewSuperView.frame.origin.y += bottomView.frame.height
+            showAttractions()
         }
     }
     
