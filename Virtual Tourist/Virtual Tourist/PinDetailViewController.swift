@@ -73,13 +73,8 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         super.viewDidAppear(animated)
         
         Flickr.sharedInstance().fetchImagesForPin(pin)
+        updateBottomButton()
         
-        if pin.photos.count == 0 && !downloadTaskInProgress {
-            println("no photos...fetching!")
-            // fetchCollection()
-        } else {
-            updateBottomButton()
-        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -128,6 +123,8 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     func fetchCollection(){
         println("fetching new collection...")
         
+        downloadTaskInProgress = true
+        
         Flickr.sharedInstance().downloadImagePathsForPin(pin, completionHandler: { (hasNoImages) -> Void in
             if hasNoImages {
                 dispatch_async(dispatch_get_main_queue()){
@@ -135,6 +132,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
                     self.updateBottomButton()
                 }
             }
+            self.downloadTaskInProgress = false
         })
     }
     
@@ -323,6 +321,8 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         
         if selectedIndexes.isEmpty {
             //println("deleting some...")
+            bottomButton.enabled = false
+            
             if pin.photos.count == 0 {
                 fetchCollection()
             } else {
@@ -368,10 +368,12 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     
     func updateBottomButton() {
         // case 1: there are no photos
-        if pin.photos.count == 0 {
+        if pin.photos.count == 0 && !downloadTaskInProgress {
             self.bottomButton.enabled = true
+        } else if downloadTaskInProgress {
+            self.bottomButton.enabled = false
         } else {
-        // case 2: all images have been loaded
+            // case 2: all images have been loaded
             self.bottomButton.enabled = self.allImagesLoaded()
         }
         
