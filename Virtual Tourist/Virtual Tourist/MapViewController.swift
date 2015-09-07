@@ -50,7 +50,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     func handleLongPress(recognizer: UILongPressGestureRecognizer){
         // println("long press!")
-        if(recognizer.state == UIGestureRecognizerState.Began){
+        if(recognizer.state == UIGestureRecognizerState.Began && !inDeleteMode){
         
             var point = recognizer.locationInView(self.mapView)
             var locationCoordinate = self.mapView.convertPoint(point, toCoordinateFromView: self.mapView)
