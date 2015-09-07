@@ -201,7 +201,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             newAttraction.pin = pin
             
             if !attractionsHidden {
-                mapView.addAnnotation(newAnnot)
+                dispatch_async(dispatch_get_main_queue()){
+                    self.mapView.addAnnotation(newAnnot)
+                }
             }
         }
     }
@@ -281,7 +283,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     func mapView(mapView: MKMapView!, didAddAnnotationViews views: [AnyObject]!) {
-        /*
+        
         for view in views {
             var annotationView = view as! MKAnnotationView
             var endFrame = annotationView.frame
@@ -292,7 +294,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 annotationView.frame = endFrame
             })
         }
-        */
     }
     
     func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
@@ -315,10 +316,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         } else if annotation is ATAnnotation {
            // println("is AT annotation")
             let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "atPin")
-            pinAnnotationView.pinColor = MKPinAnnotationColor.Purple
+
             pinAnnotationView.canShowCallout = true
-            // pinAnnotationView.animatesDrop = true
+
             pinAnnotationView.image = UIImage(named:"pin")
+            // pinAnnotationView.animatesDrop = true
             return pinAnnotationView
         }
         return nil
