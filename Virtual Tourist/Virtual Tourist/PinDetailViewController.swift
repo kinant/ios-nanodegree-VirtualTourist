@@ -135,10 +135,6 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
                     self.updateBottomButton()
                 }
             }
-            
-            // self.collectionView?.reloadData()
-            
-            // self.saveContext()
         })
     }
     
@@ -153,8 +149,6 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let sectionInfo = self.fetchedResultsController.sections![section] as! NSFetchedResultsSectionInfo
         
-        // println("number of objectts:  \(sectionInfo.numberOfObjects)")
-        
         return sectionInfo.numberOfObjects
     }
     
@@ -168,13 +162,11 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
-        // println("did select!")
-        
         let cell = collectionView.cellForItemAtIndexPath(indexPath) as! CustomCollectionViewCell
         let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         
         if photo.posterImage != nil {
-            println("select!")
+            
             selectedIndexes.append(indexPath)
         
             // Then reconfigure the cell
@@ -185,7 +177,6 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     }
     
     func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
-        println("did deselect!")
         
         let cell = collectionView.cellForItemAtIndexPath(indexPath) as! CustomCollectionViewCell
         let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
@@ -193,7 +184,6 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         if photo.posterImage != nil {
             if let index = find(selectedIndexes, indexPath) {
                 selectedIndexes.removeAtIndex(index)
-                println("deselect!")
             }
         
             configureCell(cell, atIndexPath: indexPath)
@@ -208,8 +198,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         insertedIndexPaths = [NSIndexPath]()
         deletedIndexPaths = [NSIndexPath]()
         updatedIndexPaths = [NSIndexPath]()
-        
-        println("in controllerWillChangeContent")
+
     }
     
     // The second method may be called multiple times, once for each Color object that is added, deleted, or changed.
@@ -219,7 +208,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         switch type{
             
         case .Insert:
-            println("Insert an item at \(newIndexPath!.row)")
+            // println("Insert an item at \(newIndexPath!.row)")
             // Here we are noting that a new Color instance has been added to Core Data. We remember its index path
             // so that we can add a cell in "controllerDidChangeContent". Note that the "newIndexPath" parameter has
             // the index path that we want in this case
@@ -227,14 +216,14 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
             println("inserted: \(insertedIndexPaths)")
             break
         case .Delete:
-            println("Delete an item at \(indexPath!.row)")
+            // println("Delete an item at \(indexPath!.row)")
             // Here we are noting that a Color instance has been deleted from Core Data. We keep remember its index path
             // so that we can remove the corresponding cell in "controllerDidChangeContent". The "indexPath" parameter has
             // value that we want in this case.
             deletedIndexPaths.append(indexPath!)
             break
         case .Update:
-            println("Update an item at \(newIndexPath!.row)")
+            // println("Update an item at \(newIndexPath!.row)")
             // println(collectionView?.numberOfSections())
             // We don't expect Color instances to change after they are created. But Core Data would
             // notify us of changes if any occured. This can be useful if you want to respond to changes
@@ -258,21 +247,21 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     // Notice that all of the changes are performed inside a closure that is handed to the collection view.
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
         
-        println("in controller did change content...")
+        // println("in controller did change content...")
         
         dispatch_async(dispatch_get_main_queue()){
             self.collectionView!.performBatchUpdates({() -> Void in
                 
-                println("Performing batch updates...")
+                // println("Performing batch updates...")
                 
                 for indexPath in self.insertedIndexPaths {
-                    println("inserting at \(indexPath.row)")
+                    // println("inserting at \(indexPath.row)")
                     // dispatch_async(dispatch_get_main_queue()){
                     self.collectionView!.insertItemsAtIndexPaths([indexPath])
                     // }
                 }
                 for indexPath in self.deletedIndexPaths {
-                    println("deleting at \(indexPath.row)")
+                    // println("deleting at \(indexPath.row)")
                     // println("deleted")
                     // println("count: \(self.pin.photos.count)")
                     // dispatch_async(dispatch_get_main_queue()){
@@ -280,7 +269,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
                     // }
                 }
                 for indexPath in self.updatedIndexPaths {
-                    println("updating at \(indexPath.row)")
+                    // println("updating at \(indexPath.row)")
                     //println("BEFORE1")
                     // dispatch_async(dispatch_get_main_queue()){
                     self.collectionView!.reloadItemsAtIndexPaths([indexPath])

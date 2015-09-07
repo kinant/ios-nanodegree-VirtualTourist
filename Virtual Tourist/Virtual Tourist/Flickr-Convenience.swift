@@ -54,7 +54,7 @@ extension Flickr {
         
         if pin.photos.isEmpty {
             Flickr.sharedInstance().searchPhotosByLatLon(pin, completionHandler: { (result, error) -> Void in
-                println("searching for photos...")
+                // println("searching for photos...")
                 // println("result: \(result)")
                 // println("error \(error?.localizedDescription)")
                 
@@ -69,13 +69,13 @@ extension Flickr {
                             
                             if let imageID = photo["id"] as? String {
                                 let newPhoto = Photo(imagePath: imageURL, id: imageID, context: self.sharedContext)
-                                println("created new photo with id \(imageID)")
+                                // println("created new photo with id \(imageID)")
                                 newPhoto.pin = pin
                             }
                         }
                     }
                     
-                    println("photo count: \(photos.count)")
+                    // println("photo count: \(photos.count)")
                     completionHandler(hasNoImages: false)
                 } else if error == nil {
                     completionHandler(hasNoImages: true)
@@ -107,9 +107,10 @@ extension Flickr {
                         
                         // make sure the user hasn't deleted the pin while the image was downloading
                         if !photo.isPreparingToDelete {
-                            println("image downloaded!")
+                            // println("image downloaded!")
                             photo.posterImage = image
                             photo.isDownloaded = NSNumber(bool: true)
+                            self.saveContext()
                         }
                         
                     }
