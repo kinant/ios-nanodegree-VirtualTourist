@@ -15,6 +15,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     var pinCount = 0
     var selectedPinIndex = 0
     
+    var pinToBeAdded: Pin!
+    
     @IBOutlet weak var bottomView: UIView!
     @IBOutlet weak var mapViewSuperView: UIView!
     @IBOutlet weak var mapView: MKMapView!
@@ -23,6 +25,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     var attractionsHidden = false
     var inDeleteMode = false
     // var pinDownloadTaskInProgress = false
+    
+    var annotationToAdd: VTAnnotation!
     
     lazy var sharedContext = {
         CoreDataStackManager.sharedInstance().managedObjectContext!
@@ -33,6 +37,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         // Do any additional setup after loading the view, typically from a nib.
         mapView.delegate = self
         mapView.mapType = .Standard
+        mapView.userInteractionEnabled = true
+        
+        self.view.userInteractionEnabled = true
         
         // load region
         let defaults = NSUserDefaults.standardUserDefaults()
@@ -51,6 +58,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self , action: "handleLongPress:")
         longPressGestureRecognizer.minimumPressDuration = 1.0
         self.mapView.addGestureRecognizer(longPressGestureRecognizer)
+        longPressGestureRecognizer.cancelsTouchesInView = false
         
         pins = fetchAllPins()
         
@@ -72,6 +80,71 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             var locationCoordinate = self.mapView.convertPoint(point, toCoordinateFromView: self.mapView)
         
             addPin(locationCoordinate)
+        }
+    }
+    
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+        
+        println("touches began!")
+        
+    }
+    
+    override func touchesMoved(touches: Set<NSObject>, withEvent event: UIEvent) {
+        
+        println("touches moved!")
+        
+        if annotationToAdd != nil {
+            
+            var test = mapView.viewForAnnotation(annotationToAdd)
+            test.setDragState(.Dragging, animated: true)
+            println(test.dragState.rawValue)
+            
+            let touch = touches.first as! UITouch
+            let point = touch.locationInView(self.mapView)
+            
+            var locationCoordinate = self.mapView.convertPoint(point, toCoordinateFromView: self.mapView)
+        
+            println("new location lat/long: \(locationCoordinate.latitude), \(locationCoordinate.longitude)")
+            dispatch_async(dispatch_get_main_queue()) {
+                self.annotationToAdd.setNewCoordinate(locationCoordinate)
+            }
+        
+            println("pin location lat/long: \(annotationToAdd.coordinate.latitude), \(annotationToAdd.coordinate.longitude)")
+        }
+    }
+    
+    override func touchesCancelled(touches: Set<NSObject>!, withEvent event: UIEvent!) {
+        println("touches cancelled")
+    }
+    
+    override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
+        println("touches ended")
+        
+        if annotationToAdd != nil {
+            var test = mapView.viewForAnnotation(annotationToAdd)
+            
+            dispatch_async(dispatch_get_main_queue()){
+                test.setDragState(.Ending, animated: true)
+                println(test.dragState.rawValue)
+            }
+            
+            addAttractionsForPin(pinToBeAdded)
+        
+            annotationToAdd = nil
+        }
+    }
+    
+    func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!, didChangeDragState newState: MKAnnotationViewDragState, fromOldState oldState: MKAnnotationViewDragState) {
+        
+        println("did change drag state...")
+        println(newState.rawValue)
+        
+        switch (newState) {
+        case .Starting:
+            view.dragState = .Dragging
+        case .Ending, .Canceling:
+            view.dragState = .None
+        default: break
         }
     }
     
@@ -114,7 +187,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         pins.append(newPin)
         
-        addAttractionsForPin(newPin)
+        self.annotationToAdd = annotation
+        
+        pinToBeAdded = newPin
+        // addAttractionsForPin(newPin)
         
         CoreDataStackManager.sharedInstance().saveContext()
         
@@ -123,7 +199,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         newPin.downloadTaskInProgress = true
         
         Flickr.sharedInstance().downloadImagePathsForPin(newPin, completionHandler: { (hasNoImages) -> Void in
-            newPin.downloadTaskInProgress = false
+           newPin.downloadTaskInProgress = false
         })
 
         pinCount++
@@ -170,8 +246,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         defaults.setDouble(spanLatDelta, forKey: "spanLatDelta")
         defaults.setDouble(spanLongDelta, forKey: "spanLongDelta")
         
-        // defaults.setFloat(mapView.region.center.longitute, forKey: "longitude")
-        
     }
     
     func mapView(mapView: MKMapView!, didAddAnnotationViews views: [AnyObject]!) {
@@ -194,10 +268,16 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         if annotation is VTAnnotation {
             // println("is VT annotation")
             let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "myPin")
-            // pinAnnotationView.draggable = true
+            pinAnnotationView.draggable = false
             pinAnnotationView.canShowCallout = false
             // pinAnnotationView.animatesDrop = true
-            pinAnnotationView.image = UIImage(named:"pin2")
+            // pinAnnotationView.image = UIImage(named:"pin2")
+            
+            if annotationToAdd != nil {
+                pinAnnotationView.setDragState(.Starting, animated: true)
+                println("initial drag state: \(pinAnnotationView.dragState.rawValue)")
+            }
+            
             return pinAnnotationView
         } else if annotation is ATAnnotation {
            // println("is AT annotation")
@@ -229,11 +309,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     func mapView(mapView: MKMapView!, didSelectAnnotationView view: MKAnnotationView!) {
-        // println("annotation view selected!")
+        
+        println("annotation view selected!")
         
         if let selectedAnnotation = mapView.selectedAnnotations[0] as? VTAnnotation {
             
             selectedPinIndex = returnSelectedPinIndex(selectedAnnotation)
+            
+            println("selected: \(selectedPinIndex)")
             
             if inDeleteMode {
                 println("will attempt to delete pin!")

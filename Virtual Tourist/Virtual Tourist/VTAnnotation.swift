@@ -17,10 +17,16 @@ func ==(lhs: VTAnnotation, rhs: VTAnnotation) -> Bool {
 class VTAnnotation: NSObject, MKAnnotation, Equatable {
     
     var coordinate: CLLocationCoordinate2D = CLLocationCoordinate2DMake(0, 0)
-    // var title: String = ""
-    // var subtitle: String = ""
+    var index: Int!
     
-    init(coordinate: CLLocationCoordinate2D, index: Int){
+    init(coordinate: CLLocationCoordinate2D, index: Int) {
         self.coordinate = coordinate
+        self.index = index
+    }
+    
+    func setNewCoordinate(newCoordinate: CLLocationCoordinate2D) {
+        willChangeValueForKey("coordinate")
+        self.coordinate = newCoordinate
+        didChangeValueForKey("coordinate")
     }
 }
