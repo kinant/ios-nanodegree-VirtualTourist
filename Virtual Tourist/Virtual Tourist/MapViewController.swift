@@ -32,6 +32,20 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         mapView.delegate = self
         mapView.mapType = .Standard
         
+        // load region
+        let defaults = NSUserDefaults.standardUserDefaults()
+        let latitude = defaults.doubleForKey("latitude")
+        let longitude = defaults.doubleForKey("longitude")
+        let spanLatDelta = defaults.doubleForKey("spanLatDelta")
+        let spanLongDelta = defaults.doubleForKey("spanLongDelta")
+        
+        let span = MKCoordinateSpan(latitudeDelta: spanLatDelta, longitudeDelta: spanLongDelta)
+        let region = MKCoordinateRegion(center: CLLocationCoordinate2DMake(latitude, longitude), span: span)
+        
+        if latitude != 0.0 && longitude != 0.0 {
+            mapView.setRegion(region, animated: false)
+        }
+        
         let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self , action: "handleLongPress:")
         longPressGestureRecognizer.minimumPressDuration = 1.0
         self.mapView.addGestureRecognizer(longPressGestureRecognizer)
@@ -124,6 +138,35 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let span = MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5)
         let region = MKCoordinateRegion(center: location, span: span)
         mapView.setRegion(region, animated: true)
+    }
+    
+    func mapView(mapView: MKMapView!, regionDidChangeAnimated animated: Bool) {
+        println("region did change!")
+        println("region: \(mapView.region)")
+        println("span: \(mapView.region.span)")
+        
+        // var myRegion: AnyObject? = mapView.region as? AnyObject
+        
+        // var newObject = mapView.region as! AnyObject
+        // NSKeyedArchiver.archiveRootObject(mapView.region, toFile: mapStateFilePath)
+        // NSUserDefaults.standardUserDefaults().setObject(mapView.region, forKey: "myRegion")
+        //NSUserDefaults.standardUserDefaults().setObject(myRegion, forKey: "myRegion")
+        //NSUserDefaults.standardUserDefaults().setFloat(22.5, forKey: "test")
+        
+        let defaults = NSUserDefaults.standardUserDefaults()
+        
+        let latitude = mapView.region.center.latitude
+        let longitude = mapView.region.center.longitude
+        let spanLatDelta = mapView.region.span.latitudeDelta
+        let spanLongDelta = mapView.region.span.longitudeDelta
+        
+        defaults.setDouble(latitude, forKey: "latitude")
+        defaults.setDouble(longitude, forKey: "longitude")
+        defaults.setDouble(spanLatDelta, forKey: "spanLatDelta")
+        defaults.setDouble(spanLongDelta, forKey: "spanLongDelta")
+        
+        // defaults.setFloat(mapView.region.center.longitute, forKey: "longitude")
+        
     }
     
     func mapView(mapView: MKMapView!, didAddAnnotationViews views: [AnyObject]!) {
@@ -252,4 +295,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    var mapStateFilePath : String {
+        let manager = NSFileManager.defaultManager()
+        let url = manager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first as! NSURL
+        return url.URLByAppendingPathComponent("mapState").path!
+    }
+    
 }
