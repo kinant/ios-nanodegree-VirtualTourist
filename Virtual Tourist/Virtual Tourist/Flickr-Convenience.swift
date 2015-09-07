@@ -48,16 +48,20 @@ extension Flickr {
     }
     
     func downloadImagePathsForPin(pin: Pin, completionHandler: (hasNoImages: Bool) -> Void){
+        
+        println("attempting to download image paths for pin...")
+        println("is empty? \(pin.photos.isEmpty)")
+        
         if pin.photos.isEmpty {
             Flickr.sharedInstance().searchPhotosByLatLon(pin, completionHandler: { (result, error) -> Void in
-                
+                println("searching for photos...")
                 // println("result: \(result)")
                 // println("error \(error?.localizedDescription)")
                 
                 if let photos = result {
                     
                     if photos.count == 0 {
-                        // println("pin has no images!")
+                        println("pin has no images!")
                     }
                     
                     for photo in photos {
@@ -65,24 +69,26 @@ extension Flickr {
                             
                             if let imageID = photo["id"] as? String {
                                 let newPhoto = Photo(imagePath: imageURL, id: imageID, context: self.sharedContext)
-                                // println("created new photo with id \(imageID)")
+                                println("created new photo with id \(imageID)")
                                 newPhoto.pin = pin
                             }
                         }
                     }
                     
-                    // println("photo count: \(photos.count)")
-                    self.fetchImagesForPin(pin)
+                    println("photo count: \(photos.count)")
                     completionHandler(hasNoImages: false)
                 } else if error == nil {
                     completionHandler(hasNoImages: true)
                 }
                 self.saveContext()
+                self.fetchImagesForPin(pin)
             })
         }
     }
     
     func fetchImagesForPin(pin:Pin){
+        
+        println("attempting to download \(pin.photos.count) photos!")
         
         for photo in pin.photos {
             
@@ -101,10 +107,11 @@ extension Flickr {
                         
                         // make sure the user hasn't deleted the pin while the image was downloading
                         if !photo.isPreparingToDelete {
+                            println("image downloaded!")
                             photo.posterImage = image
                             photo.isDownloaded = NSNumber(bool: true)
                         }
-                        self.saveContext()
+                        
                     }
                     else {
                         println("Error: \(error.localizedDescription)")

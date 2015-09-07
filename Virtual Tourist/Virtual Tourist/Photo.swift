@@ -61,9 +61,9 @@ class Photo: NSManagedObject {
         self.isPreparingToDelete = true
         
         // check that the image has been downloaded
-        if self.isDownloaded == true {
+        // if self.isDownloaded == true {
             // set the image data to nil (this deletes it)
             posterImage = nil
-        }
+        //}
     }
 }

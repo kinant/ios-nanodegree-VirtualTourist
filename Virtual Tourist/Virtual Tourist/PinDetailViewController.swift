@@ -101,11 +101,6 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     func fetchCollection(){
         println("fetching new collection...")
         
-        selectedIndexes = [NSIndexPath]()
-        insertedIndexPaths = [NSIndexPath]()
-        deletedIndexPaths = [NSIndexPath]()
-        updatedIndexPaths = [NSIndexPath]()
-        
         Flickr.sharedInstance().downloadImagePathsForPin(pin, completionHandler: { (hasNoImages) -> Void in
             if hasNoImages {
                 dispatch_async(dispatch_get_main_queue()){
@@ -113,6 +108,10 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
                     self.updateBottomButton()
                 }
             }
+            
+            // self.collectionView?.reloadData()
+            
+            // self.saveContext()
         })
     }
     
@@ -121,11 +120,13 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     }
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        return 1
+        return self.fetchedResultsController.sections?.count ?? 0
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let sectionInfo = self.fetchedResultsController.sections![section] as! NSFetchedResultsSectionInfo
+        
+        // println("number of objectts:  \(sectionInfo.numberOfObjects)")
         
         return sectionInfo.numberOfObjects
     }
@@ -185,21 +186,23 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         switch type{
             
         case .Insert:
-            println("Insert an item")
+            println("Insert an item at \(newIndexPath!.row)")
             // Here we are noting that a new Color instance has been added to Core Data. We remember its index path
             // so that we can add a cell in "controllerDidChangeContent". Note that the "newIndexPath" parameter has
             // the index path that we want in this case
             insertedIndexPaths.append(newIndexPath!)
+            println("inserted: \(insertedIndexPaths)")
             break
         case .Delete:
-            println("Delete an item")
+            println("Delete an item at \(indexPath!.row)")
             // Here we are noting that a Color instance has been deleted from Core Data. We keep remember its index path
             // so that we can remove the corresponding cell in "controllerDidChangeContent". The "indexPath" parameter has
             // value that we want in this case.
             deletedIndexPaths.append(indexPath!)
             break
         case .Update:
-            println("Update an item.")
+            println("Update an item at \(newIndexPath!.row)")
+            // println(collectionView?.numberOfSections())
             // We don't expect Color instances to change after they are created. But Core Data would
             // notify us of changes if any occured. This can be useful if you want to respond to changes
             // that come about after data is downloaded. For example, when an images is downloaded from
@@ -213,7 +216,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
             break
         }
     }
-
+    
     // This method is invoked after all of the changed in the current batch have been collected
     // into the three index path arrays (insert, delete, and upate). We now need to loop through the
     // arrays and perform the changes.
@@ -222,43 +225,42 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     // Notice that all of the changes are performed inside a closure that is handed to the collection view.
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
         
+        println("in controller did change content...")
+        
         dispatch_async(dispatch_get_main_queue()){
             self.collectionView!.performBatchUpdates({() -> Void in
-            
-                println("BEFORE1")
+                
+                println("Performing batch updates...")
+                
                 for indexPath in self.insertedIndexPaths {
+                    println("inserting at \(indexPath.row)")
                     // dispatch_async(dispatch_get_main_queue()){
                     self.collectionView!.insertItemsAtIndexPaths([indexPath])
                     // }
                 }
-                println("AFTER1")
-                println("BEFORE2")
                 for indexPath in self.deletedIndexPaths {
+                    println("deleting at \(indexPath.row)")
                     // println("deleted")
                     // println("count: \(self.pin.photos.count)")
                     // dispatch_async(dispatch_get_main_queue()){
                     self.collectionView!.deleteItemsAtIndexPaths([indexPath])
                     // }
                 }
-                println("AFTER2")
-                println("BEFORE3")
                 for indexPath in self.updatedIndexPaths {
+                    println("updating at \(indexPath.row)")
                     //println("BEFORE1")
                     // dispatch_async(dispatch_get_main_queue()){
                     self.collectionView!.reloadItemsAtIndexPaths([indexPath])
                     // }
                     //println("AFTER1")
                 }
-                println("AFTER3")
-                println("BEFORE4")
                 if self.pin.photos.count == 0 && self.deleteAllPressed {
                     self.fetchCollection()
                     self.deleteAllPressed = false
-                    // self.noImagesLabel.hidden = false
                 } else if self.pin.photos.count > 0 {
                     // self.noImagesLabel.hidden = true
                 }
-                println("AFTER4")
+                
                 self.updateBottomButton()
                 
             }, completion: nil)
@@ -309,10 +311,9 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
             deleteSelectedColors()
         }
         
-        
-        println("saving context!")
-        saveContext()
-        println("context saved!")
+        // println("saving context!")
+        // saveContext()
+        // println("context saved!")
     }
     
     func deleteAllColors() {
@@ -323,6 +324,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         }
         
         deleteAllPressed = true
+        saveContext()
     }
     
     func deleteSelectedColors() {
@@ -338,6 +340,8 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         }
         
         selectedIndexes = [NSIndexPath]()
+        
+        saveContext()
     }
     
     func updateBottomButton() {
@@ -361,8 +365,10 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
             
             if photo.isDownloaded == false {
                 return false
+                // return true
             }
         }
+        self.saveContext()
         return true
     }
     
