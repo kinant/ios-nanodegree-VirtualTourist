@@ -97,10 +97,15 @@ extension Flickr {
                 let imageUrl = photo.imagePath!
                 let url = NSURL(string: imageUrl)!
                 let request = NSURLRequest(URL: url)
-        
+                
+                println("starting in here!")
+                
                 let mainQueue = NSOperationQueue.mainQueue()
             
                 NSURLConnection.sendAsynchronousRequest(request, queue: mainQueue, completionHandler: { (response, data, error) -> Void in
+                    
+                    println("now in here!")
+                    
                     if error == nil {
                         // Convert the downloaded data in to a UIImage object
                         let image = UIImage(data: data)
@@ -118,6 +123,9 @@ extension Flickr {
                         println("Error: \(error.localizedDescription)")
                     }
                 })
+                
+                println("ending out here!")
+                
             }
         }
     }

@@ -8,6 +8,7 @@
 
 import MapKit
 import CoreData
+import UIKit
 
 func ==(lhs:Pin, rhs:Pin) -> Bool {
     return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
@@ -29,6 +30,7 @@ class Pin: NSManagedObject, Equatable {
     @NSManaged var attractions: [Attraction]
     
     var downloadTaskInProgress =  false
+    var activityIndicator = UIActivityIndicatorView()
     
     override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
         super.init(entity: entity, insertIntoManagedObjectContext: context)

@@ -188,6 +188,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     func addAttractionsForPin(pin: Pin){
         var location = pin.annotation.coordinate
+        
+        println("adding attractions!")
+        
         var attractions = Tixik.sharedInstance().taskForData(location)
         
         for attraction in attractions {
@@ -205,6 +208,73 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                     self.mapView.addAnnotation(newAnnot)
                 }
             }
+        }
+        hidePinActivityIndicator(pin)
+        println("attractions added!")
+        
+    }
+    
+    func showPinActivityIndicator(pin: Pin){
+        //var annotationView = MKAnnotationView()
+        
+        for (var i = 0; i < mapView.annotations.count; i++) {
+            
+            if let newAnnotation = mapView.annotations[i] as? VTAnnotation {
+                
+                if newAnnotation == pin.annotation {
+                
+                    let annotationView = mapView.viewForAnnotation(mapView.annotations[i] as! VTAnnotation)
+                
+                    var point = mapView.convertCoordinate(CLLocationCoordinate2DMake(pin.latitude, pin.longitude), toPointToView: annotationView)
+                    println("point: \(point)")
+                    point.y -= 65
+                    point.x -= 15
+                    
+                    pin.activityIndicator = UIActivityIndicatorView()
+                    var endFrame = annotationView.frame
+                    // pin.activityIndicator.frame = CGRectOffset(endFrame, 0, -50)
+                    // pin.activityIndicator.frame = CGRectOffset(endFrame, 0, -50)
+                    pin.activityIndicator.frame = CGRectMake(0, -annotationView.frame.height * 0.75, 30.0, 30.0);
+                
+                    pin.activityIndicator.backgroundColor = UIColor.whiteColor()
+                    pin.activityIndicator.alpha = 0.75
+                
+                    pin.activityIndicator.hidden = false
+                
+                    //var annotationView = view as! MKAnnotationView
+                    //var endFrame = annotationView.frame
+                
+                    // annotationView.frame = CGRectOffset(endFrame, 0, -500)
+                
+                    //actInd.center = point
+                    // actInd.hidesWhenStopped = true
+                    pin.activityIndicator.activityIndicatorViewStyle =
+                    UIActivityIndicatorViewStyle.Gray
+
+                
+                    dispatch_async(dispatch_get_main_queue()){
+                        annotationView.addSubview(pin.activityIndicator)
+                        pin.activityIndicator.startAnimating()
+                    }
+                }
+            }
+        }
+        
+
+        
+        // self.mapView.viewForAnnotation(pin.annotation).addSubview(actInd)
+        
+
+        // uiView.addSubview(actInd)
+        // activityIndicator.startAnimating()
+    }
+    
+    func hidePinActivityIndicator(pin: Pin){
+        println("IN HERE!!!")
+        dispatch_async(dispatch_get_main_queue()){
+            pin.activityIndicator.stopAnimating()
+            pin.activityIndicator.hidden = true
+            pin.activityIndicator.removeFromSuperview()
         }
     }
     
@@ -224,15 +294,16 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     func addPinComplete(newPin: Pin){
-        CoreDataStackManager.sharedInstance().saveContext()
         
         let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
         
         newPin.downloadTaskInProgress = true
+        showPinActivityIndicator(newPin)
         
         Flickr.sharedInstance().downloadImagePathsForPin(newPin, completionHandler: { (hasNoImages) -> Void in
             newPin.downloadTaskInProgress = false
             self.addAttractionsForPin(newPin)
+            CoreDataStackManager.sharedInstance().saveContext()
         })
         
         // pinToBeAdded = newPin
