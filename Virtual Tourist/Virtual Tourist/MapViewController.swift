@@ -18,7 +18,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var bottomView: UIView!
     @IBOutlet weak var mapViewSuperView: UIView!
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var hideAttractionsButton: UIButton!
     
+    var attractionsHidden = false
     var inDeleteMode = false
     // var pinDownloadTaskInProgress = false
     
@@ -96,7 +98,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             let newAnnot = ATAnnotation(coordinate: CLLocationCoordinate2DMake(x, y), title: name)
             let newAttraction = Attraction(annotation: newAnnot, context: sharedContext)
             newAttraction.pin = pin
-            mapView.addAnnotation(newAnnot)
+            
+            if !attractionsHidden {
+                mapView.addAnnotation(newAnnot)
+            }
         }
     }
     
@@ -265,6 +270,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         for pin in pins {
             deleteAttractionsForPin(pin)
         }
+        attractionsHidden = true
     }
     
     func showAttractions() {
@@ -274,6 +280,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 mapView.addAnnotation(attraction.annotation)
             }
         }
+        attractionsHidden = false
     }
     
     func returnSelectedPinIndex(annotation: VTAnnotation) -> Int {
@@ -297,13 +304,33 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             inDeleteMode = true
             sender.title = "Cancel"
             bottomView.hidden = false
-            hideAttractions()
+            // hideAttractionsButton.hidden = true
+            // hideAttractionsButton.bounds.origin.y -= 60
+            
+            if !attractionsHidden {
+                // hideAttractions()
+            }
             // mapViewSuperView.frame.origin.y -= bottomView.frame.height
         } else {
             inDeleteMode = false
             sender.title = "Edit"
             bottomView.hidden = true
             // mapViewSuperView.frame.origin.y += bottomView.frame.height
+            // hideAttractionsButton.hidden = false
+            // hideAttractionsButton.bounds.origin.y += 60
+            
+            if attractionsHidden {
+                // showAttractions()
+            }
+        }
+    }
+    
+    @IBAction func hideAttractions(sender: UIButton) {
+        if sender.titleLabel?.text == "HIDE ATTRACTIONS" {
+            sender.setTitle("SHOW ATTRACTIONS", forState: .Normal)
+            hideAttractions()
+        } else {
+            sender.setTitle("HIDE ATTRACTIONS", forState: .Normal)
             showAttractions()
         }
     }
