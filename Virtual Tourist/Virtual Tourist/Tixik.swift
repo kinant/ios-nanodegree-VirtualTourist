@@ -8,6 +8,13 @@
 import Foundation
 import MapKit
 
+/*
+* Tixik Class is used to parse XML data from TIXIK.com website. This website provides
+* a list of attractions based on latitude and longitude.
+* XML Parsing help from:
+* http://ashishkakkad.com/2014/10/xml-parsing-in-swift-language-ios-8-nsxmlparser/
+*/
+
 class Tixik: NSObject, NSXMLParserDelegate {
     
     var strXMLData:String = ""
@@ -17,40 +24,50 @@ class Tixik: NSObject, NSXMLParserDelegate {
     var passName:Bool=false
     var parser = NSXMLParser()
     
+    // these arrays store all the names and gps x and y coordinates (latitude and longitude)
     var names = [String]()
     var gps_x = [Double]()
     var gps_y = [Double]()
     
+    // function that parses the contents of the XML returned by TIXIK. It returns a dictionary
+    // of attractions
     func taskForData(coordinate: CLLocationCoordinate2D) -> [[String: AnyObject]] {
         
+        // clear all the arrays
         names = []
         gps_x = []
         gps_y = []
         
+        // set url to the tixik url
         let url = "http://www.tixik.com/api/nearby?lat=\(coordinate.latitude)&lng=\(coordinate.longitude)&limit=5&key=demo"
         var urlToSend: NSURL = NSURL(string: url)!
         
         // Parse the XML
         parser = NSXMLParser(contentsOfURL: urlToSend)!
         parser.delegate = self
-        
+
         var success:Bool = parser.parse()
         
+        // create the dictionary of attractions
         var attractionDict = [[String : AnyObject]]()
         
+        // if parsing was successful...
         if success {
             
-            var newDictionary = [NSDictionary]()
-            
+            // for each attraction (we counted by names)
             for var i = 0; i < names.count; i++ {
+                // create a new entry for the dictionary
                 var newEntry = ["name" : names[i], "x" : gps_x[i], "y" : gps_y[i]]
-               attractionDict.append(newEntry as! [String : AnyObject])
+               
+                // append this attraction to the dictionary
+                attractionDict.append(newEntry as! [String : AnyObject])
             }
             
         } else {
             println("parse failure!")
         }
         
+        // return the dictionary of attractions
         return attractionDict
     }
     

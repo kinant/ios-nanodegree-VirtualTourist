@@ -216,8 +216,8 @@
 		C9EB7C9B1B69F3270093C383 /* TIXIK */ = {
 			isa = PBXGroup;
 			children = (
-				C9EB7C9C1B69F3460093C383 /* Tixik.swift */,
 				C94C644C1B6A850000E45D5C /* Attraction.swift */,
+				C9EB7C9C1B69F3460093C383 /* Tixik.swift */,
 			);
 			name = TIXIK;
 			sourceTree = "<group>";
