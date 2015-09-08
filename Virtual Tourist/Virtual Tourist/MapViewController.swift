@@ -248,7 +248,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     func showPinActivityIndicator(pin: Pin){
         //var annotationView = MKAnnotationView()
         
-        let annotationView = mapView.viewForAnnotation(pin.annotation) as! VTAnnotationView
+        let annotationView = mapView.viewForAnnotation(pin.annotation) as! VTPinAnnotationView
         annotationView.showActivityIndicator()
         
         /*
@@ -308,12 +308,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     func changePinActivityIndicator(pin:Pin){
-        let annotationView = mapView.viewForAnnotation(pin.annotation) as! VTAnnotationView
+        let annotationView = mapView.viewForAnnotation(pin.annotation) as! VTPinAnnotationView
         annotationView.showPhotoInActivityIndicator()
     }
     
     func hidePinActivityIndicator(pin: Pin){
-        let annotationView = mapView.viewForAnnotation(pin.annotation) as! VTAnnotationView
+        let annotationView = mapView.viewForAnnotation(pin.annotation) as! VTPinAnnotationView
         annotationView.hideActivityIndicator()
     }
     
@@ -421,7 +421,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         if annotation is VTAnnotation {
             // println("is VT annotation")
-            let pinAnnotationView = VTAnnotationView(annotation: annotation, reuseIdentifier: "myPin")
+            let pinAnnotationView = VTPinAnnotationView(annotation: annotation, reuseIdentifier: "myPin")
             pinAnnotationView.draggable = true
             pinAnnotationView.canShowCallout = false
             // pinAnnotationView.animatesDrop = true
@@ -436,7 +436,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             return pinAnnotationView
         } else if annotation is ATAnnotation {
            // println("is AT annotation")
-            let pinAnnotationView = VTAnnotationView(annotation: annotation, reuseIdentifier: "atPin")
+            let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "atPin")
 
             pinAnnotationView.canShowCallout = true
 

@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import MapKit
 
-class VTAnnotationView: MKPinAnnotationView {
+class VTPinAnnotationView: MKPinAnnotationView {
 
     var activityIndicator = UIActivityIndicatorView()
     

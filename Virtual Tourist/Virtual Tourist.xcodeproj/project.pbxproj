@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		684043341B6199D200E32133 /* TaskCancelingCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684043331B6199D200E32133 /* TaskCancelingCollectionViewCell.swift */; };
 		68A845781B5FEE85007C1735 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 68A845771B5FEE85007C1735 /* Images.xcassets */; };
 		68A8457B1B5FEE85007C1735 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 68A845791B5FEE85007C1735 /* LaunchScreen.xib */; };
 		68A845871B5FEE85007C1735 /* Virtual_TouristTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A845861B5FEE85007C1735 /* Virtual_TouristTests.swift */; };
@@ -25,7 +24,7 @@
 		68A845AC1B6024AF007C1735 /* Flickr-Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A845AB1B6024AF007C1735 /* Flickr-Constants.swift */; };
 		68F94A291B614AA5003C8161 /* Flickr-Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F94A281B614AA5003C8161 /* Flickr-Convenience.swift */; };
 		C91B8EA51B9F39A6005BCF51 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91B8EA41B9F39A6005BCF51 /* Utils.swift */; };
-		C91B8EA71B9F4863005BCF51 /* VTAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91B8EA61B9F4863005BCF51 /* VTAnnotationView.swift */; };
+		C91B8EA71B9F4863005BCF51 /* VTPinAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91B8EA61B9F4863005BCF51 /* VTPinAnnotationView.swift */; };
 		C94C644D1B6A850000E45D5C /* Attraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94C644C1B6A850000E45D5C /* Attraction.swift */; };
 		C94C644F1B6AA4AC00E45D5C /* TODO.txt in Resources */ = {isa = PBXBuildFile; fileRef = C94C644E1B6AA4AC00E45D5C /* TODO.txt */; };
 		C9EB7C9D1B69F3460093C383 /* Tixik.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EB7C9C1B69F3460093C383 /* Tixik.swift */; };
@@ -45,7 +44,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		684043331B6199D200E32133 /* TaskCancelingCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskCancelingCollectionViewCell.swift; sourceTree = "<group>"; };
 		68A8456B1B5FEE84007C1735 /* Virtual Tourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Virtual Tourist.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		68A8456F1B5FEE85007C1735 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		68A845771B5FEE85007C1735 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -67,7 +65,7 @@
 		68A845AB1B6024AF007C1735 /* Flickr-Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Flickr-Constants.swift"; sourceTree = "<group>"; };
 		68F94A281B614AA5003C8161 /* Flickr-Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Flickr-Convenience.swift"; sourceTree = "<group>"; };
 		C91B8EA41B9F39A6005BCF51 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		C91B8EA61B9F4863005BCF51 /* VTAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTAnnotationView.swift; sourceTree = "<group>"; };
+		C91B8EA61B9F4863005BCF51 /* VTPinAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTPinAnnotationView.swift; sourceTree = "<group>"; };
 		C94C644C1B6A850000E45D5C /* Attraction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Attraction.swift; sourceTree = "<group>"; };
 		C94C644E1B6AA4AC00E45D5C /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = "<group>"; };
 		C9EB7C9C1B69F3460093C383 /* Tixik.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tixik.swift; sourceTree = "<group>"; };
@@ -115,22 +113,13 @@
 		68A8456D1B5FEE84007C1735 /* Virtual Tourist */ = {
 			isa = PBXGroup;
 			children = (
-				68A8459F1B602062007C1735 /* Model */,
-				68A845941B5FEED8007C1735 /* MapViewController.swift */,
-				68A845951B5FEED8007C1735 /* PinDetailViewController.swift */,
-				684043331B6199D200E32133 /* TaskCancelingCollectionViewCell.swift */,
-				68A845961B5FEED8007C1735 /* VTAnnotation.swift */,
-				C91B8EA61B9F4863005BCF51 /* VTAnnotationView.swift */,
-				C9EB7C9E1B6A11730093C383 /* ATAnnotation.swift */,
 				68A845901B5FEEC2007C1735 /* AppDelegate.swift */,
-				68A845921B5FEECA007C1735 /* CustomCollectionViewCell.swift */,
-				68A845771B5FEE85007C1735 /* Images.xcassets */,
-				68A8459A1B5FEEE4007C1735 /* Main.storyboard */,
-				68A845791B5FEE85007C1735 /* LaunchScreen.xib */,
+				C91B8EAA1B9F82F8005BCF51 /* Controller */,
+				C91B8EA91B9F8257005BCF51 /* View */,
+				68A8459F1B602062007C1735 /* Model */,
+				C91B8EAB1B9F8326005BCF51 /* Storyboard */,
 				68A8456E1B5FEE85007C1735 /* Supporting Files */,
 				68A8459C1B5FF482007C1735 /* VTConstants.swift */,
-				C91B8EA41B9F39A6005BCF51 /* Utils.swift */,
-				C94C644E1B6AA4AC00E45D5C /* TODO.txt */,
 			);
 			path = "Virtual Tourist";
 			sourceTree = "<group>";
@@ -138,7 +127,10 @@
 		68A8456E1B5FEE85007C1735 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				68A845771B5FEE85007C1735 /* Images.xcassets */,
+				C91B8EA41B9F39A6005BCF51 /* Utils.swift */,
 				68A8456F1B5FEE85007C1735 /* Info.plist */,
+				C94C644E1B6AA4AC00E45D5C /* TODO.txt */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -163,8 +155,8 @@
 		68A8459F1B602062007C1735 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				C91B8EA81B9F822F005BCF51 /* VirtualTourist */,
 				C9EB7C9B1B69F3270093C383 /* TIXIK */,
-				C9FB8EB31B648F9800DD945E /* Model.xcdatamodeld */,
 				68A845A21B602116007C1735 /* Flicker */,
 			);
 			name = Model;
@@ -173,15 +165,52 @@
 		68A845A21B602116007C1735 /* Flicker */ = {
 			isa = PBXGroup;
 			children = (
-				68A845A31B602141007C1735 /* Pin.swift */,
-				68A845A51B6021FA007C1735 /* Photo.swift */,
-				C9FB8EB11B648E3C00DD945E /* CoreDataStackManager.swift */,
-				68A845A71B602317007C1735 /* ImageCache.swift */,
 				68A845A91B60237D007C1735 /* Flickr.swift */,
 				68F94A281B614AA5003C8161 /* Flickr-Convenience.swift */,
 				68A845AB1B6024AF007C1735 /* Flickr-Constants.swift */,
 			);
 			name = Flicker;
+			sourceTree = "<group>";
+		};
+		C91B8EA81B9F822F005BCF51 /* VirtualTourist */ = {
+			isa = PBXGroup;
+			children = (
+				68A845A31B602141007C1735 /* Pin.swift */,
+				68A845A51B6021FA007C1735 /* Photo.swift */,
+				68A845961B5FEED8007C1735 /* VTAnnotation.swift */,
+				C9EB7C9E1B6A11730093C383 /* ATAnnotation.swift */,
+				C9FB8EB11B648E3C00DD945E /* CoreDataStackManager.swift */,
+				68A845A71B602317007C1735 /* ImageCache.swift */,
+				C9FB8EB31B648F9800DD945E /* Model.xcdatamodeld */,
+			);
+			name = VirtualTourist;
+			sourceTree = "<group>";
+		};
+		C91B8EA91B9F8257005BCF51 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				C91B8EA61B9F4863005BCF51 /* VTPinAnnotationView.swift */,
+				68A845921B5FEECA007C1735 /* CustomCollectionViewCell.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		C91B8EAA1B9F82F8005BCF51 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				68A845941B5FEED8007C1735 /* MapViewController.swift */,
+				68A845951B5FEED8007C1735 /* PinDetailViewController.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		C91B8EAB1B9F8326005BCF51 /* Storyboard */ = {
+			isa = PBXGroup;
+			children = (
+				68A8459A1B5FEEE4007C1735 /* Main.storyboard */,
+				68A845791B5FEE85007C1735 /* LaunchScreen.xib */,
+			);
+			name = Storyboard;
 			sourceTree = "<group>";
 		};
 		C9EB7C9B1B69F3270093C383 /* TIXIK */ = {
@@ -302,9 +331,8 @@
 				C94C644D1B6A850000E45D5C /* Attraction.swift in Sources */,
 				C9FB8EB21B648E3C00DD945E /* CoreDataStackManager.swift in Sources */,
 				68A845991B5FEED8007C1735 /* VTAnnotation.swift in Sources */,
-				684043341B6199D200E32133 /* TaskCancelingCollectionViewCell.swift in Sources */,
 				68A845A81B602317007C1735 /* ImageCache.swift in Sources */,
-				C91B8EA71B9F4863005BCF51 /* VTAnnotationView.swift in Sources */,
+				C91B8EA71B9F4863005BCF51 /* VTPinAnnotationView.swift in Sources */,
 				68A845911B5FEEC2007C1735 /* AppDelegate.swift in Sources */,
 				68A845981B5FEED8007C1735 /* PinDetailViewController.swift in Sources */,
 				68A8459D1B5FF482007C1735 /* VTConstants.swift in Sources */,
