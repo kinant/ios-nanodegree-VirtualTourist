@@ -117,7 +117,6 @@ extension Flickr {
                             photo.isDownloaded = NSNumber(bool: true)
                             self.saveContext()
                         }
-                        
                     }
                     else {
                         println("Error: \(error.localizedDescription)")
