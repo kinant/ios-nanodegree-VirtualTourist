@@ -333,8 +333,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     func addPinComplete(newPin: Pin){
         
-        // let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-        
         newPin.downloadTaskInProgress = true
         showPinActivityIndicator(newPin)
         
@@ -342,11 +340,16 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             newPin.downloadTaskInProgress = false
             self.addAttractionsForPin(newPin)
             
-            Flickr.sharedInstance().fetchImagesForPin(newPin, completionHandler: { (success) -> Void in
+            if hasNoImages {
+                self.hidePinActivityIndicator(newPin)
+            } else {
+                
+                Flickr.sharedInstance().fetchImagesForPin(newPin, completionHandler: { (success) -> Void in
                 // if success {
                     self.hidePinActivityIndicator(newPin)
                 //}
-            })
+                })
+            }
         })
         
         // pinToBeAdded = newPin

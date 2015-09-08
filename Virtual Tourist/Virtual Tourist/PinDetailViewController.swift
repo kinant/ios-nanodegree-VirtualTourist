@@ -138,6 +138,9 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
                     self.noImagesLabel.hidden = false
                     self.updateBottomButton()
                 }
+            } else {
+                Flickr.sharedInstance().fetchImagesForPin(self.pin, completionHandler: { (success) -> Void in
+                })
             }
             self.downloadTaskInProgress = false
         })

@@ -35,6 +35,8 @@ class VTAnnotationView: MKPinAnnotationView {
     
     func showPhotoInActivityIndicator(){
         dispatch_async(dispatch_get_main_queue()){
+            self.activityIndicator.activityIndicatorViewStyle =
+                UIActivityIndicatorViewStyle.Gray
             self.activityIndicator.backgroundColor = UIColor(patternImage: UIImage(named: "photo_square")!)
         }
     }
