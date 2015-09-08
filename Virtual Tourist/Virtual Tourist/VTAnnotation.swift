@@ -19,6 +19,8 @@ class VTAnnotation: NSObject, MKAnnotation, Equatable {
     var coordinate: CLLocationCoordinate2D = CLLocationCoordinate2DMake(0, 0)
     var index: Int!
     
+    var activityIndicator = UIActivityIndicatorView()
+    
     init(coordinate: CLLocationCoordinate2D, index: Int) {
         self.coordinate = coordinate
         self.index = index
@@ -29,5 +31,9 @@ class VTAnnotation: NSObject, MKAnnotation, Equatable {
         willChangeValueForKey("coordinate")
         self.coordinate = newCoordinate
         didChangeValueForKey("coordinate")
+    }
+    
+    func showActivityIndicator(){
+        // activityIndicator.frame = CGRectMake(0, self.view.frame.height * 0.75, 30.0, 30.0);
     }
 }

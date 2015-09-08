@@ -179,7 +179,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     func addPins(){
         for pin in pins {
-            mapView.addAnnotation(pin.annotation)
+            let annotation = VTAnnotation(coordinate: CLLocationCoordinate2DMake(pin.latitude, pin.longitude), index: 0)
+            pin.annotation = annotation
+            mapView.addAnnotation(annotation)
             // add attractions
             for attraction in pin.attractions {
                 mapView.addAnnotation(attraction.annotation)
@@ -210,7 +212,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 }
             }
         }
-        hidePinActivityIndicator(pin)
+        
+        changePinActivityIndicator(pin)
         println("attractions added!")
         println("step 1")
         
@@ -224,19 +227,19 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     func showPinActivityIndicator(pin: Pin){
         //var annotationView = MKAnnotationView()
         
+        let annotationView = mapView.viewForAnnotation(pin.annotation) as! VTAnnotationView
+        annotationView.showActivityIndicator()
+
+        /*
         for (var i = 0; i < mapView.annotations.count; i++) {
             
             if let newAnnotation = mapView.annotations[i] as? VTAnnotation {
                 
                 if newAnnotation == pin.annotation {
                 
-                    let annotationView = mapView.viewForAnnotation(mapView.annotations[i] as! VTAnnotation)
-                
-                    var point = mapView.convertCoordinate(CLLocationCoordinate2DMake(pin.latitude, pin.longitude), toPointToView: annotationView)
-                    println("point: \(point)")
-                    point.y -= 65
-                    point.x -= 15
-                    
+                    let annotationView = mapView.viewForAnnotation(mapView.annotations[i] as! VTAnnotation) as! VTAnnotationView
+                    annotationView.showActivityIndicator()
+                    /*
                     pin.activityIndicator = UIActivityIndicatorView()
                     // var endFrame = annotationView.frame
                     // pin.activityIndicator.frame = CGRectOffset(endFrame, 0, -50)
@@ -256,13 +259,19 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                     //actInd.center = point
                     // actInd.hidesWhenStopped = true
                     pin.activityIndicator.activityIndicatorViewStyle =
-                    UIActivityIndicatorViewStyle.Gray
-
-                
+                    UIActivityIndicatorViewStyle.White
+                    
+                    var newImgView = UIImageView(frame: pin.activityIndicator.frame)
+                    newImgView.image = UIImage(named: "tower_square")
+                    
+                    pin.activityIndicator.backgroundColor = UIColor(patternImage: UIImage(named: "tower_square")!)
+                    
                     dispatch_async(dispatch_get_main_queue()){
+                        // annotationView.addSubview(newImgView)
                         annotationView.addSubview(pin.activityIndicator)
                         pin.activityIndicator.startAnimating()
                     }
+                    */
                 }
             }
         }
@@ -274,15 +283,17 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
         // uiView.addSubview(actInd)
         // activityIndicator.startAnimating()
+        */
+    }
+    
+    func changePinActivityIndicator(pin:Pin){
+        let annotationView = mapView.viewForAnnotation(pin.annotation) as! VTAnnotationView
+        annotationView.showPhotoInActivityIndicator()
     }
     
     func hidePinActivityIndicator(pin: Pin){
-        println("IN HERE!!!")
-        dispatch_async(dispatch_get_main_queue()){
-            pin.activityIndicator.stopAnimating()
-            pin.activityIndicator.hidden = true
-            pin.activityIndicator.removeFromSuperview()
-        }
+        let annotationView = mapView.viewForAnnotation(pin.annotation) as! VTAnnotationView
+        annotationView.hideActivityIndicator()
     }
     
     func addPin(location: CLLocationCoordinate2D){
@@ -310,6 +321,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         Flickr.sharedInstance().downloadImagePathsForPin(newPin, completionHandler: { (hasNoImages) -> Void in
             newPin.downloadTaskInProgress = false
             self.addAttractionsForPin(newPin)
+            
+            Flickr.sharedInstance().fetchImagesForPin(newPin, completionHandler: { (success) -> Void in
+                // if success {
+                    self.hidePinActivityIndicator(newPin)
+                //}
+            })
         })
         
         // pinToBeAdded = newPin
@@ -381,7 +398,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         if annotation is VTAnnotation {
             // println("is VT annotation")
-            let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "myPin")
+            let pinAnnotationView = VTAnnotationView(annotation: annotation, reuseIdentifier: "myPin")
             pinAnnotationView.draggable = true
             pinAnnotationView.canShowCallout = false
             // pinAnnotationView.animatesDrop = true
@@ -396,7 +413,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             return pinAnnotationView
         } else if annotation is ATAnnotation {
            // println("is AT annotation")
-            let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "atPin")
+            let pinAnnotationView = VTAnnotationView(annotation: annotation, reuseIdentifier: "atPin")
 
             pinAnnotationView.canShowCallout = true
 

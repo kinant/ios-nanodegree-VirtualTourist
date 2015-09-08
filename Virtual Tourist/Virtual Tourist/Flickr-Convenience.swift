@@ -81,16 +81,18 @@ extension Flickr {
                     completionHandler(hasNoImages: true)
                 }
                 // self.saveContext()
-                self.fetchImagesForPin(pin)
+                // self.fetchImagesForPin(pin)
             })
         }
     }
     
-    func fetchImagesForPin(pin:Pin){
+    func fetchImagesForPin(pin:Pin, completionHandler: (success: Bool) -> Void){
         
         println("attempting to download \(pin.photos.count) photos!")
         
-        for photo in pin.photos {
+        for (var i = 0; i < pin.photos.count; i++)  {
+            
+            let photo = pin.photos[i]
             
             if photo.posterImage == nil {
             
@@ -102,6 +104,9 @@ extension Flickr {
                 
                 // let queue = NSOperationQueue()
             
+                println("i is: \(i)")
+                println("count is: \(pin.photos.count)")
+                
                 Flickr.sharedInstance().taskForImage(imageUrl, completionHandler: { (imageData, error) -> Void in
                     if error == nil {
                         // Convert the downloaded data in to a UIImage object
@@ -113,6 +118,14 @@ extension Flickr {
                             photo.posterImage = image
                             photo.isDownloaded = NSNumber(bool: true)
                             self.saveContext()
+                            
+                            println("i is: \(i)")
+                            println("count is: \(pin.photos.count)")
+                            
+                            if self.allPhotosDownloaded(pin) {
+                                println("in here333!")
+                                completionHandler(success: true)
+                            }
                         }
                     }
                     else {
@@ -145,5 +158,15 @@ extension Flickr {
                 */
             }
         }
+    }
+    
+    func allPhotosDownloaded(pin:Pin) -> Bool {
+        
+        for photo in pin.photos {
+            if photo.isDownloaded == false {
+                return false
+            }
+        }
+        return true
     }
 }

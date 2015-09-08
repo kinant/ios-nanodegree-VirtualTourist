@@ -25,6 +25,7 @@
 		68A845AC1B6024AF007C1735 /* Flickr-Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A845AB1B6024AF007C1735 /* Flickr-Constants.swift */; };
 		68F94A291B614AA5003C8161 /* Flickr-Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F94A281B614AA5003C8161 /* Flickr-Convenience.swift */; };
 		C91B8EA51B9F39A6005BCF51 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91B8EA41B9F39A6005BCF51 /* Utils.swift */; };
+		C91B8EA71B9F4863005BCF51 /* VTAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91B8EA61B9F4863005BCF51 /* VTAnnotationView.swift */; };
 		C94C644D1B6A850000E45D5C /* Attraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94C644C1B6A850000E45D5C /* Attraction.swift */; };
 		C94C644F1B6AA4AC00E45D5C /* TODO.txt in Resources */ = {isa = PBXBuildFile; fileRef = C94C644E1B6AA4AC00E45D5C /* TODO.txt */; };
 		C9EB7C9D1B69F3460093C383 /* Tixik.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EB7C9C1B69F3460093C383 /* Tixik.swift */; };
@@ -66,6 +67,7 @@
 		68A845AB1B6024AF007C1735 /* Flickr-Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Flickr-Constants.swift"; sourceTree = "<group>"; };
 		68F94A281B614AA5003C8161 /* Flickr-Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Flickr-Convenience.swift"; sourceTree = "<group>"; };
 		C91B8EA41B9F39A6005BCF51 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		C91B8EA61B9F4863005BCF51 /* VTAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTAnnotationView.swift; sourceTree = "<group>"; };
 		C94C644C1B6A850000E45D5C /* Attraction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Attraction.swift; sourceTree = "<group>"; };
 		C94C644E1B6AA4AC00E45D5C /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = "<group>"; };
 		C9EB7C9C1B69F3460093C383 /* Tixik.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tixik.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 				68A845951B5FEED8007C1735 /* PinDetailViewController.swift */,
 				684043331B6199D200E32133 /* TaskCancelingCollectionViewCell.swift */,
 				68A845961B5FEED8007C1735 /* VTAnnotation.swift */,
+				C91B8EA61B9F4863005BCF51 /* VTAnnotationView.swift */,
 				C9EB7C9E1B6A11730093C383 /* ATAnnotation.swift */,
 				68A845901B5FEEC2007C1735 /* AppDelegate.swift */,
 				68A845921B5FEECA007C1735 /* CustomCollectionViewCell.swift */,
@@ -301,6 +304,7 @@
 				68A845991B5FEED8007C1735 /* VTAnnotation.swift in Sources */,
 				684043341B6199D200E32133 /* TaskCancelingCollectionViewCell.swift in Sources */,
 				68A845A81B602317007C1735 /* ImageCache.swift in Sources */,
+				C91B8EA71B9F4863005BCF51 /* VTAnnotationView.swift in Sources */,
 				68A845911B5FEEC2007C1735 /* AppDelegate.swift in Sources */,
 				68A845981B5FEED8007C1735 /* PinDetailViewController.swift in Sources */,
 				68A8459D1B5FF482007C1735 /* VTConstants.swift in Sources */,

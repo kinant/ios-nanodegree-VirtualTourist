@@ -76,7 +76,10 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        Flickr.sharedInstance().fetchImagesForPin(pin)
+        Flickr.sharedInstance().fetchImagesForPin(pin, completionHandler: { (success) -> Void in
+            
+        })
+        
         updateBottomButton()
         
     }
