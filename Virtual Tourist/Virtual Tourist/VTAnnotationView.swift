@@ -16,10 +16,7 @@ class VTAnnotationView: MKPinAnnotationView {
     
     func showActivityIndicator(){
         
-        println("in here!")
-        
-        activityIndicator.frame = CGRectMake(0, self.frame.height * 0.75, 30.0, 30.0);
-        activityIndicator.frame = CGRectMake(0, -self.frame.height * 0.75, 30.0, 30.0);
+        activityIndicator.frame = CGRectMake(2, -35, 30.0, 30.0);
         
         activityIndicator.backgroundColor = UIColor.whiteColor()
         activityIndicator.alpha = 0.75

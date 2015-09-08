@@ -48,6 +48,17 @@ class Pin: NSManagedObject, Equatable {
         
         self.annotation = annotation
     }
+    
+    func allPhotosDownloaded() -> Bool {
+        for photo in self.photos {
+            
+            if photo.isDownloaded == false {
+                return false
+            }
+        }
+        return true
+    }
+    
     /*
     var annotation: VTAnnotation {
         get {

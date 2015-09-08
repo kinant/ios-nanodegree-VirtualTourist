@@ -124,6 +124,7 @@ extension Flickr {
                             
                             if self.allPhotosDownloaded(pin) {
                                 println("in here333!")
+                                // NSNotificationCenter.defaultCenter().postNotificationName("MyNotification", object: pin);
                                 completionHandler(success: true)
                             }
                         }

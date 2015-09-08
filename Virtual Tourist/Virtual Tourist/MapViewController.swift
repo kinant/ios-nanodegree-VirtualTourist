@@ -73,6 +73,26 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         addPins()
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(true)
+        
+        if pins.isEmpty == false {
+            
+            for pin in pins {
+                
+                if pin.allPhotosDownloaded() == false {
+                    showPinActivityIndicator(pin)
+                    changePinActivityIndicator(pin)
+                    
+                    Flickr.sharedInstance().fetchImagesForPin(pin, completionHandler: { (success) -> Void in
+                        self.hidePinActivityIndicator(pin)
+                    })
+                
+                }
+            }
+        }
+    }
+    
     func handleLongPress(recognizer: UILongPressGestureRecognizer){
         // println("long press!")
         var point = recognizer.locationInView(self.mapView)
@@ -183,6 +203,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             pin.annotation = annotation
             mapView.addAnnotation(annotation)
             // add attractions
+            
             for attraction in pin.attractions {
                 mapView.addAnnotation(attraction.annotation)
             }
@@ -229,7 +250,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         let annotationView = mapView.viewForAnnotation(pin.annotation) as! VTAnnotationView
         annotationView.showActivityIndicator()
-
+        
         /*
         for (var i = 0; i < mapView.annotations.count; i++) {
             
@@ -306,7 +327,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         pins.append(newPin)
         
         self.annotationToAdd = annotation
-        
         
         // addAttractionsForPin(newPin)
     }
