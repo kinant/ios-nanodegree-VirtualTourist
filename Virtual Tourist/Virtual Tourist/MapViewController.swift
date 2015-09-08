@@ -28,9 +28,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     var annotationToAdd: VTAnnotation!
     
-    lazy var sharedContext = {
-        CoreDataStackManager.sharedInstance().managedObjectContext!
-        }()
+    // MARK: - Core Data Convenience. This will be useful for fetching. And for adding and saving objects as well.
+    var sharedContext: NSManagedObjectContext {
+        return CoreDataStackManager.sharedInstance().managedObjectContext!
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -211,6 +212,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
         hidePinActivityIndicator(pin)
         println("attractions added!")
+        println("step 1")
+        
+        dispatch_async(dispatch_get_main_queue()){
+            self.saveContext()
+        }
+        println("step 2")
         
     }
     
@@ -231,7 +238,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                     point.x -= 15
                     
                     pin.activityIndicator = UIActivityIndicatorView()
-                    var endFrame = annotationView.frame
+                    // var endFrame = annotationView.frame
                     // pin.activityIndicator.frame = CGRectOffset(endFrame, 0, -50)
                     // pin.activityIndicator.frame = CGRectOffset(endFrame, 0, -50)
                     pin.activityIndicator.frame = CGRectMake(0, -annotationView.frame.height * 0.75, 30.0, 30.0);
@@ -295,7 +302,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     func addPinComplete(newPin: Pin){
         
-        let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+        // let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
         
         newPin.downloadTaskInProgress = true
         showPinActivityIndicator(newPin)
@@ -303,11 +310,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         Flickr.sharedInstance().downloadImagePathsForPin(newPin, completionHandler: { (hasNoImages) -> Void in
             newPin.downloadTaskInProgress = false
             self.addAttractionsForPin(newPin)
-            CoreDataStackManager.sharedInstance().saveContext()
         })
         
         // pinToBeAdded = newPin
         pinCount++
+    }
+    
+    func saveContext(){
+        CoreDataStackManager.sharedInstance().saveContext()
     }
     
     func fetchAllPins() -> [Pin] {

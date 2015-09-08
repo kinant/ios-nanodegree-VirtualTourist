@@ -32,9 +32,11 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     
     var allowsSelection = false
     
-    lazy var sharedContext = {
-        CoreDataStackManager.sharedInstance().managedObjectContext!
-        }()
+    // MARK: - Core Data Convenience
+    
+    var sharedContext: NSManagedObjectContext {
+        return CoreDataStackManager.sharedInstance().managedObjectContext!
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

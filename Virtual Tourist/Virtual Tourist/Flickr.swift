@@ -116,28 +116,26 @@ class Flickr: NSObject {
         return task
     }
     
-    /*
-    // MARK: - All purpose task method for images
-    func taskForImageWithSize(imageUrlString: String, completionHandler: (imageData: NSData?, error: NSError?) ->  Void) {
-        let imageURL = NSURL(string: imageUrlString)
-        let urlRequest = NSURLRequest(URL: imageURL!)
-        var downloadError: NSError?
+    func taskForImage(imageUrl: String, completionHandler: (imageData: NSData?, error: NSError?) ->  Void) -> NSURLSessionTask {
         
-        let imageData = NSURLConnection.sendSynchronousRequest(urlRequest, returningResponse: nil, error: &downloadError)
+        let url = NSURL(string: imageUrl)!
+        let request = NSURLRequest(URL: url)
         
-        if let error = downloadError {
-            println("error downloading image")
-        } else {
-            if imageData!.length > 0 {
-                //image = UIImage(data: imageData!)
-                // return the image
-                completionHandler(imageData: imageData, error: nil)
+        let task = session.dataTaskWithRequest(request) {data, response, downloadError in
+            
+            if let error = downloadError {
+                // let newError = TheMovieDB.errorForData(data, response: response, error: downloadError)
+                completionHandler(imageData: nil, error: error)
             } else {
-                println("No data could get downloaded from the URL")
+                completionHandler(imageData: data, error: nil)
             }
         }
+        
+        task.resume()
+        
+        return task
     }
-    */
+
     // MARK: - Helpers
     
     // Try to make a better error, based on the status_message from TheMovieDB. If we cant then return the previous error

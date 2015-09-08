@@ -80,7 +80,7 @@ extension Flickr {
                 } else if error == nil {
                     completionHandler(hasNoImages: true)
                 }
-                self.saveContext()
+                // self.saveContext()
                 self.fetchImagesForPin(pin)
             })
         }
@@ -95,20 +95,17 @@ extension Flickr {
             if photo.posterImage == nil {
             
                 let imageUrl = photo.imagePath!
-                let url = NSURL(string: imageUrl)!
-                let request = NSURLRequest(URL: url)
+                // let url = NSURL(string: imageUrl)!
+                // let request = NSURLRequest(URL: url)
                 
-                println("starting in here!")
+                // println("starting in here!")
                 
-                let mainQueue = NSOperationQueue.mainQueue()
+                // let queue = NSOperationQueue()
             
-                NSURLConnection.sendAsynchronousRequest(request, queue: mainQueue, completionHandler: { (response, data, error) -> Void in
-                    
-                    println("now in here!")
-                    
+                Flickr.sharedInstance().taskForImage(imageUrl, completionHandler: { (imageData, error) -> Void in
                     if error == nil {
                         // Convert the downloaded data in to a UIImage object
-                        let image = UIImage(data: data)
+                        let image = UIImage(data: imageData!)
                         
                         // make sure the user hasn't deleted the pin while the image was downloading
                         if !photo.isPreparingToDelete {
@@ -119,12 +116,33 @@ extension Flickr {
                         }
                     }
                     else {
-                        println("Error: \(error.localizedDescription)")
+                        println("Error: \(error!.localizedDescription)")
                     }
                 })
                 
-                println("ending out here!")
                 
+                
+                //NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler: { (response, data, error) -> Void in
+                    
+                    println("now in here!")
+                    /*
+                    if error == nil {
+                        // Convert the downloaded data in to a UIImage object
+                        let image = UIImage(data: data)
+                        
+                        // make sure the user hasn't deleted the pin while the image was downloading
+                        if !photo.isPreparingToDelete {
+                            // println("image downloaded!")
+                            photo.posterImage = image
+                            photo.isDownloaded = NSNumber(bool: true)
+                            // self.saveContext()
+                        }
+                    }
+                    else {
+                        println("Error: \(error.localizedDescription)")
+                    }
+                })
+                */
             }
         }
     }

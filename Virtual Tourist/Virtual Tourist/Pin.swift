@@ -41,6 +41,7 @@ class Pin: NSManagedObject, Equatable {
         let entity = NSEntityDescription.entityForName("Pin", inManagedObjectContext: context)!
         
         super.init(entity: entity, insertIntoManagedObjectContext: context)
+        
         self.latitude = annotation.coordinate.latitude
         self.longitude = annotation.coordinate.longitude
     }
