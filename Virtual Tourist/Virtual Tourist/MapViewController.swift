@@ -549,14 +549,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             if !attractionsHidden {
                 // hideAttractions()
             }
-            // mapViewSuperView.frame.origin.y -= bottomView.frame.height
+            mapViewSuperView.bounds.origin.y += bottomView.frame.height
         } else {
             inDeleteMode = false
             sender.title = "Edit"
             bottomView.hidden = true
-            // mapViewSuperView.frame.origin.y += bottomView.frame.height
+            mapViewSuperView.bounds.origin.y -= bottomView.frame.height
             // hideAttractionsButton.hidden = false
-            // hideAttractionsButton.bounds.origin.y += 60
+            //hideAttractionsButton.bounds.origin.y += 60
             
             if attractionsHidden {
                 // showAttractions()
