@@ -11,27 +11,29 @@ import CoreData
 
 /* Class for the MapViewController */
 class MapViewController: UIViewController, MKMapViewDelegate {
-
-    // properties
-    var pins = [Pin]() // array of pins
-    var pinCount = 0 // the count of pins
-    var selectedPinIndex = 0 // the index of the pin that was selected by user
     
-    // outlet
+    // MARK: IBOutlet properties
     @IBOutlet weak var bottomView: UIView! // the bottom view shows up when deleting pins
     @IBOutlet weak var mapViewSuperView: UIView! // the superview for the mapview
     @IBOutlet weak var mapView: MKMapView! // the mapview
     @IBOutlet weak var hideAttractionsButton: UIButton! // a button that toggles whether attracions are shown or not
+    
+    // MARK: Other Properties
+    var pins = [Pin]() // array of pins
+    var pinCount = 0 // the count of pins
+    var selectedPinIndex = 0 // the index of the pin that was selected by user
     
     var attractionsHidden = false // flag to determine if attractions are hidden or not
     var inDeleteMode = false // flag to determine if we are in editing or delete mode
     
     var annotationToAdd: VTAnnotation! // will store the annotation to be added
     
-    // MARK: - Core Data Convenience. This will be useful for fetching. And for adding and saving objects as well.
+    // MARK: Core Data Convenience
     var sharedContext: NSManagedObjectContext {
         return CoreDataStackManager.sharedInstance().managedObjectContext!
     }
+    
+    // MARK: View Functions
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,8 +95,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                     
                     // all photos not downloaded
                     // show the activity indicator
-                    showPinActivityIndicator(pin)
-                    changePinActivityIndicator(pin)
+                    // showPinActivityIndicator(pin)
+                    // changePinActivityIndicator(pin)
                     
                     // fetch the images
                     Flickr.sharedInstance().fetchImagesForPin(pin, completionHandler: { (success) -> Void in
@@ -105,6 +107,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             }
         }
     }
+    
+    // MARK: Functions To Handle Long Press Gesture
     
     /*
      * This function handles the long press
@@ -167,6 +171,98 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 }
             }
         }
+    }
+    
+    
+    // MARK: - Core Data Related Functions
+    /*
+    * Function to save the context
+    */
+    func saveContext(){
+        CoreDataStackManager.sharedInstance().saveContext()
+    }
+    
+    /*
+    * This method fetches all the pins from the shared context (what we have saved)
+    * Returns the array of pins
+    */
+    func fetchAllPins() -> [Pin] {
+        
+        // create and execute the fetch request
+        let error: NSErrorPointer = nil
+        let fetchRequest = NSFetchRequest(entityName: "Pin")
+        let results = sharedContext.executeFetchRequest(fetchRequest, error: error)
+        
+        // check for errors
+        if error != nil {
+            println("Error in fetchAllActors(): \(error)")
+        }
+        // return the results as an array of pins
+        return results as! [Pin]
+    }
+    
+    // MARK: Functions to Add Pins and Attractions
+    /*
+    * Adds a pin to the map. The pin is draggable, so the pin is not completely added. addPinComplete handles this.
+    */
+    func addPin(location: CLLocationCoordinate2D){
+        
+        // create a new VTAnnotation and add it to the map
+        // this annotation will have an image of a floating pin
+        let annotation = VTAnnotation(coordinate: location)
+        mapView.addAnnotation(annotation)
+        
+        // create the new pin
+        let newPin = Pin(annotation: annotation, context: sharedContext)
+        
+        // append the pin to the pins array
+        pins.append(newPin)
+        
+        // set the annotation to add
+        self.annotationToAdd = annotation
+    }
+    
+    /*
+    * Once the pin is dragged into place and released, we can complete the addition of the pin
+    */
+    func addPinComplete(newPin: Pin){
+        
+        // set the pin's download task in progress to true. Other parts of the app check if the
+        // data is currently being downloaded for the pin (so that we don't start a task again)
+        newPin.downloadTaskInProgress = true
+        
+        // show the pin's activity indicator (displays an activity indicator with the eiffel tower as background)
+        showPinActivityIndicator(newPin)
+        
+        // pre-fetch the data
+        
+        // first we get all the image paths
+        Flickr.sharedInstance().downloadImagePathsForPin(newPin, completionHandler: { (hasNoImages) -> Void in
+            
+            // reset the flag
+            newPin.downloadTaskInProgress = false
+            
+            // add the attractions for the pin
+            self.addAttractionsForPin(newPin)
+            
+            // check if the pin has no images
+            if hasNoImages {
+                // hide activity indicator
+                self.hidePinActivityIndicator(newPin)
+            } else {
+                // pin has images, so we start to download them now...
+                Flickr.sharedInstance().fetchImagesForPin(newPin, completionHandler: { (success) -> Void in
+                    // if success {
+                    // once all images are downloaded, the completion handler will be called in fetchImagesForPin
+                    // hide the activity indicator
+                    self.hidePinActivityIndicator(newPin)
+                    //}
+                })
+            }
+        })
+        
+        // increment the pin count
+        pinCount++
     }
     
     /*
@@ -241,119 +337,50 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    // MARK: Functions to Delete Pins and Attractions
     /*
-     * This helper function returns a VTPinAnnotationView for a given pin
+    * This method deletes a pin
     */
-    func annotationViewForPin(pin: Pin) -> VTPinAnnotationView {
-        return mapView.viewForAnnotation(pin.annotation) as! VTPinAnnotationView
+    func deletePin(pin: Pin) {
+        
+        // first we remove the pin, which happens to be the first item in the selected annotations array
+        // for the map view
+        mapView.removeAnnotation(mapView.selectedAnnotations[0] as? VTAnnotation)
+        
+        // we proceed to delete all the attractions for this pin
+        deleteAttractionsForPin(pin)
+        
+        // delete the pin from the context and save
+        sharedContext.deleteObject(pin)
+        sharedContext.save(nil)
     }
     
     /*
-    * Show the pin's activity indicator
+    * This method deletes all the attractions for a pin
     */
-    func showPinActivityIndicator(pin: Pin){
-        annotationViewForPin(pin).showActivityIndicator()
-    }
-    
-    /*
-    * Change the pin's activity indicator (it will now show a camera as the background)
-    */
-    func changePinActivityIndicator(pin:Pin){
-        annotationViewForPin(pin).showPhotoInActivityIndicator()
-    }
-    
-    /*
-    * Hide the pin's activity indicator
-    */
-    func hidePinActivityIndicator(pin: Pin){
-        annotationViewForPin(pin).hideActivityIndicator()
-    }
-    
-    /*
-    * Adds a pin to the map. The pin is draggable, so the pin is not completely added. addPinComplete handles this.
-    */
-    func addPin(location: CLLocationCoordinate2D){
+    func deleteAttractionsForPin(pin: Pin){
         
-        // create a new VTAnnotation and add it to the map
-        // this annotation will have an image of a floating pin
-        let annotation = VTAnnotation(coordinate: location)
-        mapView.addAnnotation(annotation)
-        
-        // create the new pin
-        let newPin = Pin(annotation: annotation, context: sharedContext)
-        
-        // append the pin to the pins array
-        pins.append(newPin)
-        
-        // set the annotation to add
-        self.annotationToAdd = annotation
-    }
-    
-    /*
-    * Once the pin is dragged into place and released, we can complete the addition of the pin
-    */
-    func addPinComplete(newPin: Pin){
-        
-        // set the pin's download task in progress to true. Other parts of the app check if the
-        // data is currently being downloaded for the pin (so that we don't start a task again)
-        newPin.downloadTaskInProgress = true
-        
-        // show the pin's activity indicator (displays an activity indicator with the eiffel tower as background)
-        showPinActivityIndicator(newPin)
-        
-        // pre-fetch the data
-        
-        // first we get all the image paths
-        Flickr.sharedInstance().downloadImagePathsForPin(newPin, completionHandler: { (hasNoImages) -> Void in
+        // iterate over each attraction in the pin
+        for var i = 0; i < pin.attractions.count; i++ {
             
-            // reset the flag
-            newPin.downloadTaskInProgress = false
-            
-            // add the attractions for the pin
-            self.addAttractionsForPin(newPin)
-            
-            // check if the pin has no images
-            if hasNoImages {
-                // hide activity indicator
-                self.hidePinActivityIndicator(newPin)
-            } else {
-                // pin has images, so we start to download them now...
-                Flickr.sharedInstance().fetchImagesForPin(newPin, completionHandler: { (success) -> Void in
-                // if success {
-                    // once all images are downloaded, the completion handler will be called in fetchImagesForPin
-                    // hide the activity indicator
-                    self.hidePinActivityIndicator(newPin)
-                //}
-                })
+            // iterate over each annotation in the mapview
+            for var j = 0; j < mapView.annotations.count; j++ {
+                
+                // check if the annotation is for an attraction
+                if let attraction = mapView.annotations[j] as? ATAnnotation {
+                    
+                    // check if the pin's attraction is equal to the mapview's attraction
+                    if pin.attractions[i].annotation == attraction {
+                        
+                        // if so, the attraction belongs to this pin, so we delete it
+                        mapView.removeAnnotation(attraction)
+                    }
+                }
             }
-        })
-        
-        // increment the pin count
-        pinCount++
-    }
-    
-    func saveContext(){
-        CoreDataStackManager.sharedInstance().saveContext()
-    }
-    
-    /*
-     * This method fetches all the pins from the shared context (what we have saved)
-     * Returns the array of pins
-    */
-    func fetchAllPins() -> [Pin] {
-        
-        // create and execute the fetch request
-        let error: NSErrorPointer = nil
-        let fetchRequest = NSFetchRequest(entityName: "Pin")
-        let results = sharedContext.executeFetchRequest(fetchRequest, error: error)
-        
-        // check for errors
-        if error != nil {
-            println("Error in fetchAllActors(): \(error)")
         }
-        // return the results as an array of pins
-        return results as! [Pin]
     }
+    
+    // MARK: mapView Delegate Functions
     
     /*
     * mapView Delegate function that is called when the region displayed changes.
@@ -424,6 +451,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 pinAnnotationView.image = UIImage(named:"floating_pin")
             }
             
+            if pins[returnSelectedPinIndex(annotation as! VTAnnotation)].allPhotosDownloaded() == false {
+                pinAnnotationView.showActivityIndicator()
+                pinAnnotationView.showPhotoInActivityIndicator()
+            }
+            //if pins[returnSelectedPinIndex(annotation)]
+            
             return pinAnnotationView
             
         }
@@ -435,28 +468,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             return pinAnnotationView
         }
         return nil
-    }
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        var pinDetailVC = (segue.destinationViewController as! PinDetailViewController)
-        
-        // check that the selected pin's index is greater than 0
-        // (it is -1 for invalid pins)
-        if selectedPinIndex >= 0  {
-            
-            // obtain the selected pin
-            let selectedPin = pins[selectedPinIndex]
-            
-            // set the pin for the pin detail view controller
-            pinDetailVC.pin = selectedPin
-            
-            // if the pin has no photos and if it has no download task in progress, we proceed to fetch it's images
-            // this is the case, for example, when we delete all the photos in a collection and then return
-            // to the mapview
-            if selectedPin.photos.count == 0 && !selectedPin.downloadTaskInProgress {
-                pinDetailVC.fetchCollection()
-            }
-        }
     }
     
     /*
@@ -484,47 +495,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    /*
-     * This method deletes a pin
-    */
-    func deletePin(pin: Pin) {
-        
-        // first we remove the pin, which happens to be the first item in the selected annotations array
-        // for the map view
-        mapView.removeAnnotation(mapView.selectedAnnotations[0] as? VTAnnotation)
-        
-        // we proceed to delete all the attractions for this pin
-        deleteAttractionsForPin(pin)
-        
-        // delete the pin from the context and save
-        sharedContext.deleteObject(pin)
-        sharedContext.save(nil)
-    }
     
-    /*
-    * This method deletes all the attractions for a pin
-    */
-    func deleteAttractionsForPin(pin: Pin){
-        
-        // iterate over each attraction in the pin
-        for var i = 0; i < pin.attractions.count; i++ {
-            
-            // iterate over each annotation in the mapview
-            for var j = 0; j < mapView.annotations.count; j++ {
-                
-                // check if the annotation is for an attraction
-                if let attraction = mapView.annotations[j] as? ATAnnotation {
-                    
-                    // check if the pin's attraction is equal to the mapview's attraction
-                    if pin.attractions[i].annotation == attraction {
-                        
-                        // if so, the attraction belongs to this pin, so we delete it
-                        mapView.removeAnnotation(attraction)
-                    }
-                }
-            }
-        }
-    }
+    
     
     /*
     * Hides all the attractions on the map
@@ -556,6 +528,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         attractionsHidden = false
     }
     
+    // MARK: Other Functions - Helper Functions
+    /*
+    * This helper function returns a VTPinAnnotationView for a given pin
+    */
+    func annotationViewForPin(pin: Pin) -> VTPinAnnotationView {
+        return mapView.viewForAnnotation(pin.annotation) as! VTPinAnnotationView
+    }
+    
     /*
     * This function returns the index for a given pin in the pins array based on the
     * annotation that is provided in the argument. When we select a pin in the
@@ -576,6 +556,55 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         // if the annotation is not found, then return -1
         return -1
     }
+    
+    
+    // MARK: Other Functions - Pin Activity Indicator Functions
+    /*
+    * Show the pin's activity indicator
+    */
+    func showPinActivityIndicator(pin: Pin){
+        annotationViewForPin(pin).showActivityIndicator()
+    }
+    
+    /*
+    * Change the pin's activity indicator (it will now show a camera as the background)
+    */
+    func changePinActivityIndicator(pin:Pin){
+        annotationViewForPin(pin).showPhotoInActivityIndicator()
+    }
+    
+    /*
+    * Hide the pin's activity indicator
+    */
+    func hidePinActivityIndicator(pin: Pin){
+        annotationViewForPin(pin).hideActivityIndicator()
+    }
+    
+    // MARK: Other Functions
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        var pinDetailVC = (segue.destinationViewController as! PinDetailViewController)
+        
+        // check that the selected pin's index is greater than 0
+        // (it is -1 for invalid pins)
+        if selectedPinIndex >= 0  {
+            
+            // obtain the selected pin
+            let selectedPin = pins[selectedPinIndex]
+            
+            // set the pin for the pin detail view controller
+            pinDetailVC.pin = selectedPin
+            
+            // if the pin has no photos and if it has no download task in progress, we proceed to fetch it's images
+            // this is the case, for example, when we delete all the photos in a collection and then return
+            // to the mapview
+            if selectedPin.photos.count == 0 && !selectedPin.downloadTaskInProgress {
+                pinDetailVC.fetchCollection()
+            }
+        }
+    }
+    
+    // MARK: IBAction Functions
     
     /*
     * Handle's the edit button being pressed. When we press edit, we can delete pins.
@@ -632,10 +661,5 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             // show attractions
             showAttractions()
         }
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 }

@@ -10,34 +10,43 @@ import UIKit
 import CoreData
 import MapKit
 
+/* This class handles the pin detail view controller to show the photo collection for a pin */
+
 class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, NSFetchedResultsControllerDelegate, MKMapViewDelegate {
     
-    // Keep the changes. We will keep track of insertions, deletions, and updates.
+    
+    // MARK: IBOutlets properties
+    @IBOutlet weak var collectionView: UICollectionView? // the collection view
+    @IBOutlet weak var bottomButton: UIButton! // the button at the bottom of the view
+    @IBOutlet weak var mapView: MKMapView! // the mapview at the top of the view
+    
+    // MARK: Other properties
+    // Arrays to keep track of insertions, deletions, and updates when using Fetched Results Controller
     var selectedIndexes = [NSIndexPath]()
     var insertedIndexPaths = [NSIndexPath]()
     var deletedIndexPaths = [NSIndexPath]()
     var updatedIndexPaths = [NSIndexPath]()
     
-    @IBOutlet weak var collectionView: UICollectionView?
-    @IBOutlet weak var bottomButton: UIButton!
-    @IBOutlet weak var mapView: MKMapView!
+    var noPhotosLabel: UILabel! // label to display if pin has no photos
+    var pin: Pin! // the pin
     
-    var noImagesLabel: UILabel!
-    
-    var pin: Pin!
-    
+    // flag to keep track of download task in progress
     var downloadTaskInProgress = false
     
+    // flag to use when new collection is pressed
     var deleteAllPressed = false
     
+    // flag to be used to allow the selection of photos to remove
     var allowsSelection = false
     
     // MARK: - Core Data Convenience
-    
     var sharedContext: NSManagedObjectContext {
         return CoreDataStackManager.sharedInstance().managedObjectContext!
     }
     
+    // MARK: View Functions
+    
+    /* viewDidLoad */
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -45,47 +54,59 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         mapView.delegate = self
         mapView.userInteractionEnabled = false
         
+        // set the region
         let location = CLLocationCoordinate2DMake(pin.latitude, pin.longitude)
         let span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
         let region = MKCoordinateRegion(center: location, span: span)
         mapView.setRegion(region, animated: true)
         
-        // add pin
+        // add the pin
         let annotation = VTAnnotation(coordinate: location)
         mapView.addAnnotation(annotation)
         
+        // set properties for the collection view
         collectionView!.backgroundColor = UIColor.whiteColor()
         collectionView!.allowsMultipleSelection = true
         
+        // add the collection view
         self.view.addSubview(collectionView!)
         
-        noImagesLabel = UILabel(frame: CGRectMake(0, 0, 200, 20))
+        // create the no photos label
+        noPhotosLabel = UILabel(frame: CGRectMake(0, 0, 200, 20))
         var rect = self.collectionView!.frame
-        noImagesLabel.center = CGPointMake(rect.width/4, rect.height/2)
-        noImagesLabel.textAlignment = NSTextAlignment.Center
-        noImagesLabel.text = "This pin has no images."
-        noImagesLabel.hidden = true
-        self.collectionView?.addSubview(noImagesLabel)
+        noPhotosLabel.center = CGPointMake(rect.width/4, rect.height/2)
+        noPhotosLabel.textAlignment = NSTextAlignment.Center
+        noPhotosLabel.text = "This pin has no images."
+        noPhotosLabel.hidden = true
         
+        // add it to the collection view
+        self.collectionView?.addSubview(noPhotosLabel)
+        
+        // disable the bottom button
         bottomButton.enabled = false
         
-        // Step 2: Perform the fetch
+        // perform the fetch
         fetchedResultsController.performFetch(nil)
     }
     
+     /* viewDidAppear */
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
+        // whenever the view appears, start fetching the pin's images
         Flickr.sharedInstance().fetchImagesForPin(pin, completionHandler: { (success) -> Void in
             
         })
         
+        // update the bottom button
         updateBottomButton()
         
     }
     
+     /* viewDidLayoutSubviews */
     override func viewDidLayoutSubviews() {
-
+        
+        // set the layout for the collection view
         let layout : UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         layout.minimumLineSpacing = 5
@@ -96,56 +117,20 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         collectionView!.collectionViewLayout = layout
     }
     
-    
+    // MARK: mapView Delegate Functions
+    /*
+     * mapView delegate function for the view for the annotation
+    */
     func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
         
+        // return a normal pin annotation view set with the image of the normal pin
         let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "myPin")
         pinAnnotationView.canShowCallout = false
         pinAnnotationView.image = UIImage(named:"pin2")
         return pinAnnotationView
     }
-    
-    // Mark: - Fetched Results Controller
-    
-    lazy var fetchedResultsController: NSFetchedResultsController = {
-        
-        let fetchRequest = NSFetchRequest(entityName: "Photo")
-        
-        fetchRequest.sortDescriptors = []
-        fetchRequest.predicate = NSPredicate(format: "pin == %@", self.pin);
-        
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
-            managedObjectContext: self.sharedContext,
-            sectionNameKeyPath: nil,
-            cacheName: nil)
-        
-        fetchedResultsController.delegate = self
-        
-        return fetchedResultsController
-        
-    }()
 
-    func fetchCollection(){
-        
-        downloadTaskInProgress = true
-        
-        Flickr.sharedInstance().downloadImagePathsForPin(pin, completionHandler: { (hasNoImages) -> Void in
-            if hasNoImages {
-                dispatch_async(dispatch_get_main_queue()){
-                    self.noImagesLabel.hidden = false
-                    self.updateBottomButton()
-                }
-            } else {
-                Flickr.sharedInstance().fetchImagesForPin(self.pin, completionHandler: { (success) -> Void in
-                })
-            }
-            self.downloadTaskInProgress = false
-        })
-    }
-    
-    func saveContext() {
-        CoreDataStackManager.sharedInstance().saveContext()
-    }
+    // MARK: UICollectionViewDataSource Functions
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return self.fetchedResultsController.sections?.count ?? 0
@@ -165,60 +150,96 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         return cell
     }
     
+    // MARK: UICollectionViewDelegate Functions
+    
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
+        // get the cell and the photo that were selected
         let cell = collectionView.cellForItemAtIndexPath(indexPath) as! CustomCollectionViewCell
         let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         
+        // check if we are allowed to make selections
         if allowsSelection {
             
+            // if so, append the index to the selected indexes array
             selectedIndexes.append(indexPath)
         
-            // Then reconfigure the cell
+            // then reconfigure the cell
             configureCell(cell, atIndexPath: indexPath)
         
+            // update the bottom button
             updateBottomButton()
         }
     }
     
     func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
         
+        // get the cell and photo
         let cell = collectionView.cellForItemAtIndexPath(indexPath) as! CustomCollectionViewCell
         let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         
+        // check if selections allowed
         if allowsSelection {
+            
+            // find if the index is in selected indexes array
             if let index = find(selectedIndexes, indexPath) {
+                // remove it from the array
                 selectedIndexes.removeAtIndex(index)
             }
         
+            // reconfigure the cell
             configureCell(cell, atIndexPath: indexPath)
         
-            // update button when a cell is selected
+            // update bottom button
             updateBottomButton()
         }
     }
     
+    // MARK: - Fetched Results Controller
+    lazy var fetchedResultsController: NSFetchedResultsController = {
+        
+        let fetchRequest = NSFetchRequest(entityName: "Photo")
+        
+        fetchRequest.sortDescriptors = []
+        fetchRequest.predicate = NSPredicate(format: "pin == %@", self.pin);
+        
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+            managedObjectContext: self.sharedContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        
+        fetchedResultsController.delegate = self
+        
+        return fetchedResultsController
+        
+        }()
+    
+    // MARK: Fetched Results Delegate Functions
+    
     func controllerWillChangeContent(controller: NSFetchedResultsController) {
-        // We are about to handle some new changes. Start out with empty arrays for each change type
+        // start out with empty arrays for each change type
         insertedIndexPaths = [NSIndexPath]()
         deletedIndexPaths = [NSIndexPath]()
         updatedIndexPaths = [NSIndexPath]()
 
     }
     
-    // The second method may be called multiple times, once for each Color object that is added, deleted, or changed.
-    // We store the incex paths into the three arrays.
+    // This method is called multiple times, once for each Photo object that is added, deleted, or changed.
+    // We store the index paths of the changes into the three arrays.
     func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         
         switch type{
             
         case .Insert:
+            // inserting a photo
             insertedIndexPaths.append(newIndexPath!)
             break
         case .Delete:
+            // deleting a photo
             deletedIndexPaths.append(indexPath!)
             break
         case .Update:
+            // updating a photo
             updatedIndexPaths.append(indexPath!)
             break
         case .Move:
@@ -232,127 +253,230 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     // This method is invoked after all of the changed in the current batch have been collected
     // into the three index path arrays (insert, delete, and upate). We now need to loop through the
     // arrays and perform the changes.
-    //
-    // The most interesting thing about the method is the collection view's "performBatchUpdates" method.
-    // Notice that all of the changes are performed inside a closure that is handed to the collection view.
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
         
+        // perform the batch updates
         dispatch_async(dispatch_get_main_queue()){
             self.collectionView!.performBatchUpdates({() -> Void in
                 
+                // insert photos
                 for indexPath in self.insertedIndexPaths {
                     self.collectionView!.insertItemsAtIndexPaths([indexPath])
                 }
+                // delete photos
                 for indexPath in self.deletedIndexPaths {
                     self.collectionView!.deleteItemsAtIndexPaths([indexPath])
                 }
+                // update photos
                 for indexPath in self.updatedIndexPaths {
                     self.collectionView!.reloadItemsAtIndexPaths([indexPath])
                 }
+                
+                // if there are no photos and the new collection button was pressed
                 if self.pin.photos.count == 0 && self.deleteAllPressed {
+                    // then fetch a new collection
                     self.fetchCollection()
+                    
+                    // reset the flag
                     self.deleteAllPressed = false
                 }
                 
+                // update the bottom button
                 self.updateBottomButton()
                 
             }, completion: nil)
         }
     }
     
+    // MARK: Other Functions
+    
+    /*
+    * Fetches a new collection of images
+    */
+    func fetchCollection(){
+        
+        // set the flag
+        downloadTaskInProgress = true
+        
+        // download the image paths
+        Flickr.sharedInstance().downloadImagePathsForPin(pin, completionHandler: { (hasNoImages) -> Void in
+            
+            // check if the pin has images
+            if hasNoImages {
+                // if not, display the no images label
+                dispatch_async(dispatch_get_main_queue()){
+                    self.noPhotosLabel.hidden = false
+                    self.updateBottomButton()
+                }
+            } else {
+                // if it does have images, then fetch them
+                Flickr.sharedInstance().fetchImagesForPin(self.pin, completionHandler: { (success) -> Void in
+                    
+                })
+            }
+            
+            // once done, reset the flag
+            self.downloadTaskInProgress = false
+        })
+    }
+    
+    /*
+     * Function to save the context
+    */
+    func saveContext() {
+        CoreDataStackManager.sharedInstance().saveContext()
+    }
+    
+    /*
+    * Function to configure a cell
+    */
     func configureCell(cell: CustomCollectionViewCell, atIndexPath indexPath: NSIndexPath){
         
+        // get the photo
         let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         
+        // set the cell's image to nil
         cell.image!.image = nil
         
+        // change the alpha property if the cell has been selected
         if let index = find(selectedIndexes, indexPath) {
             cell.image!.alpha = 0.35
         } else {
             cell.image!.alpha = 1.0
         }
         
-        var posterImage = UIImage(named: "imgPlaceholder")
+        // initialize an image with the default image placeholder
+        var image = UIImage(named: "imgPlaceholder")
         
+        // check if the photo's image exists
         if photo.image != nil {
-            posterImage = photo.image
+            // if it does, set image to the photo's image
+            image = photo.image
+            
+            // and hide the activity indicator
             cell.activityIndicator.hidden = true
         }
+        // else, the photo's image does not exist
         else {
+            // start animating the activity indicator and show it
             cell.activityIndicator.startAnimating()
             cell.activityIndicator.hidden = false
         }
         
-        cell.image!.image = posterImage
+        // set the cell's imageView image
+        cell.image!.image = image
     }
     
-    @IBAction func buttonButtonClicked() {
+    /*
+    * Function to delete all the photos in a collection (when "New Collection is pressed)"
+    */
+    func deleteAllPhotos() {
         
-        if selectedIndexes.isEmpty {
-            bottomButton.enabled = false
-            
-            if pin.photos.count == 0 {
-                fetchCollection()
-            } else {
-                deleteAllColors()
-            }
-        } else {
-            deleteSelectedColors()
-        }
-    }
-    
-    func deleteAllColors() {
-        
+        // we iterate over all photos in the fetched results controller
         for photo in fetchedResultsController.fetchedObjects as! [Photo] {
+            
+            // set the photo's image to nil (deletion happens in the Photo class)
             photo.image = nil
+            
+            // delete the object from the context
             sharedContext.deleteObject(photo)
         }
         
+        // set the flag
         deleteAllPressed = true
+        
+        // save the context
         saveContext()
     }
     
-    func deleteSelectedColors() {
-        var colorsToDelete = [Photo]()
+    /*
+    * Function to delete the user's selected photos
+    */
+    func deleteSelectedPhotos() {
         
+        // array to store the photos we will delete
+        var photosToDelete = [Photo]()
+        
+        // iterate over each index in the selected indexes in the array
         for indexPath in selectedIndexes {
-            colorsToDelete.append(fetchedResultsController.objectAtIndexPath(indexPath) as! Photo)
+            
+            // append the photo at that index in the fetched results controller
+            photosToDelete.append(fetchedResultsController.objectAtIndexPath(indexPath) as! Photo)
         }
         
-        for photo in colorsToDelete {
+        // then iterate over each photo in the photosToDelete array
+        for photo in photosToDelete {
+            // set the image to nil (to delete it)
             photo.image = nil
+            
+            // delete the image from the context
             sharedContext.deleteObject(photo)
         }
         
+        // reset the selected indexes array
         selectedIndexes = [NSIndexPath]()
         
+        // save the context
         saveContext()
     }
     
+    /*
+    * Function that updates the bottom button based on the user's and app's actions
+    */
     func updateBottomButton() {
-        // case 1: there are no photos
+        
+        // scenario 1: there are no photos and no download in progress
         if pin.photos.count == 0 && !downloadTaskInProgress {
+        
+            // enable the button (it will show new collection)
             self.bottomButton.enabled = true
+            
         } else if downloadTaskInProgress {
+            
+            // scenario 2: download in progress, disable
             self.bottomButton.enabled = false
+            
         } else {
-            // case 2: all images have been loaded
-            self.bottomButton.enabled = self.allImagesLoaded()
+            
+            // scenario 3: have all images been downloaded?
+            self.bottomButton.enabled = pin.allPhotosDownloaded()
         }
         
+        // if any image is selected then...
         if selectedIndexes.count > 0 {
+            // set the button to show option to delete
             bottomButton.setTitle("Delete Selected", forState: UIControlState.Normal)
         } else {
+            // else set the button to show option to fetch new collection
             bottomButton.setTitle("New Collection", forState: UIControlState.Normal)
         }
     }
     
-    func allImagesLoaded() -> Bool {
-        if pin.allPhotosDownloaded() {
-            allowsSelection = true
-            return true
+    // MARK: IBAction Functions
+    
+    /*
+    * Handle the bottom button being pressed
+    */
+    @IBAction func buttonButtonClicked() {
+        
+        // first check if we made any selections
+        if selectedIndexes.isEmpty {
+            
+            // if we didn't make any selections, we pressed New Collection
+            
+            // we disable the button
+            bottomButton.enabled = false
+            
+            // if there are no photos already, we fetch a new collection
+            if pin.photos.count == 0 {
+                fetchCollection()
+            } else {
+                // if there are photos present, we delete them all
+                deleteAllPhotos()
+            }
         } else {
-            return false
+            // else, we have made selections, so we only delete the selected photos
+            deleteSelectedPhotos()
         }
     }
 }

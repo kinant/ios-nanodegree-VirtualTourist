@@ -18,15 +18,15 @@ extension Flickr {
         
         // set the method arguments
         let methodArguments = [
-            "method": METHOD_NAME,
-            "api_key": API_KEY,
+            "method": Flickr.Constants.METHOD_NAME,
+            "api_key": Flickr.Constants.API_KEY,
             "per_page": Flickr.Resources.PER_PAGE,
             "lat": pin.latitude,
             "lon": pin.longitude,
-            "safe_search": SAFE_SEARCH,
-            "extras": EXTRAS,
-            "format": DATA_FORMAT,
-            "nojsoncallback": NO_JSON_CALLBACK
+            "safe_search": Flickr.Resources.SAFE_SEARCH,
+            "extras": Flickr.Resources.EXTRAS,
+            "format": Flickr.Resources.DATA_FORMAT,
+            "nojsoncallback": Flickr.Resources.NO_JSON_CALLBACK
         ]
         
         // get the data from from Flickr
