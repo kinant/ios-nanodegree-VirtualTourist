@@ -16,7 +16,6 @@
 		68A845981B5FEED8007C1735 /* PinDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A845951B5FEED8007C1735 /* PinDetailViewController.swift */; };
 		68A845991B5FEED8007C1735 /* VTAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A845961B5FEED8007C1735 /* VTAnnotation.swift */; };
 		68A8459B1B5FEEE4007C1735 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 68A8459A1B5FEEE4007C1735 /* Main.storyboard */; };
-		68A8459D1B5FF482007C1735 /* VTConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A8459C1B5FF482007C1735 /* VTConstants.swift */; };
 		68A845A41B602141007C1735 /* Pin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A845A31B602141007C1735 /* Pin.swift */; };
 		68A845A61B6021FA007C1735 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A845A51B6021FA007C1735 /* Photo.swift */; };
 		68A845A81B602317007C1735 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A845A71B602317007C1735 /* ImageCache.swift */; };
@@ -57,7 +56,6 @@
 		68A845951B5FEED8007C1735 /* PinDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinDetailViewController.swift; sourceTree = "<group>"; };
 		68A845961B5FEED8007C1735 /* VTAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTAnnotation.swift; sourceTree = "<group>"; };
 		68A8459A1B5FEEE4007C1735 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
-		68A8459C1B5FF482007C1735 /* VTConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTConstants.swift; sourceTree = "<group>"; };
 		68A845A31B602141007C1735 /* Pin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pin.swift; sourceTree = "<group>"; };
 		68A845A51B6021FA007C1735 /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		68A845A71B602317007C1735 /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
@@ -120,7 +118,6 @@
 				C91B8EAA1B9F82F8005BCF51 /* Controller */,
 				C91B8EAB1B9F8326005BCF51 /* Storyboard */,
 				68A8456E1B5FEE85007C1735 /* Supporting Files */,
-				68A8459C1B5FF482007C1735 /* VTConstants.swift */,
 			);
 			path = "Virtual Tourist";
 			sourceTree = "<group>";
@@ -335,7 +332,6 @@
 				C91B8EA71B9F4863005BCF51 /* VTPinAnnotationView.swift in Sources */,
 				68A845911B5FEEC2007C1735 /* AppDelegate.swift in Sources */,
 				68A845981B5FEED8007C1735 /* PinDetailViewController.swift in Sources */,
-				68A8459D1B5FF482007C1735 /* VTConstants.swift in Sources */,
 				68F94A291B614AA5003C8161 /* Flickr-Convenience.swift in Sources */,
 				68A845971B5FEED8007C1735 /* MapViewController.swift in Sources */,
 				C9EB7C9F1B6A11730093C383 /* ATAnnotation.swift in Sources */,
