@@ -67,7 +67,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self , action: "handleLongPress:")
         longPressGestureRecognizer.minimumPressDuration = 1.0
         self.mapView.addGestureRecognizer(longPressGestureRecognizer)
-
+        
         // fetch any previously saved pins
         pins = fetchAllPins()
         
@@ -83,6 +83,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         // Whenever the view appears, we check if the pin's images are all downloaded
         // If they are not, we show activity indicator and start the fetching of images
+        // This is so that the activity indicators will always show when the pin is
+        // downloading images. It will also begin pre-fetching images again if the user
+        // closed the app and opened it again. 
         
         // check that the pins array is not empty
         if pins.isEmpty == false {
@@ -90,13 +93,15 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             // for each pin
             for pin in pins {
                 
+                println("all photos downloaded? \(pin.allPhotosDownloaded())")
+                
                 // check if all photos have been downloaded
                 if pin.allPhotosDownloaded() == false {
                     
                     // all photos not downloaded
-                    // show the activity indicator
-                    // showPinActivityIndicator(pin)
-                    // changePinActivityIndicator(pin)
+                    // show indicators
+                    showPinActivityIndicator(pin)
+                    changePinActivityIndicator(pin)
                     
                     // fetch the images
                     Flickr.sharedInstance().fetchImagesForPin(pin, completionHandler: { (success) -> Void in
@@ -498,9 +503,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             mapView.deselectAnnotation(selectedAnnotation , animated: true)
         }
     }
-    
-    
-    
     
     /*
     * Hides all the attractions on the map
