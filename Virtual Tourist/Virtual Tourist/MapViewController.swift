@@ -93,8 +93,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             // for each pin
             for pin in pins {
                 
-                println("all photos downloaded? \(pin.allPhotosDownloaded())")
-                
                 // check if all photos have been downloaded
                 if pin.allPhotosDownloaded() == false {
                     

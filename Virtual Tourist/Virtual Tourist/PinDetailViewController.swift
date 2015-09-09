@@ -154,8 +154,6 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
-        println("attempting to select!")
-        
         // get the cell and the photo that were selected
         let cell = collectionView.cellForItemAtIndexPath(indexPath) as! CustomCollectionViewCell
         let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
@@ -163,7 +161,6 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         // check if we are allowed to make selections
         if allowsSelection {
             
-            println("selection allowed!")
             // if so, append the index to the selected indexes array
             selectedIndexes.append(indexPath)
         
