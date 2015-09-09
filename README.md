@@ -15,4 +15,4 @@ Project 4 of Udacity iOS Nanodegree
 - If attraction pins bother the view, you can toggle them on or off with the hide or show attractions button
 - For some reason, I sometimes get the following error when adding a pin: "*** Terminating app due to uncaught exception 'NSInvalidArgumentException', reason: '*** -_referenceData64 only defined for abstract class.  Define -[NSTemporaryObjectID_default _referenceData64]!'"
 
-- The above error occurs randomnly. It could be on the first pin being added or the hundredth pin being added. I have yet to fix this issue. 
+- The above error occurs randomly. It could be on the first pin being added or the hundredth pin being added. I have yet to fix this issue. All I know is that it is an issue that occurs when saving the context.
