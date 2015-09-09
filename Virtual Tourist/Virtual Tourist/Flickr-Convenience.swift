@@ -11,7 +11,12 @@ import MapKit
 
 extension Flickr {
     
+    /*
+    * This method searches the Flickr API for photos based on latitude and longitude
+    */
     func searchPhotosByLatLon(pin: Pin, completionHandler: (data: [[String: AnyObject]]?, error: NSError?) -> Void) {
+        
+        // set the method arguments
         let methodArguments = [
             "method": METHOD_NAME,
             "api_key": API_KEY,
@@ -24,107 +29,97 @@ extension Flickr {
             "nojsoncallback": NO_JSON_CALLBACK
         ]
         
+        // get the data from from Flickr
         Flickr.sharedInstance().getImagesFromFlickrBySearch(methodArguments as! [String : AnyObject], completionHandler: { (result, error) -> Void in
+            
+            // TODO: Check for errors
             completionHandler(data: result, error: error)
         })
-    }
-    
-    func createBoundingBoxString(location: CLLocationCoordinate2D) -> String {
-        
-        let latitude = Double(location.latitude)
-        let longitude = Double(location.longitude)
-        
-        /* Fix added to ensure box is bounded by minimum and maximums */
-        let bottom_left_lon = max(longitude - BOUNDING_BOX_HALF_WIDTH, LON_MIN)
-        let bottom_left_lat = max(latitude - BOUNDING_BOX_HALF_HEIGHT, LAT_MIN)
-        let top_right_lon = min(longitude + BOUNDING_BOX_HALF_HEIGHT, LON_MAX)
-        let top_right_lat = min(latitude + BOUNDING_BOX_HALF_HEIGHT, LAT_MAX)
-        
-        return "\(bottom_left_lon),\(bottom_left_lat),\(top_right_lon),\(top_right_lat)"
     }
     
     func saveContext() {
         CoreDataStackManager.sharedInstance().saveContext()
     }
     
+    /*
+    * This method is used to get the image paths (image url's) for a pin's photo collection
+    * Only the URL data is downloaded. The image data itself is downloaded by another method.
+    */
     func downloadImagePathsForPin(pin: Pin, completionHandler: (hasNoImages: Bool) -> Void){
         
-        println("attempting to download image paths for pin...")
-        println("is empty? \(pin.photos.isEmpty)")
-        
+        // first check that the photos array for a pin is empty
         if pin.photos.isEmpty {
+            
+            // if it is empty, then search flickr for the photos based on latitude and longitude
             Flickr.sharedInstance().searchPhotosByLatLon(pin, completionHandler: { (result, error) -> Void in
-                // println("searching for photos...")
-                // println("result: \(result)")
-                // println("error \(error?.localizedDescription)")
                 
+                // obtain the photos dicitonary array from the results
                 if let photos = result {
                     
-                    if photos.count == 0 {
-                        println("pin has no images!")
-                    }
-                    
+                    // for each photo dictionary
                     for photo in photos {
+                        
+                        // get the image url
                         if let imageURL = photo["url_m"] as? String {
                             
+                            // get the image id
                             if let imageID = photo["id"] as? String {
+                                
+                                // create the new photo
                                 let newPhoto = Photo(imagePath: imageURL, id: imageID, context: self.sharedContext)
-                                // println("created new photo with id \(imageID)")
+                                
+                                // set the photo's pin
                                 newPhoto.pin = pin
                             }
                         }
                     }
-                    
-                    // println("photo count: \(photos.count)")
+                    // call the completion handler with false, since the pin does have images
                     completionHandler(hasNoImages: false)
                 } else if error == nil {
+                    // the pin does not have images, so call completion handler with true
                     completionHandler(hasNoImages: true)
                 }
-                // self.saveContext()
-                // self.fetchImagesForPin(pin)
             })
         }
     }
     
+    /*
+    * This method is used to download the images for a pin's photo collection
+    */
     func fetchImagesForPin(pin:Pin, completionHandler: (success: Bool) -> Void){
         
-        println("attempting to download \(pin.photos.count) photos!")
-        
-        for (var i = 0; i < pin.photos.count; i++)  {
+        // for each photo in the pin's photo collection
+        for photo in pin.photos {
             
-            let photo = pin.photos[i]
+            // if the photo's image is nil (it hasn't been downloaded and saved)
+            if photo.image == nil {
             
-            if photo.posterImage == nil {
-            
+                // get the image url
                 let imageUrl = photo.imagePath!
-                // let url = NSURL(string: imageUrl)!
-                // let request = NSURLRequest(URL: url)
                 
-                // println("starting in here!")
-                
-                // let queue = NSOperationQueue()
-            
-                println("i is: \(i)")
-                println("count is: \(pin.photos.count)")
-                
+                // perform the task to download the image data
                 Flickr.sharedInstance().taskForImage(imageUrl, completionHandler: { (imageData, error) -> Void in
+                    
+                    // check for error
                     if error == nil {
+                        
                         // Convert the downloaded data in to a UIImage object
                         let image = UIImage(data: imageData!)
                         
                         // make sure the user hasn't deleted the pin while the image was downloading
                         if !photo.isPreparingToDelete {
-                            // println("image downloaded!")
-                            photo.posterImage = image
+                            
+                            // set the image
+                            photo.image = image
+                            
+                            // set the isDownloaded flag
                             photo.isDownloaded = NSNumber(bool: true)
+                            
+                            // save the context
                             self.saveContext()
                             
-                            println("i is: \(i)")
-                            println("count is: \(pin.photos.count)")
-                            
-                            if self.allPhotosDownloaded(pin) {
-                                println("in here333!")
-                                // NSNotificationCenter.defaultCenter().postNotificationName("MyNotification", object: pin);
+                            // check that all images have been downloaded to call the completion handler
+                            if pin.allPhotosDownloaded() {
                                 completionHandler(success: true)
                             }
                         }
@@ -133,41 +128,7 @@ extension Flickr {
                         println("Error: \(error!.localizedDescription)")
                     }
                 })
-                
-                
-                
-                //NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler: { (response, data, error) -> Void in
-                    
-                    println("now in here!")
-                    /*
-                    if error == nil {
-                        // Convert the downloaded data in to a UIImage object
-                        let image = UIImage(data: data)
-                        
-                        // make sure the user hasn't deleted the pin while the image was downloading
-                        if !photo.isPreparingToDelete {
-                            // println("image downloaded!")
-                            photo.posterImage = image
-                            photo.isDownloaded = NSNumber(bool: true)
-                            // self.saveContext()
-                        }
-                    }
-                    else {
-                        println("Error: \(error.localizedDescription)")
-                    }
-                })
-                */
             }
         }
-    }
-    
-    func allPhotosDownloaded(pin:Pin) -> Bool {
-        
-        for photo in pin.photos {
-            if photo.isDownloaded == false {
-                return false
-            }
-        }
-        return true
     }
 }

@@ -51,7 +51,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         mapView.setRegion(region, animated: true)
         
         // add pin
-        let annotation = VTAnnotation(coordinate: location, index: 0)
+        let annotation = VTAnnotation(coordinate: location)
         mapView.addAnnotation(annotation)
         
         collectionView!.backgroundColor = UIColor.whiteColor()
@@ -99,8 +99,6 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     
     func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
         
-        println("in here!")
-        
         let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "myPin")
         pinAnnotationView.canShowCallout = false
         pinAnnotationView.image = UIImage(named:"pin2")
@@ -128,7 +126,6 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     }()
 
     func fetchCollection(){
-        println("fetching new collection...")
         
         downloadTaskInProgress = true
         
@@ -216,27 +213,12 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         switch type{
             
         case .Insert:
-            // println("Insert an item at \(newIndexPath!.row)")
-            // Here we are noting that a new Color instance has been added to Core Data. We remember its index path
-            // so that we can add a cell in "controllerDidChangeContent". Note that the "newIndexPath" parameter has
-            // the index path that we want in this case
             insertedIndexPaths.append(newIndexPath!)
-            println("inserted: \(insertedIndexPaths)")
             break
         case .Delete:
-            // println("Delete an item at \(indexPath!.row)")
-            // Here we are noting that a Color instance has been deleted from Core Data. We keep remember its index path
-            // so that we can remove the corresponding cell in "controllerDidChangeContent". The "indexPath" parameter has
-            // value that we want in this case.
             deletedIndexPaths.append(indexPath!)
             break
         case .Update:
-            // println("Update an item at \(newIndexPath!.row)")
-            // println(collectionView?.numberOfSections())
-            // We don't expect Color instances to change after they are created. But Core Data would
-            // notify us of changes if any occured. This can be useful if you want to respond to changes
-            // that come about after data is downloaded. For example, when an images is downloaded from
-            // Flickr in the Virtual Tourist app
             updatedIndexPaths.append(indexPath!)
             break
         case .Move:
@@ -255,40 +237,21 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     // Notice that all of the changes are performed inside a closure that is handed to the collection view.
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
         
-        // println("in controller did change content...")
-        
         dispatch_async(dispatch_get_main_queue()){
             self.collectionView!.performBatchUpdates({() -> Void in
                 
-                // println("Performing batch updates...")
-                
                 for indexPath in self.insertedIndexPaths {
-                    // println("inserting at \(indexPath.row)")
-                    // dispatch_async(dispatch_get_main_queue()){
                     self.collectionView!.insertItemsAtIndexPaths([indexPath])
-                    // }
                 }
                 for indexPath in self.deletedIndexPaths {
-                    // println("deleting at \(indexPath.row)")
-                    // println("deleted")
-                    // println("count: \(self.pin.photos.count)")
-                    // dispatch_async(dispatch_get_main_queue()){
                     self.collectionView!.deleteItemsAtIndexPaths([indexPath])
-                    // }
                 }
                 for indexPath in self.updatedIndexPaths {
-                    // println("updating at \(indexPath.row)")
-                    //println("BEFORE1")
-                    // dispatch_async(dispatch_get_main_queue()){
                     self.collectionView!.reloadItemsAtIndexPaths([indexPath])
-                    // }
-                    //println("AFTER1")
                 }
                 if self.pin.photos.count == 0 && self.deleteAllPressed {
                     self.fetchCollection()
                     self.deleteAllPressed = false
-                } else if self.pin.photos.count > 0 {
-                    // self.noImagesLabel.hidden = true
                 }
                 
                 self.updateBottomButton()
@@ -301,7 +264,6 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         
         let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         
-        cell.title?.text = " "
         cell.image!.image = nil
         
         if let index = find(selectedIndexes, indexPath) {
@@ -312,25 +274,21 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         
         var posterImage = UIImage(named: "imgPlaceholder")
         
-        if photo.posterImage != nil {
-            // println("photo has image!")
-            posterImage = photo.posterImage
+        if photo.image != nil {
+            posterImage = photo.image
             cell.activityIndicator.hidden = true
         }
         else {
             cell.activityIndicator.startAnimating()
             cell.activityIndicator.hidden = false
-            // println("image not available yet!")
         }
         
         cell.image!.image = posterImage
     }
     
     @IBAction func buttonButtonClicked() {
-        //println("selected indexes: \(selectedIndexes.isEmpty)")
         
         if selectedIndexes.isEmpty {
-            //println("deleting some...")
             bottomButton.enabled = false
             
             if pin.photos.count == 0 {
@@ -339,19 +297,14 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
                 deleteAllColors()
             }
         } else {
-            //println("deleting selected...")
             deleteSelectedColors()
         }
-        
-        // println("saving context!")
-        // saveContext()
-        // println("context saved!")
     }
     
     func deleteAllColors() {
         
         for photo in fetchedResultsController.fetchedObjects as! [Photo] {
-            photo.posterImage = nil
+            photo.image = nil
             sharedContext.deleteObject(photo)
         }
         
@@ -367,7 +320,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
         }
         
         for photo in colorsToDelete {
-            photo.posterImage = nil
+            photo.image = nil
             sharedContext.deleteObject(photo)
         }
         
@@ -395,43 +348,11 @@ class PinDetailViewController: UIViewController, UICollectionViewDelegateFlowLay
     }
     
     func allImagesLoaded() -> Bool {
-        for photo in pin.photos {
-            
-            if photo.isDownloaded == false {
-                allowsSelection = false
-                return false
-                // return true
-            }
+        if pin.allPhotosDownloaded() {
+            allowsSelection = true
+            return true
+        } else {
+            return false
         }
-        // self.saveContext()
-        allowsSelection = true
-        return true
     }
-    
-    /*
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        
-        let photo = pin.photos[indexPath.row]
-        
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("CollectionViewCell", forIndexPath: indexPath) as! CustomCollectionViewCell
-        cell.backgroundColor = UIColor.blueColor()
-        // cell.textLabel?.text = "\(indexPath.section):\(indexPath.row)"
-        cell.title?.text = "\(indexPath.section):\(indexPath.row)"
-        cell.image!.image = nil
-        
-        var posterImage = UIImage(named: "posterPlaceHoldr")
-        
-        if photo.posterImage != nil {
-            println("photo has image!")
-            posterImage = photo.posterImage
-        }
-        else {
-            println("image not available yet!")
-        }
-        
-        cell.image!.image = posterImage
-        
-        return cell
-    }
-*/
 }

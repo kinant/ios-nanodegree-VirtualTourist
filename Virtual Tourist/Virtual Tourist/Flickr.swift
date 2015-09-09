@@ -10,49 +10,61 @@ import Foundation
 
 class Flickr: NSObject {
     
-    typealias CompletionHander = (result: AnyObject!, error: NSError?) -> Void
+    // properties
+    var session: NSURLSession // the session
     
-    var session: NSURLSession
-    var dataPhotosArray = [[String: AnyObject]]()
-    
+    // init method
     override init() {
+        // initialize the session
         session = NSURLSession.sharedSession()
         super.init()
     }
     
-    lazy var sharedContext = {
-        CoreDataStackManager.sharedInstance().managedObjectContext!
-    }()
+    // MARK: - All purpose task methods for data
     
-    // MARK: - All purpose task method for data
-    //func getImageFromFlickrBySearch(methodArguments: [String : AnyObject]) {
+    /*
+     * This method is used to get the data on the images based on a search by Flickr.
+    */
     func getImagesFromFlickrBySearch(parameters: [String : AnyObject], completionHandler: (result: [[String: AnyObject]]?, error: NSError?) -> Void) -> NSURLSessionDataTask {
+        
+        // build the url
         let urlString = Flickr.Constants.BASE_URL + Flickr.escapedParameters(parameters)
-        
-        // println(urlString)
-        
         let url = NSURL(string: urlString)!
+        
+        // create the request
         let request = NSURLRequest(URL: url)
         
+        // run the task
         let task = session.dataTaskWithRequest(request) {data, response, downloadError in
+            
+            // check for error
             if let error = downloadError {
                 // println("Could not complete the request \(error)")
             } else {
                 
+                // parse JSON results
                 var parsingError: NSError? = nil
                 let parsedResult = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
                 
+                // obtain the dictionary of photos from the parsed results
                 if let photosDictionary = parsedResult.valueForKey("photos") as? [String:AnyObject] {
                     
+                    // get the total number of pages
                     if let totalPages = photosDictionary["pages"] as? Int {
-                        // println("total pages: \(totalPages)")
                         
                         /* Flickr API - will only return up the 4000 images (100 per page * 40 page max) */
+                        // determine total possible pages
                         let totalPossiblePages = Int(Flickr.Values.MAX_RESULTS/Flickr.Resources.PER_PAGE.toInt()!)
+                        
+                        // determine the page limit
                         let pageLimit = min(totalPages, totalPossiblePages)
-                        // let pageLimit = min(totalPages, 190)
+                        
+                        // obtain a random page
                         let randomPage = Int(arc4random_uniform(UInt32(pageLimit))) + 1
+                        
+                        // perform task to get the images from a page in flickr
                         self.getImagesFromFlickrBySearchWithPage(parameters, pageNumber: randomPage, completionHandler: completionHandler)
+                    
                     } else {
                         println("Cant find key 'pages' in \(photosDictionary)")
                     }
@@ -67,42 +79,58 @@ class Flickr: NSObject {
         return task
     }
     
+    /*
+    * This method is used to get the data on the images in a specific page, based on a search by Flickr.
+    */
     func getImagesFromFlickrBySearchWithPage(methodArguments: [String : AnyObject], pageNumber: Int, completionHandler: (result: [[String: AnyObject]]?, error: NSError?) -> Void) -> NSURLSessionDataTask {
         
-        /* Add the page to the method's arguments */
+        // add the page number to the method arguments
         var withPageDictionary = methodArguments
         withPageDictionary["page"] = pageNumber
         
-        let session = NSURLSession.sharedSession()
+        // build the url
         let urlString = Flickr.Constants.BASE_URL + Flickr.escapedParameters(withPageDictionary)
         let url = NSURL(string: urlString)!
+        
+        // initialize the requerst
         let request = NSURLRequest(URL: url)
         
+        // run the task
         let task = session.dataTaskWithRequest(request) {data, response, downloadError in
+            
+            // check for errors
             if let error = downloadError {
                 println("Could not complete the request \(error)")
             } else {
                 
+                // parse JSON Data
                 var parsingError: NSError? = nil
                 let parsedResult = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
                 
+                // obtain the photos dictionary from the parsed results
                 if let photosDictionary = parsedResult.valueForKey("photos") as? [String:AnyObject] {
                     
+                    // variable to hold the total number of photos
                     var totalPhotosVal = 0
+                    
+                    // determine the total number of photos based on the "total" value in the dictionary
                     if let totalPhotos = photosDictionary["total"] as? String {
+                        // set the total value
                         totalPhotosVal = (totalPhotos as NSString).integerValue
                     }
                     
+                    // check that the total number of photos is greater than 0
                     if totalPhotosVal > 0 {
+                        
+                        // obtain the array of photos
                         if let photosArray = photosDictionary["photo"] as? [[String: AnyObject]] {
-                            
+                            // call completion handler with the photos array data
                             completionHandler(result: photosArray, error: nil)
-                            
                         } else {
                             println("Cant find key 'photo' in \(photosDictionary)")
                         }
                     } else {
-                        // println("pin has no images!")
+                        // this pin has no images, call completion handler with nil for result
                         completionHandler(result: nil, error: nil)
                     }
                 } else {
@@ -116,17 +144,26 @@ class Flickr: NSObject {
         return task
     }
     
+    /*
+    * This method is used to download the data of an image
+    */
     func taskForImage(imageUrl: String, completionHandler: (imageData: NSData?, error: NSError?) ->  Void) -> NSURLSessionTask {
         
+        // build the url
         let url = NSURL(string: imageUrl)!
+        
+        // create the request
         let request = NSURLRequest(URL: url)
         
+        // create the task
         let task = session.dataTaskWithRequest(request) {data, response, downloadError in
-            
+            // check for error
             if let error = downloadError {
                 // let newError = TheMovieDB.errorForData(data, response: response, error: downloadError)
+                println("Error: \(downloadError.localizedDescription)")
                 completionHandler(imageData: nil, error: error)
             } else {
+                // no error, call completion handler with the image data
                 completionHandler(imageData: data, error: nil)
             }
         }
@@ -137,29 +174,6 @@ class Flickr: NSObject {
     }
 
     // MARK: - Helpers
-    
-    // Try to make a better error, based on the status_message from TheMovieDB. If we cant then return the previous error
-    class func errorForData(data: NSData?, response: NSURLResponse?, error: NSError) -> NSError {
-        if let parsedResult = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments, error: nil) as? [String : AnyObject] {
-            //if let errorMessage = parsedResult[TheMovieDB.Keys.ErrorStatusMessage] as? String {
-              //  let userInfo = [NSLocalizedDescriptionKey : errorMessage]
-                //return NSError(domain: "TMDB Error", code: 1, userInfo: userInfo)
-            //}
-        }
-        return error
-    }
-    
-    // Parsing the JSON
-    class func parseJSONWithCompletionHandler(data: NSData, completionHandler: CompletionHander) {
-        var parsingError: NSError? = nil
-        let parsedResult: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: &parsingError)
-        if let error = parsingError {
-            completionHandler(result: nil, error: error)
-        } else {
-            // println("Step 4 - parseJSONWithCompletionHandler is invoked.")
-            completionHandler(result: parsedResult, error: nil)
-        }
-    }
     
     // URL Encoding a dictionary into a parameter string
     class func escapedParameters(parameters: [String : AnyObject]) -> String {
@@ -184,6 +198,11 @@ class Flickr: NSObject {
         }
         return Singleton.sharedInstance
     }
+    
+    // MARK: - Shared Context
+    var sharedContext = {
+        CoreDataStackManager.sharedInstance().managedObjectContext!
+    }()
     
     // MARK: - Shared Image Cache
     struct Caches {

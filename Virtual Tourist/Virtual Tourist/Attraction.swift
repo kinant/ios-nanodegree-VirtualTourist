@@ -9,6 +9,8 @@
 import MapKit
 import CoreData
 
+/* This file represents the data model for the Attraction class */
+
 @objc(Attraction)
 
 class Attraction: NSManagedObject {

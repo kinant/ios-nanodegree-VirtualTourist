@@ -8,8 +8,14 @@
 
 import UIKit
 
+/* Custom Collection View Cell */
+
 class CustomCollectionViewCell: UICollectionViewCell {
+    
+    // the cell's properties
+    // the cell's image
     @IBOutlet weak var image: UIImageView!
-    @IBOutlet weak var title: UILabel!
+    
+    // the cell's activity indicator that shows while downloading
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 }
