@@ -11,6 +11,7 @@ import Foundation
 extension Flickr {
 
     struct Constants {
+        // MARK: - Constants
         static let BASE_URL = "https://api.flickr.com/services/rest/"
         static let METHOD_NAME = "flickr.photos.search"
         static let API_KEY = "a41f5351c59d09b9c3d55580be4d9222"
@@ -29,6 +30,7 @@ extension Flickr {
     }
     
     struct Values {
+        // MARK: - Values
         static let BOUNDING_BOX_HALF_WIDTH = 1.0
         static let BOUNDING_BOX_HALF_HEIGHT = 1.0
         static let LAT_MIN = -90.0
@@ -37,9 +39,5 @@ extension Flickr {
         static let LON_MAX = 180.0
         static let MAX_RESULTS = 4000
         static let RADIUS = 5
-    }
-    
-    struct Keys {
-        static let PHOTO_URL = "url_m"
     }
 }

@@ -25,12 +25,6 @@ func ==(lhs:Pin, rhs:Pin) -> Bool {
 
 class Pin: NSManagedObject, Equatable {
     
-    struct Keys {
-        static let Latitude = "latitude"
-        static let Longitude = "longitude"
-        static let Photos = "photos"
-    }
-    
     // MARK: Core Data Managed Properties
     @NSManaged var latitude: Double // the pin's latitude
     @NSManaged var longitude: Double // the pin's longitude

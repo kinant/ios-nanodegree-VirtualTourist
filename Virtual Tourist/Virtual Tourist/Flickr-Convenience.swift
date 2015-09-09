@@ -33,10 +33,16 @@ extension Flickr {
         Flickr.sharedInstance().getImagesFromFlickrBySearch(methodArguments as! [String : AnyObject], completionHandler: { (result, error) -> Void in
             
             // TODO: Check for errors
-            completionHandler(data: result, error: error)
+            if error == nil {
+                completionHandler(data: result, error: error)
+            }
+            else {
+                println("Error searching for images: \(error?.localizedDescription)")
+            }
         })
     }
     
+    // Core Data Save Context Method
     func saveContext() {
         CoreDataStackManager.sharedInstance().saveContext()
     }
@@ -53,31 +59,39 @@ extension Flickr {
             // if it is empty, then search flickr for the photos based on latitude and longitude
             Flickr.sharedInstance().searchPhotosByLatLon(pin, completionHandler: { (result, error) -> Void in
                 
-                // obtain the photos dicitonary array from the results
-                if let photos = result {
+                if error == nil {
+                    // obtain the photos dicitonary array from the results
+                    if let photos = result {
                     
-                    // for each photo dictionary
-                    for photo in photos {
+                        // for each photo dictionary
+                        for photo in photos {
                         
-                        // get the image url
-                        if let imageURL = photo["url_m"] as? String {
+                            // get the image url
+                            if let imageURL = photo["url_m"] as? String {
                             
-                            // get the image id
-                            if let imageID = photo["id"] as? String {
+                                // get the image id
+                                if let imageID = photo["id"] as? String {
                                 
-                                // create the new photo
-                                let newPhoto = Photo(imagePath: imageURL, id: imageID, context: self.sharedContext)
+                                    // create the new photo
+                                    let newPhoto = Photo(imagePath: imageURL, id: imageID, context: self.sharedContext)
                                 
-                                // set the photo's pin
-                                newPhoto.pin = pin
+                                    // set the photo's pin
+                                    newPhoto.pin = pin
+                                } else {
+                                    println("Error finding id for photo")
+                                }
+                            } else {
+                                println("Error finding URL for photo")
                             }
                         }
+                        // call the completion handler with false, since the pin does have images
+                        completionHandler(hasNoImages: false)
+                    } else {
+                        // the pin does not have images, so call completion handler with true
+                        completionHandler(hasNoImages: true)
                     }
-                    // call the completion handler with false, since the pin does have images
-                    completionHandler(hasNoImages: false)
-                } else if error == nil {
-                    // the pin does not have images, so call completion handler with true
-                    completionHandler(hasNoImages: true)
+                } else {
+                    println("Error searching by lat/long: \(error?.localizedDescription)")
                 }
             })
         }
@@ -116,7 +130,9 @@ extension Flickr {
                             photo.isDownloaded = NSNumber(bool: true)
                             
                             // save the context
-                            self.saveContext()
+                            dispatch_async(dispatch_get_main_queue()){
+                                self.saveContext()
+                            }
                             
                             // check that all images have been downloaded to call the completion handler
                             if pin.allPhotosDownloaded() {

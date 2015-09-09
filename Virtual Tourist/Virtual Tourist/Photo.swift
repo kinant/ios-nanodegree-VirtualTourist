@@ -15,10 +15,6 @@ import CoreData
 
 class Photo: NSManagedObject {
     
-    struct Keys {
-        static let ImagePath = "image_path"
-    }
-    
     // MARK: Core Data Managed Properties
     @NSManaged var imagePath: String? // the path for the image
     @NSManaged var pin: Pin? // the pin who "owns" this photo

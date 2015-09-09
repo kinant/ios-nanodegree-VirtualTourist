@@ -177,6 +177,7 @@
 			children = (
 				68A845A31B602141007C1735 /* Pin.swift */,
 				68A845A51B6021FA007C1735 /* Photo.swift */,
+				C94C644C1B6A850000E45D5C /* Attraction.swift */,
 				68A845961B5FEED8007C1735 /* VTAnnotation.swift */,
 				C9EB7C9E1B6A11730093C383 /* ATAnnotation.swift */,
 				C9FB8EB11B648E3C00DD945E /* CoreDataStackManager.swift */,
@@ -216,7 +217,6 @@
 		C9EB7C9B1B69F3270093C383 /* TIXIK */ = {
 			isa = PBXGroup;
 			children = (
-				C94C644C1B6A850000E45D5C /* Attraction.swift */,
 				C9EB7C9C1B69F3460093C383 /* Tixik.swift */,
 			);
 			name = TIXIK;

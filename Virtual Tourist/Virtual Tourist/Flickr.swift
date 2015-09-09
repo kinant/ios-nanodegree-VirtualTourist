@@ -39,7 +39,7 @@ class Flickr: NSObject {
             
             // check for error
             if let error = downloadError {
-                // println("Could not complete the request \(error)")
+                println("Could not complete the request \(error.localizedDescription)")
             } else {
                 
                 // parse JSON results
@@ -100,7 +100,7 @@ class Flickr: NSObject {
             
             // check for errors
             if let error = downloadError {
-                println("Could not complete the request \(error)")
+                println("Could not complete the request: \(error.localizedDescription)")
             } else {
                 
                 // parse JSON Data
@@ -159,7 +159,6 @@ class Flickr: NSObject {
         let task = session.dataTaskWithRequest(request) {data, response, downloadError in
             // check for error
             if let error = downloadError {
-                // let newError = TheMovieDB.errorForData(data, response: response, error: downloadError)
                 println("Error: \(downloadError.localizedDescription)")
                 completionHandler(imageData: nil, error: error)
             } else {

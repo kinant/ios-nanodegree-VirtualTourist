@@ -15,12 +15,6 @@ import CoreData
 
 class Attraction: NSManagedObject {
     
-    struct Keys {
-        static let Latitude = "latitude"
-        static let Longitude = "longitude"
-        static let Name = "name"
-    }
-    
     // MARK: Core Data Managed Properties
     @NSManaged var latitude: Double // the attraction's latitude
     @NSManaged var longitude: Double // the attraction's longitude

@@ -101,7 +101,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                     // fetch the images
                     Flickr.sharedInstance().fetchImagesForPin(pin, completionHandler: { (success) -> Void in
                         // hide indicator when fetching complete
-                        self.hidePinActivityIndicator(pin)
+                        if success {
+                            self.hidePinActivityIndicator(pin)
+                        }
+                        else {
+                            println("Error: Unable to download images for pin")
+                        }
                     })
                 }
             }
@@ -252,11 +257,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             } else {
                 // pin has images, so we start to download them now...
                 Flickr.sharedInstance().fetchImagesForPin(newPin, completionHandler: { (success) -> Void in
-                    // if success {
-                    // once all images are downloaded, the completion handler will be called in fetchImagesForPin
-                    // hide the activity indicator
-                    self.hidePinActivityIndicator(newPin)
-                    //}
+                    if success {
+                        // hide the activity indicator
+                        self.hidePinActivityIndicator(newPin)
+                    }
                 })
             }
         })
